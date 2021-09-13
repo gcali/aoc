@@ -28,6 +28,10 @@ Vue.component("font-awesome-icon", FontAwesomeIcon);
 
 Vue.config.productionTip = false;
 
+(BigInt.prototype as any).toJSON = function() {
+  return this.toString();
+}
+
 new Vue({
   router,
   render: (h) => h(App),
