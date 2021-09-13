@@ -335,7 +335,7 @@ export const cryostasis = entryForFile(
     async ({ lines, outputCallback }) => {
         throw Error("Not implemented");
     },
-    { key: "cryostasis", title: "Cryostasis", stars: 1, hasAdditionalInput: true, embeddedData: true }
+    { key: "cryostasis", title: "Cryostasis", stars: 2, hasAdditionalInput: true, embeddedData: true }
 );
 
 function createMap(

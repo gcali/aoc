@@ -2,94 +2,153 @@ import { createIntervalPauser } from "../../../support/run";
 import { modInverse } from "../../../support/algebra";
 import { entryForFile } from "../../entry";
 
+type Coefficients = {
+    a: bigint;
+    b: bigint;
+};
+
 type Operation = {
     type: "cut";
-    amount: number;
+    amount: bigint;
 } | {
     type: "deal-into";
 } | {
     type: "deal-increment";
-    amount: number;
+    amount: bigint;
 };
 
 const parse = (lines: string[]): Operation[] => {
-    return lines.map(l => l.trim()).filter(l => l).map(line => {
+    return lines.map((l) => l.trim()).filter((l) => l).map((line) => {
         if (line.startsWith("deal into")) {
-            return {type: "deal-into"};
+            return { type: "deal-into" };
         } else if (line.startsWith("deal")) {
-            return {type: "deal-increment", amount: parseInt(line.split(" ")[3], 10)};
+            return { type: "deal-increment", amount: BigInt(parseInt(line.split(" ")[3], 10)) };
         } else if (line.startsWith("cut")) {
-            return {type: "cut", amount: parseInt(line.split(" ")[1], 10)};
+            return { type: "cut", amount: BigInt(parseInt(line.split(" ")[1], 10)) };
         } else {
             throw new Error("Invalid line: " + line);
         }
-    })
+    });
 };
 
 type Context = {
-    module: number;
-}
+    module: bigint;
+};
 
-const executeOperation = (current: number, operation: Operation, context: Context): number => {
-    const normalize = (v: number) => ((v % context.module) + context.module) % context.module;
+const calculateCoefficients = (current: Coefficients, operation: Operation, context: Context): Coefficients => {
+    const mod = context.module;
+    const normalize = (v: bigint) => ((v % mod) + mod) % mod;
     switch (operation.type) {
         case "cut":
-            return normalize(current - operation.amount);
+            return {
+                a: current.a,
+                b: normalize(current.b - operation.amount)
+            };
         case "deal-into":
-            return normalize(-current - 1);
+            return {
+                a: normalize(-current.a),
+                b: normalize(-current.b - 1n)
+            };
         case "deal-increment":
-            return normalize(current * operation.amount);
+            return {
+                a: normalize(current.a * operation.amount),
+                b: normalize(current.b * operation.amount)
+            };
     }
 };
 
-const executeInverseOperation = (current: bigint, operation: Operation, context: Context): bigint => {
+const invertCoefficients = (current: Coefficients, context: Context): Coefficients => {
+    const a_1 = modInverse(current.a, context.module);
+    return {
+        a: a_1,
+        b: a_1 - a_1 * current.b
+    };
+};
+const calculateInverseCoefficients = (current: Coefficients, operation: Operation, context: Context): Coefficients => {
     const mod = BigInt(context.module);
     const normalize = (v: bigint) => ((v % mod) + mod) % mod;
+    const inverse = (v: bigint) => modInverse(v, mod);
     switch (operation.type) {
-        case "deal-into":
-            return normalize(-current - 1n);
         case "cut":
-            return normalize(current + BigInt(operation.amount));
+            return {
+                a: current.a,
+                b: normalize(current.b + operation.amount)
+            };
+        case "deal-into":
+            return {
+                a: normalize(-current.a),
+                b: normalize(-current.b - 1n)
+            };
         case "deal-increment":
-            {
-                const inverse = modInverse(BigInt(operation.amount), mod);
-                return normalize(current * inverse);
-            }
+            return {
+                a: normalize(current.a * inverse(operation.amount)),
+                b: normalize(current.b * inverse(operation.amount))
+            };
     }
-}
+};
+
+const compose = (f: Coefficients, g: Coefficients, mod: bigint): Coefficients => {
+    const normalize = (v: bigint) => ((v % mod) + mod) % mod;
+    return {
+        a: normalize(f.a * g.a),
+        b: normalize(f.a * g.b + f.b)
+    };
+};
+
+const compow = (f: Coefficients, mod: bigint): Coefficients => compose(f, f, mod);
 
 export const slamShuffle = entryForFile(
     async ({ lines, outputCallback, resultOutputCallback }) => {
         const input = parse(lines);
-        const targetCard = 2019;
-        const context: Context = {module: 10007};
-        let current = targetCard;
+        const targetCard = 2019n;
+        const context: Context = { module: 10007n };
+        let current: Coefficients = { a: 1n, b: 0n };
         for (const operation of input) {
-            current = executeOperation(current, operation, context);
+            current = calculateCoefficients(current, operation, context);
         }
-        await resultOutputCallback(current);
+        const mod = BigInt(context.module);
+        const normalize = (v: bigint) => ((v % mod) + mod) % mod;
+        await resultOutputCallback(Number(normalize(current.a * targetCard + current.b)));
     },
     async ({ lines, outputCallback, resultOutputCallback, pause }) => {
         const input = parse(lines);
         input.reverse();
-        const targetPosition = 3074n;
-        const context: Context = {module: 119315717514047};
-        const iterations = 101741582076661n;
-        let current = targetPosition;
-        pause = createIntervalPauser(100, pause);
-        for (let i = 0n; i < iterations; i++) {
-            for (const operation of input) {
-                current = executeInverseOperation(current, operation, context);
-                await pause();
-            }
+        const targetPosition = 2020n;
+        const context: Context = { module: 119315717514047n };
+
+        let iterationCoefficients = { a: 1n, b: 0n };
+        for (const operation of input) {
+            iterationCoefficients = calculateInverseCoefficients(iterationCoefficients, operation, context);
         }
-        await resultOutputCallback(Number(current));
+
+        const found = new Set<string>();
+
+        const maxIterations = 101741582076661;
+        let iterations = 101741582076661;
+        const operands: Coefficients[] = [];
+        while (iterations > 0) {
+            let currentSteps = 1;
+            let currentCoeff = iterationCoefficients;
+            while (currentSteps * 2 <= iterations) {
+                currentCoeff = compow(currentCoeff, context.module);
+                currentSteps *= 2;
+            }
+            iterations -= currentSteps;
+            operands.push(currentCoeff);
+            await outputCallback(1 - iterations / maxIterations);
+            await pause();
+        }
+        await outputCallback("------------");
+        const finalOperand = operands.reduce((acc, next) => compose(acc, next, context.module));
+        const mod = context.module;
+        const normalize = (v: bigint) => Number(((v % mod) + mod) % mod);
+        await resultOutputCallback(normalize(finalOperand.a * targetPosition + finalOperand.b));
     },
     {
         key: "slam-shuffle",
         title: "Slam Shuffle",
         supportsQuickRunning: true,
         embeddedData: true,
-        stars: 1
+        stars: 2,
     }
 );
