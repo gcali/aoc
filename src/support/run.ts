@@ -7,4 +7,4 @@ export const createIntervalPauser = (amount: number, pause: () => Promise<void>)
             i = 0;
         }
     });
-}
+};

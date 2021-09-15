@@ -1,5 +1,5 @@
 import "mocha";
-//import { shuffleDeck, Deck, findNumberAtPosition, getCoefficients, CoefficientCalculator } from "../slam-shuffle";
+// import { shuffleDeck, Deck, findNumberAtPosition, getCoefficients, CoefficientCalculator } from "../slam-shuffle";
 import { expectSameArrays } from "../../../../support/assertions";
 import { expect } from "chai";
 

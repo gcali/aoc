@@ -30,7 +30,7 @@ Vue.config.productionTip = false;
 
 (BigInt.prototype as any).toJSON = function() {
   return this.toString();
-}
+};
 
 new Vue({
   router,
