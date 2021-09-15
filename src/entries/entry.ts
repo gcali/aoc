@@ -4,6 +4,14 @@ import { Message } from "./entryStatusMessages";
 
 export interface ScreenBuilder {requireScreen: (size?: Coordinate) => Promise<ScreenPrinter>; }
 
+export const embedAll = (entries: Entry[]): Entry[] => entries.map((e) => {
+    if (e.metadata) {
+        return {...e, metadata: {...e.metadata, embeddedData: true}};
+    } else {
+        return e;
+    }
+});
+
 export interface EntryCallbackArg {
     lines: string[];
     outputCallback: OutputCallback;

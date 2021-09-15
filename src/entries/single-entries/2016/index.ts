@@ -23,7 +23,7 @@ import { gridComputing } from "./grid-computing";
 import { safeCracking } from "./safe-cracking";
 import { airDuctSpelunking } from "./air-duct-spelunking";
 import { clockSignal } from "./clock-signal";
-import { embedAll } from "../../embeddedData";
+import { embedAll } from "../../entry";
 
 export const entries = embedAll([
         noTimeForATaxicab,

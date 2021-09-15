@@ -23,7 +23,7 @@ import { rpgSimulator20xx } from "./rpg-simulator-20xx";
 import { wizardSimulator20xx } from "./wizard-simulator-20xx";
 import { itHangsInTheBalance } from "./it-hangs-in-the-balance";
 import { letItSnow } from "./let-it-snow";
-import { embedAll } from "../../embeddedData";
+import { embedAll } from "../../entry";
 
 export const entries = embedAll([
         notQuiteLisp,

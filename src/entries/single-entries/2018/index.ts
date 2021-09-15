@@ -23,7 +23,7 @@ import { modeMaze } from "./mode-maze";
 import { experimentalEmergencyTransportation } from "./experimental-emergency-transportation";
 import { immuneSystemSimulator20XX } from "./immune-system-simulator-20xx";
 import { fourDimensionalAdventure } from "./four-dimensional-adventure";
-import { embedAll } from "../../embeddedData";
+import { embedAll } from "../../entry";
 
 export const entries = embedAll([
         frequencyEntry,

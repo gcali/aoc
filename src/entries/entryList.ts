@@ -63,3 +63,4 @@ export const entryList: { [key: string]: EntryRoute[] } = {
     2020: enrichList(entries2020)
 };
 
+

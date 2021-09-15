@@ -1,4 +1,4 @@
-import { embedAll } from "../../embeddedData";
+import { embedAll } from "../../entry";
 import { aMazeOfTwistyTrampolinesAllAlike } from "./a-maze-of-twisty-trampolines-all-alike";
 import { aSeriesOfTubes } from "./a-series-of-tubes";
 import { coprocessorConflagration } from "./coprocessor-conflagration";
