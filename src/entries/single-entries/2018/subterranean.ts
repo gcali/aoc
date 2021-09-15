@@ -167,7 +167,7 @@ export const entry = entryForFile(
         await outputCallback("No pattern found");
         await outputCallback(JSON.stringify(diffs));
     },
-    { key: "subterranean", title: "Subterranean Substainability", stars: 2, }
+    { key: "subterranean", title: "Subterranean Substainability", stars: 2, embeddedData: "subterranean-substainability/subterranean" }
 );
 function parseLines(lines: string[]): Greenhouse {
     const initialState = lines[0]

@@ -23,8 +23,9 @@ import { rpgSimulator20xx } from "./rpg-simulator-20xx";
 import { wizardSimulator20xx } from "./wizard-simulator-20xx";
 import { itHangsInTheBalance } from "./it-hangs-in-the-balance";
 import { letItSnow } from "./let-it-snow";
+import { embedAll } from "../../embeddedData";
 
-export const entries = [
+export const entries = embedAll([
         notQuiteLisp,
         iWasToldThereWouldBeNoMath,
         perfectSphericalHousesInAVacuum,
@@ -50,4 +51,4 @@ export const entries = [
         turingLock,
         itHangsInTheBalance,
         letItSnow
-];
+]);

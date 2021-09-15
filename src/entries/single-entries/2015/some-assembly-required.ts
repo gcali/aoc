@@ -175,5 +175,5 @@ export const someAssemblyRequired = entryForFile(
         const newValue = calculate("a", new Map<string, number>(), newInput);
         await outputCallback(newValue);
     },
-    { key: "some-assembly-required", title: "Some Assembly Required", stars: 2}
+    { key: "some-assembly-required", title: "Some Assembly Required", stars: 2, embeddedData: true}
 );

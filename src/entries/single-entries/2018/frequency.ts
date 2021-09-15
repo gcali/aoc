@@ -45,5 +45,5 @@ export const entry = entryForFile(
             });
         }
     },
-    { key: "frequency", title: "Chronal Calibration", stars: 2, }
+    { key: "frequency", title: "Chronal Calibration", stars: 2, embeddedData: "chronal-calibration" }
 );

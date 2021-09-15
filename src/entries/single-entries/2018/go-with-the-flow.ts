@@ -116,6 +116,7 @@ let divisorSum = (c) => {
         key: "go-with-the-flow",
         title: "Go with the flow",
         stars: 2,
-        customComponent: "pause-and-run"
+        customComponent: "pause-and-run",
+        embeddedData: "go-with-the-flow/go-with-the-flow"
     }
 );

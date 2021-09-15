@@ -171,5 +171,6 @@ export const entry = entryForFile(
         title: "Settlers of the North Pole",
         stars: 2,
         customComponent: "pause-and-run",
+        embeddedData: "settlers-of-the-north-pole/input"
     }
 );

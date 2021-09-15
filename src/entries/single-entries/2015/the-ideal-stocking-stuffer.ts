@@ -40,6 +40,7 @@ export const theIdealStockingStuffer = entryForFile(
     {
         key: "the-ideal-stocking-stuffer",
         title: "The Ideal Stocking Stuffer",
-        stars: 2
+        stars: 2,
+        embeddedData: true
     }
 );

@@ -309,5 +309,5 @@ export const entry = entryForFile(
             }
         }
     },
-    { key: "beverage-bandits", title: "Beverage Bandits", stars: 2, }
+    { key: "beverage-bandits", title: "Beverage Bandits", stars: 2, embeddedData: "beverage-bandits/online-input" }
 );

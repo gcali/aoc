@@ -23,8 +23,9 @@ import { modeMaze } from "./mode-maze";
 import { experimentalEmergencyTransportation } from "./experimental-emergency-transportation";
 import { immuneSystemSimulator20XX } from "./immune-system-simulator-20xx";
 import { fourDimensionalAdventure } from "./four-dimensional-adventure";
+import { embedAll } from "../../embeddedData";
 
-export const entries = [
+export const entries = embedAll([
         frequencyEntry,
         inventoryEntry,
         matterSliceEntry,
@@ -50,4 +51,4 @@ export const entries = [
         experimentalEmergencyTransportation,
         immuneSystemSimulator20XX,
         fourDimensionalAdventure,
-    ];
+    ]);

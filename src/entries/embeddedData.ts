@@ -1,8 +1,11 @@
+import { Entry } from "./entry";
 import { entryList } from "./entryList";
 
 const parse = (data: string): string[] => data.trim().split("\n");
 
 export const disabledYear: string | undefined = "2020";
+
+export const embedAll = (entries: Entry[]): Entry[] => entries.map(e => ({embeddedData: true, ...e}));
 
 export const embeddedLines = Object.keys(entryList).flatMap((year) => entryList[year].map((entry) => {
     return {

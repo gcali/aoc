@@ -347,5 +347,5 @@ export const aRegularMap = entryForFile(
             .length;
         await outputCallback(interestingDistances);
     },
-    { key: "a-regular-map", title: "A Regular Map", stars: 2, }
+    { key: "a-regular-map", title: "A Regular Map", stars: 2, embeddedData: "a-regular-map/index" }
 );

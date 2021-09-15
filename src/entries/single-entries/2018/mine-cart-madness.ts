@@ -453,6 +453,7 @@ export const mineCartMadness = entryForFile(
         key: "mine-cart-madness",
         title: "Mine Cart Madness",
         stars: 2,
-        customComponent: "pause-and-run"
+        customComponent: "pause-and-run",
+        embeddedData: "mine-cart-madness/input"
     }
 );

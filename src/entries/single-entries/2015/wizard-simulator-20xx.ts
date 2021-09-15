@@ -354,5 +354,5 @@ export const wizardSimulator20xx = entryForFile(
             await outputCallback(winner);
         }
     },
-    { key: "wizard-simulator-20xx", title: "Wizard Simulator 20XX", stars: 2 }
+    { key: "wizard-simulator-20xx", title: "Wizard Simulator 20XX", stars: 2, embeddedData: true}
 );

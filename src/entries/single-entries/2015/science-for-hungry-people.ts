@@ -121,5 +121,5 @@ export const scienceForHungryPeople = entryForFile(
         }
         await outputCallback(bestResult);
     },
-    { key: "science-for-hungry-people", title: "Science for Hungry People", stars: 2 }
+    { key: "science-for-hungry-people", title: "Science for Hungry People", stars: 2, embeddedData: true}
 );

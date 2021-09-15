@@ -16,6 +16,6 @@ export const highEntropyPasshprases = entryForFile(
         }).length;
         await outputCallback(uniqueLines);
     },
-    { key: "high-entropy-passphrases", title: "High-Entropy Passphrases", stars: 2, }
+    { key: "high-entropy-passphrases", title: "High-Entropy Passphrases", stars: 2  }
 );
 

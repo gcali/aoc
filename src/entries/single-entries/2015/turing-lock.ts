@@ -113,5 +113,5 @@ export const turingLock = entryForFile(
         execute(program, state);
         await outputCallback(state.b);
     },
-    { key: "turing-lock", title: "Opening the Turing Lock", stars: 2 }
+    { key: "turing-lock", title: "Opening the Turing Lock", stars: 2, embeddedData: true }
 );
