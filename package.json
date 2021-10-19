@@ -22,7 +22,7 @@
     "@fortawesome/vue-fontawesome": "^2.0.0",
     "@svgdotjs/svg.js": "^3.0.16",
     "big-integer": "^1.6.48",
-    "bigint-crypto-utils": "^3.0.9",
+    "bigint-crypto-utils": "3.0.18",
     "honeycomb-grid": "^3.1.7",
     "js-combinatorics": "^0.5.5",
     "linq-typescript": "^1.0.251",
