@@ -7,11 +7,11 @@
         :year="year"
         :entryKey="this.entry.metadata.key"
     )
-        .quick-run(v-if="supportsQuickRunning")
+        .quick-run(v-if="supportsQuickRunning").unselectable
             label Quick run
             input(type="checkbox" v-model="quickRun" :disabled="executing")
             label(v-if="time") Time: {{time}}
-        .input(:class="{transparent:!executing || quickRun}")
+        .input(:class="{transparent:!executing || quickRun}").unselectable
             button(@click="play", :class="{transparent: !executing || running}") Play
             button(@click="nextState", :class="{transparent: !executing || running}") Next
             button(@click="stop", :class="{transparent: !executing}") Stop

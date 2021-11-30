@@ -1,5 +1,5 @@
 <template lang="pug">
-    .input
+    .input.unselectable
         div(v-if="!noInput")
             EntryFileInput(
                 readFile="true",

@@ -1,5 +1,5 @@
 <template lang="pug">
-    .file-selection
+    .file-selection.unselectable
         button.selection-action(@click="clickSelectionAction", :disabled="disabled") {{this.selectionLabel}}
         input(type="file" ref="file-input" @change="filesUpdated")
         label.selected-file(:class="{hidden: !this.isFileSelected}") {{this.shownName}}

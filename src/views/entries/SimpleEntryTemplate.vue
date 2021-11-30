@@ -7,13 +7,13 @@
         :disabled="disabled"
         :entryKey="this.entry.metadata.key"
     )
-        .quick-run(v-if="supportsQuickRunning")
+        .quick-run(v-if="supportsQuickRunning").unselectable
             label Quick run
             input(type="checkbox" v-model="quickRun" :disabled="executing")
             label(v-if="time") Time: {{time}}
         .output
             EntrySimpleOutput(:key="$route.path", :lines="output" @print-factory="readFactory")
-        .input(v-if="showAdditionalInput" )
+        .input(v-if="showAdditionalInput" ).unselectable
             input(
                 type="text" 
                 v-model="inputLine"

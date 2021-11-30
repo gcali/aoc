@@ -1,5 +1,5 @@
 <template lang="pug">
-  #nav
+  #nav.unselectable
     .header
       Hamburger.hamburger(:size="25", @click="toggleNavbar")
       .title Advent of Code

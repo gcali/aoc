@@ -7,7 +7,7 @@
         :year="year"
         :entryKey="this.entry.metadata.key"
     )
-        .quick-run(v-if="supportsQuickRunning")
+        .quick-run(v-if="supportsQuickRunning").unselectable
             label Quick run
             input(type="checkbox" v-model="quickRun" :disabled="executing")
             label(v-if="time") Time: {{time}}

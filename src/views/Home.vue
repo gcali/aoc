@@ -1,5 +1,5 @@
 <template lang="pug">
-  .home
+  .home.unselectable
     .falling-star(
         v-for="(star, index) in stars" 
         :style="{left: star.left+'%', animationDuration: star.duration+'s', animationDelay: -star.delay+'s'}"

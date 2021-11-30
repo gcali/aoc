@@ -60,6 +60,9 @@ export default class App extends Vue {
     cursor: pointer;
     user-select: none;
 }
+.unselectable {
+    user-select: none;
+}
 button {
     padding: 8px 16px;
     box-shadow: inset 0px 0px 0px 1px black;
