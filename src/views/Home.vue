@@ -11,14 +11,16 @@
     .year-tree
         .tree-floor
             .star *
-        .tree-floor(v-for="(years, index) in this.yearsByRow" :key="index")
-            .year(v-for="(year, yearIndex) in years" :key="yearIndex")
+        .tree-floor(v-for="(floorYears, index) in this.yearsByRow" :key="index")
+            .year(v-for="(year, yearIndex) in floorYears" :key="yearIndex")
                 router-link(v-if="year", :to="{name: 'entries'}")
                     div(@click="selectYear(year)").year-entry {{year}}
                 .fake-year(v-else) 2020
         .tree-floor
             .year.tree-trunk
-                div 2020
+                div(v-if="years.length !== 7") 2020
+                router-link(v-else :to="{name: 'entries'}")
+                    div(@click="selectYear(years[0])").year-entry {{years[0]}}
 </template>
 
 <script lang="ts">
@@ -48,7 +50,10 @@ export default Vue.extend({
                 floor: [] as string[],
                 size: 1
             };
-            const years = [...this.years].reverse();
+            let years = [...this.years].reverse();
+            if (years.length === 7) {
+                years = years.slice(0, 6);
+            }
             for (const year of years) {
                 current.floor.push(year);
                 if (current.floor.length === current.size) {
@@ -161,6 +166,7 @@ export default Vue.extend({
         display: flex;
         justify-content: center;
         .year {
+            position: relative;
             border: 1px solid transparent;
             background-color: #7abc7c;
             color: white;

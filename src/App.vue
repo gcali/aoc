@@ -1,8 +1,8 @@
 <template lang="pug">
 #app
-  Navbar(:entryByYears="entryByYears")
-  #content
-    router-view
+    Navbar(:entryByYears="entryByYears")
+    #content
+        router-view
 </template>
 
 <script lang="ts">
@@ -13,8 +13,8 @@ import { entryList, EntryRoute } from "./entries/entryList";
 import { baseState, updateYear } from "./state/state";
 @Component({
     components: {
-        Navbar
-    }
+        Navbar,
+    },
 })
 export default class App extends Vue {
     private entryByYears: { [key: string]: EntryRoute[] } | null = null;
@@ -31,6 +31,34 @@ export default class App extends Vue {
 }
 .transparent {
     visibility: hidden;
+}
+.link {
+    margin-left: 0.5em;
+    color: $dark-transparent-color;
+    font-size: 80%;
+    @include small-screen {
+        font-size: 100%;
+    }
+    display: inline-block;
+    &.small {
+        display: none;
+        @include small-screen {
+            display: inline-block;
+        }
+    }
+    &.big {
+        @include small-screen {
+            display: none;
+        }
+    }
+    &:hover {
+        color: $dark-transparent-text;
+    }
+}
+
+.clickable {
+    cursor: pointer;
+    user-select: none;
 }
 button {
     padding: 8px 16px;

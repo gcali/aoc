@@ -6,6 +6,7 @@ import {entries as entries2017} from "./single-entries/2017";
 import {entries as entries2018} from "./single-entries/2018";
 import {entries as entries2019} from "./single-entries/2019";
 import {entries as entries2020} from "./single-entries/2020";
+import {entries as entries2021} from "./single-entries/2021";
 
 export interface EntryRoute extends EntryRouteBase {
     date: number;
@@ -60,7 +61,8 @@ export const entryList: { [key: string]: EntryRoute[] } = {
     2017: enrichList(entries2017),
     2018: enrichList(entries2018),
     2019: enrichList(entries2019),
-    2020: enrichList(entries2020)
+    2020: enrichList(entries2020),
+    2021: enrichList(entries2021),
 };
 
 

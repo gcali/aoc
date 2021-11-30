@@ -3,6 +3,8 @@
     .header
       Hamburger.hamburger(:size="25", @click="toggleNavbar")
       .title Advent of Code
+        a.link(href="https://adventofcode.com", target="_blank")
+            font-awesome-icon(icon="link")
       .author gicali
     hr
     .links(:style="navbarStyle")
@@ -184,6 +186,9 @@ export default Vue.extend({
             z-index: 1;
             font-weight: bold;
             font-size: 30px;
+            .spaced {
+                margin-left: 0.5em;
+            }
         }
         .author {
             text-align: end;

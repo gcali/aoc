@@ -38,29 +38,6 @@ export default class EntryTitle extends Vue {
         line-height: 2;
         font-size: 30px;
     }
-    .link {
-        margin-left: 0.5em;
-        color: $dark-transparent-color;
-        font-size: 80%;
-        @include small-screen {
-            font-size: 100%;
-        }
-        display: inline-block;
-        &.small {
-            display: none;
-            @include small-screen {
-                display: inline-block;
-            }
-        }
-        &.big {
-            @include small-screen {
-                display: none;
-            }
-        }
-        &:hover {
-            color: $dark-transparent-text;
-        }
-    }
     hr {
         border-style: solid;
     }

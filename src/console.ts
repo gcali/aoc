@@ -1,4 +1,5 @@
 import minimist from "minimist";
+import clipboard from "clipboardy";
 
 const args = (minimist as any)(process.argv.slice(2), {
     alias: { 
@@ -35,6 +36,7 @@ Options:
     -y, --year: year,
     -n, --noNumber: hide number in list, optional, default to false
     -q, --quick: run with minimal output and prints the time of execution
+    -f, --file: file to read from
 `;
 
 const error = () => { console.log(usage); process.exit(1); };
@@ -123,7 +125,8 @@ reader(async (lines) => {
             throw new Error("Can execute result output only once");
         }
         resultCalls++;
-        if (typeof line === "string") {
+        if (typeof line === "string" || typeof line === "number") {
+            clipboard.writeSync(line.toString());
             console.log(line);
         } else {
             console.log(JSON.stringify(line));

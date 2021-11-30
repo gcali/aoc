@@ -2,7 +2,7 @@ import { entryList } from "./entryList";
 
 const parse = (data: string): string[] => data.trim().split("\n");
 
-export const disabledYear: string | undefined = "2020";
+export const disabledYear: string | undefined = "2021";
 
 
 export const embeddedLines = Object.keys(entryList).flatMap((year) => entryList[year].map((entry) => {

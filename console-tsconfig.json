@@ -19,7 +19,8 @@
     ]
   },
   "include": [
-    "src/console.ts"
+    "src/console.ts",
+    "src/download.ts"
   ],
   "exclude": [
     "node_modules"
