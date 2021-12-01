@@ -27,14 +27,9 @@ export const entry = entryForFile(
 
         await resultOutputCallback(result);
     },
-    async ({ lines, outputCallback, resultOutputCallback, screen, pause }) => {
-        const vs = buildVisualizer(screen, pause)
+    async ({ lines, outputCallback, resultOutputCallback, pause }) => {
+        const vs = buildVisualizer(undefined, pause)
         const data = lines.map(e => parseInt(e, 10));
-
-        vs.setup(data);
-
-        await vs.update(false);
-        await vs.update(false);
 
         const result = await countIncreasing(
             new MyIterable(data).zip(data.slice(1)).zip(data.slice(2)).map(e => sum(e[0]) + e[1]),
