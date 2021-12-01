@@ -14,6 +14,169 @@ export function howManySameAtEnd<T>(sequence: T[]): number {
     return counter;
 }
 
+export const it = <T,>(e: Iterable<T>): MyIterable<T> => new MyIterable(e);
+
+export class MyAsyncIterable<T> implements AsyncIterable<T> {
+    /**
+     *
+     */
+    constructor(private data: AsyncIterable<T>) {
+    }
+    async *[Symbol.asyncIterator](): AsyncIterableIterator<T> {
+        for await (const item of this.data) {
+            yield item;
+        }
+    }
+
+    zip<U>(other: Iterable<U>): MyAsyncIterable<[T, U]> {
+        const that = this;
+        async function* zip() {
+            const thisIterator = that[Symbol.asyncIterator]();
+            const otherIterator = other[Symbol.iterator]();
+            while (true) {
+                const a = await thisIterator.next();
+                if (a.done) {
+                    return;
+                }
+                const b = otherIterator.next();
+                if (b.done) {
+                    return;
+                }
+                yield [a.value, b.value] as [T, U];
+            }
+        }
+        return new MyAsyncIterable(zip());
+    }
+
+    map<U>(map: (e: T) => Promise<U>): MyAsyncIterable<U> {
+        const that = this;
+        async function* inner() {
+            for await (const item of that.data) {
+                yield map(item);
+            }
+        }
+        return new MyAsyncIterable(inner());
+    }
+
+    filter(filter: (e: T) => Promise<boolean>): MyAsyncIterable<T> {
+        const that = this;
+        async function* inner() {
+            for await (const item of that.data) {
+                if (await filter(item)) {
+                    yield item;
+                }
+            }
+        }
+        return new MyAsyncIterable(inner());
+    }
+
+    async reduce<TAcc>(acc: TAcc, reducer: (acc: TAcc, next: T) => Promise<TAcc>): Promise<TAcc> {
+        for await (const item of this.data) {
+            acc = await reducer(acc, item);
+        }
+        return acc;
+    }
+
+    async simpleReduce(reducer: (acc: T, next: T) => Promise<T>): Promise<T> {
+        let isFirst = true;
+        const iterator = this.data[Symbol.asyncIterator]();
+        const first = await iterator.next();
+        if (first.done) {
+            throw new Error("Cannot reduce without acc on empty collection");
+        }
+        let acc: T = first.value;
+        while (true) {
+            const next = await iterator.next();
+            if (next.done) {
+                break;
+            }
+            acc = await reducer(acc, next.value);
+        }
+        return acc;
+    }
+
+}
+
+export class MyIterable<T> implements Iterable<T> {
+    /**
+     *
+     */
+    constructor(private data: Iterable<T>) {
+    }
+    *[Symbol.iterator](): Iterator<T, any, undefined> {
+        for (const item of this.data) {
+            yield item;
+        }
+    }
+
+    zip<U>(other: Iterable<U>): MyIterable<[T, U]> {
+        const that = this;
+        function* zip() {
+            const thisIterator = that[Symbol.iterator]();
+            const otherIterator = other[Symbol.iterator]();
+            while (true) {
+                const a = thisIterator.next();
+                if (a.done) {
+                    return;
+                }
+                const b = otherIterator.next();
+                if (b.done) {
+                    return;
+                }
+                yield [a.value, b.value] as [T, U];
+            }
+        }
+        return new MyIterable(zip());
+    }
+
+    map<U>(map: (e: T) => U): MyIterable<U> {
+        const that = this;
+        function* inner() {
+            for (const item of that.data) {
+                yield map(item);
+            }
+        }
+        return new MyIterable(inner());
+    }
+
+    *filter(filter: (e: T) => boolean): Iterable<T> {
+        const that = this;
+        function* inner() {
+            for (const item of that.data) {
+                if (filter(item)) {
+                    yield item;
+                }
+            }
+        }
+        return new MyIterable(inner());
+    }
+
+    reduce<TAcc>(acc: TAcc, reducer: (acc: TAcc, next: T) => TAcc): TAcc {
+        for (const item of this.data) {
+            acc = reducer(acc, item);
+        }
+        return acc;
+    }
+
+    simpleReduce(reducer: (acc: T, next: T) => T): T {
+        let isFirst = true;
+        const iterator = this.data[Symbol.iterator]();
+        const first = iterator.next();
+        if (first.done) {
+            throw new Error("Cannot reduce without acc on empty collection");
+        }
+        let acc: T = first.value;
+        while (true) {
+            const next = iterator.next();
+            if (next.done) {
+                break;
+            }
+            acc = reducer(acc, next.value);
+        }
+        return acc;
+    }
+}
+
 export function groupBy<T>(sequence: T[], n: number): T[][] {
     const result = [];
     let next = [];
@@ -30,6 +193,20 @@ export function groupBy<T>(sequence: T[], n: number): T[][] {
         result.push(next);
     }
     return result;
+}
+
+export function* zip<T, U>(a: T[], b: U[]): Iterable<[T, U]> {
+    for (let i = 0; i < Math.min(a.length, b.length); i++) {
+        yield [a[i], b[i]];
+    }
+}
+
+export function sum(data: Iterable<number>): number {
+    let res = 0;
+    for (const x of data) {
+        res += x;
+    }
+    return res;
 }
 
 export function* range(n: number) {

@@ -1,31 +1,29 @@
+import wu from "wu";
+import { MyIterable, sum } from "../../../../support/sequences";
 import { entryForFile } from "../../../entry";
 
+const countIncreasing = (data: Iterable<number>): number => {
+        const result = new MyIterable(data).reduce({increases: 0, last: null as number | null}, (acc, next) => ({
+            increases: acc.increases + (acc.last && next > acc.last ? 1 : 0),
+            last: next
+        }));
+        return result.increases;
+}
+
 export const entry = entryForFile(
-    async ({ lines, outputCallback, resultOutputCallback }) => {
+    async ({ lines, resultOutputCallback }) => {
         const data = lines.map(e => parseInt(e, 10));
 
-        for (const x of data) {
-            for (const y of data) {
-                if (x + y === 2020) {
-                    await resultOutputCallback(x*y);
-                    return;
-                }
-            }
-        }
+        const result = countIncreasing(data);
+
+        await resultOutputCallback(result);
     },
     async ({ lines, outputCallback, resultOutputCallback }) => {
         const data = lines.map(e => parseInt(e, 10));
-        for (const x of data) {
-            for (const y of data) {
-                for (const z of data) {
-                    if (x + y + z === 2020) {
-                        await resultOutputCallback(x*y*z);
-                        return;
-                    }
-                }
-            }
-        }
-        
+
+        const result = countIncreasing(new MyIterable(data).zip(data.slice(1)).zip(data.slice(2)).map(e => sum(e[0]) + e[1]));
+
+        await resultOutputCallback(result);
     },
     {
         key: "key",
