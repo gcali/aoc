@@ -1,6 +1,7 @@
 import { multiplyCoordinate } from "../../../../support/geometry";
 import { MyIterable } from "../../../../support/sequences";
 import { Drawable, MediaQuery, Pause, ScreenBuilder, ScreenPrinter } from "../../../entry";
+import { squaresWithThreeSides } from "../../2016/squares-with-three-sides";
 
 export interface ISonarSweepVisualizer {
     setup(items: number[], mediaQuery: MediaQuery): Promise<void>;
@@ -86,8 +87,13 @@ class RealVisualizer implements ISonarSweepVisualizer {
         // };
         if (this.nextItem > constants.maxSize) {
             this.printer.remove((this.nextItem - constants.maxSize - 1).toString());
-            for (const drawable of this.drawables) {
+            const previousDrawables = this.drawables;
+            this.drawables = [];
+            for (const drawable of previousDrawables) {
                 drawable.c.x -= constants.fullSize.x;
+                if (drawable.c.x > constants.leftMargin) {
+                    this.drawables.push(drawable);
+                }
             }
         }
         const item: LocalDrawable = {
