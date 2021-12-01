@@ -28,6 +28,15 @@ export class MyAsyncIterable<T> implements AsyncIterable<T> {
         }
     }
 
+    static fromIterable<T>(data: Iterable<T>) {
+        async function *generator() {
+            for (const item of data) {
+                yield item;
+            }
+        }
+        return new MyAsyncIterable(generator());
+    }
+
     zip<U>(other: Iterable<U>): MyAsyncIterable<[T, U]> {
         const that = this;
         async function* zip() {

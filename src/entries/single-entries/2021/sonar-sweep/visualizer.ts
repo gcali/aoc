@@ -1,11 +1,10 @@
-import { Drawable, Pause, ScreenBuilder, ScreenPrinter } from "entries/entry";
-import { Coordinate, multiplyCoordinate } from "support/geometry";
-import { FixedSizeMatrix } from "support/matrix";
-import { MyIterable } from "support/sequences";
+import { multiplyCoordinate } from "../../../../support/geometry";
+import { MyIterable } from "../../../../support/sequences";
+import { Drawable, Pause, ScreenBuilder, ScreenPrinter } from "../../../entry";
 
 export interface ISonarSweepVisualizer {
     setup(items: number[]): Promise<void>;
-    update(): Promise<void>;
+    update(increasing: boolean): Promise<void>;
 }
 
 export const buildVisualizer = (screenBuilder: ScreenBuilder | undefined, pause: Pause) => {
@@ -18,10 +17,10 @@ export const buildVisualizer = (screenBuilder: ScreenBuilder | undefined, pause:
 
 const constants = (() => {
     const cellSize = {x: 2, y: 2};
-    const submarineSize = {x: 10, y: 2};
-    const padding = {x: 5, y: 0};
+    const submarineSize = {x: 10, y: 10};
+    const padding = {x: 2, y: 0};
     const fullSize = {x: padding.x + cellSize.x, y: 0};
-    const leftMargin = padding.x + submarineSize.x;
+    const leftMargin = 20 + submarineSize.x;
     return {
         cellSize,
         submarineSize,
@@ -44,16 +43,18 @@ class RealVisualizer implements ISonarSweepVisualizer {
     ) {
     }
     public async setup(items: number[]): Promise<void> {
+        items = items.map(i => i * 0.1);
+        this.items = items;
         const size = {
-            x: constants.submarineSize.x + items.length + (constants.padding.x + constants.cellSize.x),
-            y: Math.max(constants.submarineSize.y, new MyIterable(items).reduce(0, Math.max))
+            x: constants.leftMargin + items.length * (constants.fullSize.x),
+            y: Math.max(constants.submarineSize.y, new MyIterable(items).reduce(0, Math.max) * constants.cellSize.y)
         }
-        const screenSize = multiplyCoordinate(size, constants.cellSize);
+        const screenSize = size;
         this.printer = await this.screenBuilder.requireScreen(screenSize);
         this.printer.setManualRender();
 
         this.printer.add({
-            c: {x: 0, y: 0},
+            c: {x: 2, y: 2},
             id: "submarine",
             color: "yellow",
             type: "rectangle",
@@ -63,16 +64,16 @@ class RealVisualizer implements ISonarSweepVisualizer {
         this.printer.forceRender();
         await this.pause();
     }
-    public async update(): Promise<void> {
+    public async update(increasing: boolean): Promise<void> {
         if (this.items === null) {
             return;
         }
         this.printer.add({
             c: {
                 x: constants.leftMargin + constants.fullSize.x * this.nextItem,
-                y: this.items[this.nextItem] * constants.cellSize.y
+                y: 0
             },
-            color: "white",
+            color: increasing ? "red" : "white",
             id: this.nextItem.toString(),
             type: "rectangle",
             size: {
