@@ -144,7 +144,12 @@ reader(async (lines) => {
                 setAutoStop: () => { },
                 additionalInputReader,
                 resultOutputCallback,
-                isQuickRunning: args.q || false
+                isQuickRunning: args.q || false,
+                mediaQuery: {
+                    isMobile() {
+                        return false;
+                    }
+                }
             });
         } else {
             await entryCallback.first({
@@ -155,7 +160,12 @@ reader(async (lines) => {
                 setAutoStop: () => { },
                 additionalInputReader,
                 resultOutputCallback,
-                isQuickRunning: args.q || false
+                isQuickRunning: args.q || false,
+                mediaQuery: {
+                    isMobile() {
+                        return false;
+                    }
+                }
             });
         }
     } finally {

@@ -35,6 +35,8 @@ import {
     simpleOutputCallbackFactory,
     ScreenPrinter
 } from "../../entries/entry";
+
+import {mediaQuery} from "../../support/browser";
 import { Coordinate } from "../../support/geometry";
 import { setTimeoutAsync } from "../../support/async";
 @Component({
@@ -156,7 +158,8 @@ export default class SimpleEntryTemplate extends Vue {
                 isCancelled: () => this.isCancelled,
                 pause: this.createPause(),
                 isQuickRunning: this.quickRun,
-                stopTimer: () => this.time = `${new Date().getTime() - startTime}ms`
+                stopTimer: () => this.time = `${new Date().getTime() - startTime}ms`,
+                mediaQuery
             });
         } finally {
             this.executing = false;

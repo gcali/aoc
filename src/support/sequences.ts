@@ -14,21 +14,11 @@ export function howManySameAtEnd<T>(sequence: T[]): number {
     return counter;
 }
 
-export const it = <T,>(e: Iterable<T>): MyIterable<T> => new MyIterable(e);
+export const it = <T, >(e: Iterable<T>): MyIterable<T> => new MyIterable(e);
 
 export class MyAsyncIterable<T> implements AsyncIterable<T> {
-    /**
-     *
-     */
-    constructor(private data: AsyncIterable<T>) {
-    }
-    async *[Symbol.asyncIterator](): AsyncIterableIterator<T> {
-        for await (const item of this.data) {
-            yield item;
-        }
-    }
 
-    static fromIterable<T>(data: Iterable<T>) {
+    public static fromIterable<T>(data: Iterable<T>) {
         async function *generator() {
             for (const item of data) {
                 yield item;
@@ -36,10 +26,20 @@ export class MyAsyncIterable<T> implements AsyncIterable<T> {
         }
         return new MyAsyncIterable(generator());
     }
+    /**
+     *
+     */
+    constructor(private data: AsyncIterable<T>) {
+    }
+    public async *[Symbol.asyncIterator](): AsyncIterableIterator<T> {
+        for await (const item of this.data) {
+            yield item;
+        }
+    }
 
-    zip<U>(other: Iterable<U>): MyAsyncIterable<[T, U]> {
+    public zip<U>(other: Iterable<U>): MyAsyncIterable<[T, U]> {
         const that = this;
-        async function* zip() {
+        async function* inner() {
             const thisIterator = that[Symbol.asyncIterator]();
             const otherIterator = other[Symbol.iterator]();
             while (true) {
@@ -54,10 +54,10 @@ export class MyAsyncIterable<T> implements AsyncIterable<T> {
                 yield [a.value, b.value] as [T, U];
             }
         }
-        return new MyAsyncIterable(zip());
+        return new MyAsyncIterable(inner());
     }
 
-    map<U>(map: (e: T) => Promise<U>): MyAsyncIterable<U> {
+    public map<U>(map: (e: T) => Promise<U>): MyAsyncIterable<U> {
         const that = this;
         async function* inner() {
             for await (const item of that.data) {
@@ -67,12 +67,12 @@ export class MyAsyncIterable<T> implements AsyncIterable<T> {
         return new MyAsyncIterable(inner());
     }
 
-    windows(size: number): MyAsyncIterable<T[]> {
+    public windows(size: number): MyAsyncIterable<T[]> {
         const that = this;
         async function* inner() {
             const windows: T[][] = [];
             for await (const item of that.data) {
-                windows.forEach(w => w.push(item));
+                windows.forEach((w) => w.push(item));
                 windows.push([item]);
                 if (windows[0].length === size) {
                     yield windows[0];
@@ -83,7 +83,7 @@ export class MyAsyncIterable<T> implements AsyncIterable<T> {
         return new MyAsyncIterable(inner());
     }
 
-    async count(): Promise<number> {
+    public async count(): Promise<number> {
         let count = 0;
         for await (const item of this.data) {
             count++;
@@ -92,7 +92,7 @@ export class MyAsyncIterable<T> implements AsyncIterable<T> {
     }
 
 
-    filter(filter: (e: T) => Promise<boolean>): MyAsyncIterable<T> {
+    public filter(filter: (e: T) => Promise<boolean>): MyAsyncIterable<T> {
         const that = this;
         async function* inner() {
             for await (const item of that.data) {
@@ -104,15 +104,15 @@ export class MyAsyncIterable<T> implements AsyncIterable<T> {
         return new MyAsyncIterable(inner());
     }
 
-    async reduce<TAcc>(acc: TAcc, reducer: (acc: TAcc, next: T) => Promise<TAcc>): Promise<TAcc> {
+    public async reduce<TAcc>(acc: TAcc, reducer: (acc: TAcc, next: T) => Promise<TAcc>): Promise<TAcc> {
         for await (const item of this.data) {
             acc = await reducer(acc, item);
         }
         return acc;
     }
 
-    async simpleReduce(reducer: (acc: T, next: T) => Promise<T>): Promise<T> {
-        let isFirst = true;
+    public async simpleReduce(reducer: (acc: T, next: T) => Promise<T>): Promise<T> {
+        const isFirst = true;
         const iterator = this.data[Symbol.asyncIterator]();
         const first = await iterator.next();
         if (first.done) {
@@ -137,18 +137,18 @@ export class MyIterable<T> implements Iterable<T> {
      */
     constructor(private data: Iterable<T>) {
     }
-    *[Symbol.iterator](): Iterator<T, any, undefined> {
+    public *[Symbol.iterator](): Iterator<T, any, undefined> {
         for (const item of this.data) {
             yield item;
         }
     }
 
-    windows(size: number): MyIterable<T[]> {
+    public windows(size: number): MyIterable<T[]> {
         const that = this;
         function* inner() {
             const windows: T[][] = [];
             for (const item of that.data) {
-                windows.forEach(w => w.push(item));
+                windows.forEach((w) => w.push(item));
                 windows.push([item]);
                 if (windows[0].length === size) {
                     yield windows[0];
@@ -159,9 +159,9 @@ export class MyIterable<T> implements Iterable<T> {
         return new MyIterable(inner());
     }
 
-    zip<U>(other: Iterable<U>): MyIterable<[T, U]> {
+    public zip<U>(other: Iterable<U>): MyIterable<[T, U]> {
         const that = this;
-        function* zip() {
+        function* inner() {
             const thisIterator = that[Symbol.iterator]();
             const otherIterator = other[Symbol.iterator]();
             while (true) {
@@ -176,10 +176,10 @@ export class MyIterable<T> implements Iterable<T> {
                 yield [a.value, b.value] as [T, U];
             }
         }
-        return new MyIterable(zip());
+        return new MyIterable(inner());
     }
 
-    map<U>(map: (e: T) => U): MyIterable<U> {
+    public map<U>(map: (e: T) => U): MyIterable<U> {
         const that = this;
         function* inner() {
             for (const item of that.data) {
@@ -189,7 +189,7 @@ export class MyIterable<T> implements Iterable<T> {
         return new MyIterable(inner());
     }
 
-    count(): number {
+    public count(): number {
         let count = 0;
         for (const item of this.data) {
             count++;
@@ -197,7 +197,7 @@ export class MyIterable<T> implements Iterable<T> {
         return count;
     }
 
-    filter(filter: (e: T) => boolean): MyIterable<T> {
+    public filter(filter: (e: T) => boolean): MyIterable<T> {
         const that = this;
         function* inner() {
             for (const item of that.data) {
@@ -209,14 +209,14 @@ export class MyIterable<T> implements Iterable<T> {
         return new MyIterable(inner());
     }
 
-    reduce<TAcc>(acc: TAcc, reducer: (acc: TAcc, next: T) => TAcc): TAcc {
+    public reduce<TAcc>(acc: TAcc, reducer: (acc: TAcc, next: T) => TAcc): TAcc {
         for (const item of this.data) {
             acc = reducer(acc, item);
         }
         return acc;
     }
 
-    simpleReduce(reducer: (acc: T, next: T) => T): T {
+    public simpleReduce(reducer: (acc: T, next: T) => T): T {
         const iterator = this.data[Symbol.iterator]();
         const first = iterator.next();
         if (first.done) {

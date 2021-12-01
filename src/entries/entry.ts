@@ -31,6 +31,7 @@ export interface EntryCallbackArg {
         close: () => void;
     };
     screen?: ScreenBuilder;
+    mediaQuery: MediaQuery;
     isQuickRunning: boolean;
     sendMessage?: MessageSender;
 }
@@ -130,6 +131,10 @@ export interface ScreenPrinter {
     setManualRender: () => void;
 }
 
+export interface MediaQuery {
+    isMobile(): boolean;
+}
+
 export type MessageSender = (message: any) => Promise<void>;
 interface ExecutionArgs {
     entry: Entry;
@@ -146,6 +151,7 @@ interface ExecutionArgs {
     screen?: {
         requireScreen: (size?: Coordinate) => Promise<ScreenPrinter>;
     };
+    mediaQuery: MediaQuery;
     isQuickRunning: boolean;
     stopTimer: () => void;
 }
@@ -165,7 +171,8 @@ export async function executeEntry({
     screen,
     isQuickRunning,
     stopTimer,
-    sendMessage
+    sendMessage,
+    mediaQuery
 }: ExecutionArgs
 ) {
     let callback: EntryCallback;
@@ -210,7 +217,8 @@ export async function executeEntry({
             screen: isQuickRunning ? undefined : screen,
             setAutoStop: () => shouldAutoStop = true,
             isQuickRunning,
-            sendMessage
+            sendMessage,
+            mediaQuery
         });
     } catch (e) {
         if ((e as StopException).isStop) {

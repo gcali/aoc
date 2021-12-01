@@ -30,6 +30,7 @@ import EntryTemplate from "@/components/EntryTemplate.vue";
 import EntrySimpleOutput from "@/components/EntrySimpleOutput.vue";
 import { setTimeoutAsync } from "../../../support/async";
 import { Coordinate } from "../../../support/geometry";
+import { mediaQuery } from "../../../support/browser";
 
 @Component({
     components: {
@@ -90,7 +91,8 @@ export default class BaseMessageTemplate extends Vue {
                 pause: this.createPause(),
                 isQuickRunning: this.quickRun,
                 stopTimer: () => this.time = `${new Date().getTime() - startTime}ms`,
-                sendMessage: this.quickRun ? undefined : this.messageHandler
+                sendMessage: this.quickRun ? undefined : this.messageHandler,
+                mediaQuery
             });
         } catch (e) {
             throw e;

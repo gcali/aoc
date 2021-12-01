@@ -1,9 +1,9 @@
 import { multiplyCoordinate } from "../../../../support/geometry";
 import { MyIterable } from "../../../../support/sequences";
-import { Drawable, Pause, ScreenBuilder, ScreenPrinter } from "../../../entry";
+import { Drawable, MediaQuery, Pause, ScreenBuilder, ScreenPrinter } from "../../../entry";
 
 export interface ISonarSweepVisualizer {
-    setup(items: number[]): Promise<void>;
+    setup(items: number[], mediaQuery: MediaQuery): Promise<void>;
     update(increasing: boolean): Promise<void>;
 }
 
@@ -44,13 +44,16 @@ class RealVisualizer implements ISonarSweepVisualizer {
         private readonly pause: Pause
     ) {
     }
-    public async setup(items: number[]): Promise<void> {
-        items = items.map(i => i * 0.05);
+    public async setup(items: number[], mediaQuery: MediaQuery): Promise<void> {
+        if (mediaQuery.isMobile()) {
+            constants.maxSize = 70;
+        }
+        items = items.map((i) => i * 0.05);
         this.items = items;
         const size = {
             x: constants.leftMargin + Math.min(constants.maxSize, items.length) * (constants.fullSize.x),
             y: Math.max(constants.submarineSize.y, new MyIterable(items).reduce(0, Math.max) * constants.cellSize.y)
-        }
+        };
         const screenSize = size;
         this.printer = await this.screenBuilder.requireScreen(screenSize);
         this.printer.setManualRender();
@@ -82,19 +85,12 @@ class RealVisualizer implements ISonarSweepVisualizer {
         //     y: 0
         // };
         if (this.nextItem > constants.maxSize) {
-            this.printer.remove((this.nextItem-constants.maxSize-1).toString());
-            for (const item of this.drawables) {
-                item.c.x -= constants.fullSize.x;
+            this.printer.remove((this.nextItem - constants.maxSize - 1).toString());
+            for (const drawable of this.drawables) {
+                drawable.c.x -= constants.fullSize.x;
             }
         }
-        // if (this.nextItem >= 51) {
-        //     this.printer.remove((this.nextItem-51).toString());
-        //     for (const item of this.drawables) {
-        //         item.c.x -= constants.fullSize.x;
-        //     }
-        // }
-        const item: LocalDrawable = 
-            {
+        const item: LocalDrawable = {
             c,
             color: increasing ? "red" : "white",
             id: this.nextItem.toString(),
@@ -117,9 +113,9 @@ class RealVisualizer implements ISonarSweepVisualizer {
 }
 
 class DummyVisualizer implements ISonarSweepVisualizer {
-    async setup(items: number[]): Promise<void> {
+    public async setup(items: number[]): Promise<void> {
     }
-    async update(): Promise<void> {
+    public async update(): Promise<void> {
     }
 
 }

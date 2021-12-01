@@ -38,6 +38,7 @@ import EntrySimpleOutput from "@/components/EntrySimpleOutput.vue";
 import { setTimeoutAsync } from "../../support/async";
 import { isTimeoutMessage } from "../../entries/entryStatusMessages";
 import { Coordinate } from "../../support/geometry";
+import {mediaQuery} from "../../support/browser";
 
 @Component({
     components: {
@@ -113,7 +114,8 @@ export default class EntryWithPauseAndRun extends Vue {
                 pause: this.createPause(),
                 screen: this.requireScreen && !this.quickRun ? { requireScreen: this.requireScreen } : undefined,
                 isQuickRunning: this.quickRun,
-                stopTimer: () => this.time = `${new Date().getTime() - startTime}ms`
+                stopTimer: () => this.time = `${new Date().getTime() - startTime}ms`,
+                mediaQuery
             });
         } catch (e) {
             throw e;
