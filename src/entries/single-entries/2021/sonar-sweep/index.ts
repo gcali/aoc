@@ -15,15 +15,35 @@ const countIncreasing = async (data: Iterable<number>, visualizer: ISonarSweepVi
     return (await result).increases;
 }
 
+const windowCountIncreasing = async (data: Iterable<number>, visualizer: ISonarSweepVisualizer): Promise<number> => {
+    const result = MyAsyncIterable.fromIterable(data).windows(2).filter(async e => {
+        const isIncreasing = e[1] > e[0];
+        await visualizer.update(isIncreasing);
+        return isIncreasing;
+    }).count();
+    return result;
+    // .reduce({ increases: 0, last: null as number | null }, async (acc, next) => {
+    //     const isIncreasing = acc.last !== null && next > acc.last;
+    //     await visualizer.update(isIncreasing);
+    //     return ({
+    //         increases: acc.increases + (isIncreasing ? 1 : 0),
+    //         last: next
+    //     });
+    // });
+    // return (await result).increases;
+}
+
 export const entry = entryForFile(
     async ({ lines, resultOutputCallback, screen, pause }) => {
 
         const vs = buildVisualizer(screen, pause)
         const data = lines.map(e => parseInt(e, 10));
 
-        vs.setup(data);
+        await vs.setup(data);
 
-        const result = await countIncreasing(data, vs);
+        await vs.update(false);
+
+        const result = await windowCountIncreasing(data, vs);
 
         await resultOutputCallback(result);
     },
@@ -31,7 +51,7 @@ export const entry = entryForFile(
         const vs = buildVisualizer(undefined, pause)
         const data = lines.map(e => parseInt(e, 10));
 
-        const result = await countIncreasing(
+        const result = await windowCountIncreasing(
             new MyIterable(data).zip(data.slice(1)).zip(data.slice(2)).map(e => sum(e[0]) + e[1]),
             vs
         );

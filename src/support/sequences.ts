@@ -67,6 +67,31 @@ export class MyAsyncIterable<T> implements AsyncIterable<T> {
         return new MyAsyncIterable(inner());
     }
 
+    windows(size: number): MyAsyncIterable<T[]> {
+        const that = this;
+        async function* inner() {
+            const windows: T[][] = [];
+            for await (const item of that.data) {
+                windows.forEach(w => w.push(item));
+                windows.push([item]);
+                if (windows[0].length === size) {
+                    yield windows[0];
+                    windows.shift();
+                }
+            }
+        }
+        return new MyAsyncIterable(inner());
+    }
+
+    async count(): Promise<number> {
+        let count = 0;
+        for await (const item of this.data) {
+            count++;
+        }
+        return count;
+    }
+
+
     filter(filter: (e: T) => Promise<boolean>): MyAsyncIterable<T> {
         const that = this;
         async function* inner() {
@@ -116,6 +141,22 @@ export class MyIterable<T> implements Iterable<T> {
         for (const item of this.data) {
             yield item;
         }
+    }
+
+    windows(size: number): MyIterable<T[]> {
+        const that = this;
+        function* inner() {
+            const windows: T[][] = [];
+            for (const item of that.data) {
+                windows.forEach(w => w.push(item));
+                windows.push([item]);
+            }
+            if (windows[0].length === size) {
+                yield windows[0];
+                windows.shift();
+            }
+        }
+        return new MyIterable(inner());
     }
 
     zip<U>(other: Iterable<U>): MyIterable<[T, U]> {
@@ -168,7 +209,6 @@ export class MyIterable<T> implements Iterable<T> {
     }
 
     simpleReduce(reducer: (acc: T, next: T) => T): T {
-        let isFirst = true;
         const iterator = this.data[Symbol.iterator]();
         const first = iterator.next();
         if (first.done) {
