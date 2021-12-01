@@ -150,10 +150,10 @@ export class MyIterable<T> implements Iterable<T> {
             for (const item of that.data) {
                 windows.forEach(w => w.push(item));
                 windows.push([item]);
-            }
-            if (windows[0].length === size) {
-                yield windows[0];
-                windows.shift();
+                if (windows[0].length === size) {
+                    yield windows[0];
+                    windows.shift();
+                }
             }
         }
         return new MyIterable(inner());
@@ -189,7 +189,15 @@ export class MyIterable<T> implements Iterable<T> {
         return new MyIterable(inner());
     }
 
-    *filter(filter: (e: T) => boolean): Iterable<T> {
+    count(): number {
+        let count = 0;
+        for (const item of this.data) {
+            count++;
+        }
+        return count;
+    }
+
+    filter(filter: (e: T) => boolean): MyIterable<T> {
         const that = this;
         function* inner() {
             for (const item of that.data) {

@@ -3,35 +3,17 @@ import { MyAsyncIterable, MyIterable, sum } from "../../../../support/sequences"
 import { entryForFile } from "../../../entry";
 import { buildVisualizer, ISonarSweepVisualizer } from "./visualizer";
 
-const countIncreasing = async (data: Iterable<number>, visualizer: ISonarSweepVisualizer): Promise<number> => {
-    const result = MyAsyncIterable.fromIterable(data).reduce({ increases: 0, last: null as number | null }, async (acc, next) => {
-        const isIncreasing = acc.last !== null && next > acc.last;
-        await visualizer.update(isIncreasing);
-        return ({
-            increases: acc.increases + (isIncreasing ? 1 : 0),
-            last: next
-        });
-    });
-    return (await result).increases;
-}
-
-const windowCountIncreasing = async (data: Iterable<number>, visualizer: ISonarSweepVisualizer): Promise<number> => {
+const visualizerIncreasing = async (data: Iterable<number>, visualizer: ISonarSweepVisualizer): Promise<number> => {
     const result = MyAsyncIterable.fromIterable(data).windows(2).filter(async e => {
         const isIncreasing = e[1] > e[0];
         await visualizer.update(isIncreasing);
         return isIncreasing;
     }).count();
     return result;
-    // .reduce({ increases: 0, last: null as number | null }, async (acc, next) => {
-    //     const isIncreasing = acc.last !== null && next > acc.last;
-    //     await visualizer.update(isIncreasing);
-    //     return ({
-    //         increases: acc.increases + (isIncreasing ? 1 : 0),
-    //         last: next
-    //     });
-    // });
-    // return (await result).increases;
 }
+
+const simpleIncreasing = (data: Iterable<number>): number => 
+    new MyIterable(data).windows(2).filter(e => e[1] > e[0]).count();
 
 export const entry = entryForFile(
     async ({ lines, resultOutputCallback, screen, pause }) => {
@@ -39,22 +21,24 @@ export const entry = entryForFile(
         const vs = buildVisualizer(screen, pause)
         const data = lines.map(e => parseInt(e, 10));
 
+        //visualization logic
         await vs.setup(data);
-
         await vs.update(false);
 
-        const result = await windowCountIncreasing(data, vs);
+        //actual logic
+        const result = await visualizerIncreasing(data, vs);
 
         await resultOutputCallback(result);
     },
-    async ({ lines, outputCallback, resultOutputCallback, pause }) => {
-        const vs = buildVisualizer(undefined, pause)
+    async ({ lines, resultOutputCallback }) => {
         const data = lines.map(e => parseInt(e, 10));
 
-        const result = await windowCountIncreasing(
-            new MyIterable(data).zip(data.slice(1)).zip(data.slice(2)).map(e => sum(e[0]) + e[1]),
-            vs
-        );
+        const result = simpleIncreasing(
+            new MyIterable(data)
+                .zip(data.slice(1))
+                .zip(data.slice(2))
+                .map(e => sum(e[0]) + e[1])
+            );
 
         await resultOutputCallback(result);
     },
