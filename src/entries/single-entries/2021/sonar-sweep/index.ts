@@ -44,6 +44,6 @@ export const entry = entryForFile(
         supportsQuickRunning: true,
         embeddedData: true,
         stars: 2,
-        suggestedDelay: 1
+        suggestedDelay: 15
     }
 );

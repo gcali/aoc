@@ -27,6 +27,7 @@ const constants = (() => {
         padding,
         fullSize,
         leftMargin,
+        maxSize: 200
     };
 })();
 
@@ -36,6 +37,7 @@ class RealVisualizer implements ISonarSweepVisualizer {
     private printer!: ScreenPrinter;
     private nextItem: number = 0;
     private items: number[] | null = null;
+    private drawables: LocalDrawable[] = [];
 
     constructor(
         private readonly screenBuilder: ScreenBuilder,
@@ -43,10 +45,10 @@ class RealVisualizer implements ISonarSweepVisualizer {
     ) {
     }
     public async setup(items: number[]): Promise<void> {
-        items = items.map(i => i * 0.1);
+        items = items.map(i => i * 0.05);
         this.items = items;
         const size = {
-            x: constants.leftMargin + items.length * (constants.fullSize.x),
+            x: constants.leftMargin + Math.min(constants.maxSize, items.length) * (constants.fullSize.x),
             y: Math.max(constants.submarineSize.y, new MyIterable(items).reduce(0, Math.max) * constants.cellSize.y)
         }
         const screenSize = size;
@@ -68,11 +70,32 @@ class RealVisualizer implements ISonarSweepVisualizer {
         if (this.items === null) {
             return;
         }
-        this.printer.add({
-            c: {
-                x: constants.leftMargin + constants.fullSize.x * this.nextItem,
-                y: 0
-            },
+        const c = this.nextItem >= constants.maxSize ? {
+            x: constants.leftMargin + constants.fullSize.x * constants.maxSize,
+            y: 0
+        } : {
+            x: constants.leftMargin + constants.fullSize.x * this.nextItem,
+            y: 0
+        };
+        // const c = {
+        //     x: constants.leftMargin + constants.fullSize.x * this.nextItem,
+        //     y: 0
+        // };
+        if (this.nextItem > constants.maxSize) {
+            this.printer.remove((this.nextItem-constants.maxSize-1).toString());
+            for (const item of this.drawables) {
+                item.c.x -= constants.fullSize.x;
+            }
+        }
+        // if (this.nextItem >= 51) {
+        //     this.printer.remove((this.nextItem-51).toString());
+        //     for (const item of this.drawables) {
+        //         item.c.x -= constants.fullSize.x;
+        //     }
+        // }
+        const item: LocalDrawable = 
+            {
+            c,
             color: increasing ? "red" : "white",
             id: this.nextItem.toString(),
             type: "rectangle",
@@ -80,7 +103,9 @@ class RealVisualizer implements ISonarSweepVisualizer {
                 x: constants.cellSize.x,
                 y: constants.cellSize.y * this.items[this.nextItem]
             }
-        });
+        };
+        this.drawables.push(item);
+        this.printer.add(item);
         this.nextItem++;
         if (this.nextItem >= this.items.length) {
             this.items = null;
