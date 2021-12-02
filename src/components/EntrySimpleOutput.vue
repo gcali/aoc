@@ -164,22 +164,22 @@ export default class EntrySimpleOutput extends Vue {
                 return;
             }
             this.context.beginPath();
-            if(item.type==="rectangle") {
+            if (item.type === "rectangle") {
                 this.context.rect(item.c.x, item.c.y, item.size.x, item.size.y);
-            } else if(item.type==="points") {
-                let isFirst=true;
-                for(const point of item.points) {
-                    if(isFirst) {
+            } else if (item.type === "points") {
+                let isFirst = true;
+                for (const point of item.points) {
+                    if (isFirst) {
                         this.context.moveTo(point.x, point.y);
-                        isFirst=false;
+                        isFirst = false;
                     } else {
                         this.context.lineTo(point.x, point.y);
                     }
                 }
             }
-            this.context.fillStyle=item.color;
+            this.context.fillStyle = item.color;
             this.context.fill();
-        }
+        };
 
         if (this.context && this.canvasSize) {
             this.context.clearRect(0, 0, this.canvasSize.width, this.canvasSize.height);
