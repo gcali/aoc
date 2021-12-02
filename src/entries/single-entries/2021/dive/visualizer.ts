@@ -37,8 +37,10 @@ class RealVisualizer implements IDiveVisualizer {
         if (aim !== undefined) {
             this.submarine.rotate(Math.atan(-aim / this.yFactor));
         }
-        this.submarine.translate({x: x / 8, y: y / (8 * this.yFactor)});
-        await this.pause();
+        if (x !== 0 || y !== 0) {
+            this.submarine.translate({x: x / 8, y: y / (8 * this.yFactor)});
+            await this.pause();
+        }
     }
 
 }
