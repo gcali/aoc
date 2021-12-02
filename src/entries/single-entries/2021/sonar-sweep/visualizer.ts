@@ -2,6 +2,7 @@ import { multiplyCoordinate } from "../../../../support/geometry";
 import { MyIterable } from "../../../../support/sequences";
 import { Drawable, MediaQuery, Pause, ScreenBuilder, ScreenPrinter } from "../../../entry";
 import { squaresWithThreeSides } from "../../2016/squares-with-three-sides";
+import { Submarine } from "../support/submarine";
 
 export interface ISonarSweepVisualizer {
     setup(items: number[], mediaQuery: MediaQuery): Promise<void>;
@@ -18,7 +19,7 @@ export const buildVisualizer = (screenBuilder: ScreenBuilder | undefined, pause:
 
 const constants = (() => {
     const cellSize = {x: 2, y: 2};
-    const submarineSize = {x: 10, y: 10};
+    const submarineSize = {x: 15, y: 10};
     const padding = {x: 2, y: 0};
     const fullSize = {x: padding.x + cellSize.x, y: 0};
     const leftMargin = 20 + submarineSize.x;
@@ -59,13 +60,21 @@ class RealVisualizer implements ISonarSweepVisualizer {
         this.printer = await this.screenBuilder.requireScreen(screenSize);
         this.printer.setManualRender();
 
-        this.printer.add({
-            c: {x: 2, y: 2},
-            id: "submarine",
-            color: "yellow",
-            type: "rectangle",
-            size: constants.submarineSize
-        });
+        const sub = new Submarine();
+
+        sub.magnify(2);
+
+        sub.translate({x: 6, y: 18});
+
+        sub.print(this.printer);
+
+        // this.printer.add({
+        //     c: {x: 2, y: 2},
+        //     id: "submarine",
+        //     color: "yellow",
+        //     type: "rectangle",
+        //     size: constants.submarineSize
+        // });
 
         this.printer.forceRender();
         await this.pause();
