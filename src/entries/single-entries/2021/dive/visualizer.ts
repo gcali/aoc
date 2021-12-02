@@ -31,17 +31,30 @@ class RealVisualizer implements IDiveVisualizer {
     ) {
     }
     public async setup(yFactor: number): Promise<void> {
-        this.printer = await this.screenBuilder.requireScreen({x: 400, y: 200});
+        this.printer = await this.screenBuilder.requireScreen({x: 300, y: 200});
+
+        const pointGenerator = (): Coordinate[] => [
+            {x: 0, y: 0},
+            {x: 4, y: 0},
+            {x: 4, y: -4},
+            {x: 6, y: -4},
+            {x: 6, y: 0},
+            {x: 10, y: 0},
+            {x: 15, y: 2.5},
+            {x: 10, y: 5},
+            {x: 0, y: 5}
+        ];
         this.submarine = {
             center: {x: 5, y: 5},
-            basePoints: [{x: 0, y: 0}, {x: 10, y: 0}, {x: 15, y: 5}, {x: 10, y: 10}, {x: 0, y: 10}],
+            basePoints: pointGenerator(),
             drawable: {
                 type: "points",
                 color: "yellow",
                 id: "sub",
-                points: [{x: 0, y: 0}, {x: 10, y: 0}, {x: 15, y: 5}, {x: 10, y: 10}, {x: 0, y: 10}],
+                points: pointGenerator()
             }
         };
+        this.translate({x: 10, y: 10});
         this.printer.add(this.submarine.drawable);
         this.yFactor = yFactor;
     }
