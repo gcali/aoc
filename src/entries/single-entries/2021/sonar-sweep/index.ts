@@ -15,7 +15,7 @@ const visualizerIncreasing = async (data: Iterable<number>, visualizer: ISonarSw
 const simpleIncreasing = (data: Iterable<number>): number =>
     new MyIterable(data).windows(2).filter((e) => e[1] > e[0]).count();
 
-export const entry = entryForFile(
+export const sonarSweep = entryForFile(
     async ({ lines, resultOutputCallback, screen, pause, mediaQuery }) => {
 
         const vs = buildVisualizer(screen, pause);

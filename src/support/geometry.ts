@@ -109,7 +109,7 @@ export function rotate(
     coordinate: CCoordinate,
     direction: Rotation,
     times: number = 1
-    ): CCoordinate {
+): CCoordinate {
     if (times > 1) {
         coordinate = rotate(coordinate, direction, times - 1);
     }
@@ -275,7 +275,7 @@ export function getFullSurrounding(coordinate: FullCoordinate): FullCoordinate[]
             for (const y of deltas) {
                 for (const z of deltas) {
                     for (const w of deltas) {
-                        const neighbour = sumCoordinate(coordinate, {x, y, z, w});
+                        const neighbour = sumCoordinate(coordinate, { x, y, z, w });
                         if (manhattanDistance(neighbour, coordinate) === 0) {
                             continue;
                         }
@@ -303,7 +303,7 @@ export function getFullSurrounding(coordinate: FullCoordinate): FullCoordinate[]
         for (const x of deltas) {
             for (const y of deltas) {
                 for (const z of deltas) {
-                    const neighbour = sumCoordinate(coordinate, {x, y, z});
+                    const neighbour = sumCoordinate(coordinate, { x, y, z });
                     if (manhattanDistance(neighbour, coordinate) === 0) {
                         continue;
                     }
@@ -395,4 +395,24 @@ export const multiplyCoordinate = (a: Coordinate, b: Coordinate): Coordinate => 
         x: a.x * b.x,
         y: a.y * b.y
     };
+};
+export const floatRotateRadians = (center: Coordinate, point: Coordinate, angle: number): Coordinate => {
+    const { x: cx, y: cy } = center;
+    const { x, y } = point;
+    const cos = Math.cos(angle);
+    const sin = Math.sin(angle);
+    const nx = (cos * (x - cx)) + (sin * (y - cy)) + cx;
+    const ny = (cos * (y - cy)) - (sin * (x - cx)) + cy;
+    return { x: nx, y: ny };
+};
+
+export const floatRotate = (center: Coordinate, point: Coordinate, angle: number): Coordinate => {
+    const { x: cx, y: cy } = center;
+    const { x, y } = point;
+    const radians = (Math.PI / 180) * angle;
+    const cos = Math.cos(radians);
+    const sin = Math.sin(radians);
+    const nx = (cos * (x - cx)) + (sin * (y - cy)) + cx;
+    const ny = (cos * (y - cy)) - (sin * (x - cx)) + cy;
+    return { x: nx, y: ny };
 };

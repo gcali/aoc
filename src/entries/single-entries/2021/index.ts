@@ -1,5 +1,7 @@
-import {entry} from "./sonar-sweep";
+import {sonarSweep} from "./sonar-sweep";
+import {dive} from "./dive";
 
 export const entries = [
-    entry
+    sonarSweep,
+    dive
 ];
