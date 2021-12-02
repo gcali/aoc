@@ -55,7 +55,7 @@ export const dive = entryForFile(
             } else {
                 x += amount;
                 y += amount * aim;
-                await vs.update({x: amount, y: amount * aim, aim: 0});
+                await vs.update({x: amount, y: amount * aim});
             }
         }
         await resultOutputCallback(x * y);

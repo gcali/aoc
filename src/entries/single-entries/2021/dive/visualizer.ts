@@ -4,7 +4,7 @@ import { amplificationCircuit } from "../../2019/amplification-circuit";
 
 export interface IDiveVisualizer {
     setup(yFactor: number): Promise<void>;
-    update(m: {x: number, y: number, aim: number}): Promise<void>;
+    update(m: {x: number, y: number, aim?: number}): Promise<void>;
 }
 
 export const buildVisualizer = (screenBuilder: ScreenBuilder | undefined, pause: Pause) => {
@@ -45,11 +45,9 @@ class RealVisualizer implements IDiveVisualizer {
         this.printer.add(this.submarine.drawable);
         this.yFactor = yFactor;
     }
-    public async update({x, y, aim}: { x: number; y: number; aim: number; }): Promise<void> {
-        if (aim !== 0) {
-            // for (let i = 0; i < 10; i++) {
-                this.rotate(Math.atan(-aim / this.yFactor));
-            // }
+    public async update({x, y, aim}: { x: number; y: number; aim?: number; }): Promise<void> {
+        if (aim !== undefined) {
+            this.rotate(Math.atan(-aim / this.yFactor));
         }
         this.translate({x: x / 8, y: y / (8 * this.yFactor)});
         await this.pause();
@@ -81,7 +79,7 @@ class RealVisualizer implements IDiveVisualizer {
 class DummyVisualizer implements IDiveVisualizer {
     public async setup(): Promise<void> {
     }
-    public async update(m: { x: number; y: number; aim: number; }): Promise<void> {
+    public async update(): Promise<void> {
     }
 
 }
