@@ -21,7 +21,7 @@
                 label Animation delay
                 input(v-model="timeout" type="number" min="0" step="10")
         .output
-            EntrySimpleOutput(:key="$route.path", :lines="output" @print-factory="readFactory")
+            EntrySimpleOutput(:key="$route.path", :lines="output" @print-factory="readFactory" :backgroundColor="canvasBackground")
 </template>
 
 <script lang="ts">
@@ -188,6 +188,12 @@ export default class EntryWithPauseAndRun extends Vue {
             return promise;
         };
 
+    }
+
+    public get canvasBackground(): string | undefined {
+        if (this.entry && this.entry.metadata) {
+            return this.entry.metadata.canvasBackground;
+        }
     }
 
     private reset() {

@@ -59,6 +59,7 @@ interface EntryMetadata {
     customComponent?: "pause-and-run";
     supportsQuickRunning?: boolean;
     embeddedData?: string | true;
+    canvasBackground?: string;
 }
 
 export interface Entry {
@@ -122,6 +123,7 @@ export type Drawable = {
 
 export interface ScreenPrinter {
     add: (item: Drawable) => Promise<void>;
+    addForeground: (item: Drawable) => Promise<void>;
     remove: (id: string) => Promise<void>;
     stop: () => Promise<void>;
     replace: (items: Drawable[]) => Promise<void>;

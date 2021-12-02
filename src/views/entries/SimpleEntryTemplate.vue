@@ -12,7 +12,7 @@
             input(type="checkbox" v-model="quickRun" :disabled="executing")
             label(v-if="time") Time: {{time}}
         .output
-            EntrySimpleOutput(:key="$route.path", :lines="output" @print-factory="readFactory")
+            EntrySimpleOutput(:key="$route.path", :lines="output" @print-factory="readFactory" :backgroundColor="canvasBackground")
         .input(v-if="showAdditionalInput" ).unselectable
             input(
                 type="text" 
@@ -126,6 +126,12 @@ export default class SimpleEntryTemplate extends Vue {
         this.reset();
         this.destroying = true;
         this.isCancelled = true;
+    }
+
+    public get canvasBackground(): string | undefined {
+        if (this.entry && this.entry.metadata) {
+            return this.entry.metadata.canvasBackground;
+        }
     }
 
     public async readFile(fileHandling: EntryFileHandling) {

@@ -65,7 +65,10 @@ export class Submarine {
     }
 
     public print(printer: ScreenPrinter) {
-        printer.add(this.drawable);
+        printer.addForeground(this.drawable);
     }
 
 }
+
+
+export const seaBackground = "#000071";

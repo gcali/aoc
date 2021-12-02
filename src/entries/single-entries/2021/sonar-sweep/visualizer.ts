@@ -19,10 +19,11 @@ export const buildVisualizer = (screenBuilder: ScreenBuilder | undefined, pause:
 
 const constants = (() => {
     const cellSize = {x: 2, y: 2};
-    const submarineSize = {x: 15, y: 10};
+    // const submarineSize = {x: 15, y: 10};
+    const submarineSize = {x: 0, y: 0};
     const padding = {x: 2, y: 0};
     const fullSize = {x: padding.x + cellSize.x, y: 0};
-    const leftMargin = 20 + submarineSize.x;
+    const leftMargin = 0 + submarineSize.x;
     return {
         cellSize,
         submarineSize,
@@ -64,7 +65,7 @@ class RealVisualizer implements ISonarSweepVisualizer {
 
         sub.magnify(2);
 
-        sub.translate({x: 6, y: 18});
+        sub.translate({x: 80, y: 18});
 
         sub.print(this.printer);
 
@@ -107,7 +108,7 @@ class RealVisualizer implements ISonarSweepVisualizer {
         }
         const item: LocalDrawable = {
             c,
-            color: increasing ? "red" : "white",
+            color: increasing ? "#ff000042" : "#ffffff47",
             id: this.nextItem.toString(),
             type: "rectangle",
             size: {
@@ -121,8 +122,10 @@ class RealVisualizer implements ISonarSweepVisualizer {
         if (this.nextItem >= this.items.length) {
             this.items = null;
         }
-        this.printer.forceRender();
-        await this.pause();
+        if (this.nextItem >= constants.maxSize) {
+            this.printer.forceRender();
+            await this.pause();
+        }
     }
 
 }

@@ -1,4 +1,5 @@
 import { entryForFile } from "../../../entry";
+import { seaBackground } from "../support/submarine";
 import { buildVisualizer } from "./visualizer";
 
 type Direction = "f" | "u" | "d";
@@ -66,6 +67,7 @@ export const dive = entryForFile(
         supportsQuickRunning: true,
         embeddedData: true,
         stars: 2,
-        suggestedDelay: 1
+        suggestedDelay: 1,
+        canvasBackground: seaBackground
     }
 );

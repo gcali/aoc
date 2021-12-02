@@ -1,6 +1,7 @@
 import wu from "wu";
 import { MyAsyncIterable, MyIterable, sum } from "../../../../support/sequences";
 import { entryForFile } from "../../../entry";
+import { seaBackground } from "../support/submarine";
 import { buildVisualizer, ISonarSweepVisualizer } from "./visualizer";
 
 const visualizerIncreasing = async (data: Iterable<number>, visualizer: ISonarSweepVisualizer): Promise<number> => {
@@ -48,6 +49,7 @@ export const sonarSweep = entryForFile(
         supportsQuickRunning: true,
         embeddedData: true,
         stars: 2,
-        suggestedDelay: 15
+        suggestedDelay: 15,
+        canvasBackground: seaBackground
     }
 );

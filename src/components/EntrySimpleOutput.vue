@@ -5,6 +5,7 @@
                 ref="canvas"
                 :width="canvasSize.width"
                 :height="canvasSize.height"
+                :style="style"
             )
         .output(ref="output", :class="{hidden: hideOutput}") {{text}}
 </template>
@@ -33,6 +34,8 @@ export default class EntrySimpleOutput extends Vue {
     }
     @Prop({ default: [] }) public lines!: string[];
 
+    @Prop({ default: undefined }) public backgroundColor?: string;
+
     public $refs!: {
         output: HTMLDivElement,
         canvas: HTMLCanvasElement
@@ -43,6 +46,7 @@ export default class EntrySimpleOutput extends Vue {
     private shouldStopRenderer: boolean = false;
 
     private toDraw: Drawable[] = [];
+    private toDrawForeground: Drawable[] = [];
     private ids: Set<string> = new Set<string>();
 
     private context: CanvasRenderingContext2D | null = null;
@@ -59,6 +63,7 @@ export default class EntrySimpleOutput extends Vue {
             this.canvasSize = size ? {width: size.x, height: size.y} : {width: 300, height: 300};
             this.ids = new Set<string>();
             this.toDraw = [];
+            this.toDrawForeground = [];
             this.pause = false;
             return {
                 add: async (item) => {
@@ -69,6 +74,10 @@ export default class EntrySimpleOutput extends Vue {
                     } else {
                         console.error("Duplicate ID, not adding: " + item.id);
                     }
+                },
+                addForeground: async (item) => {
+                    this.toDrawForeground.push(item);
+                    this.startRender();
                 },
                 remove: async (id) => {
                     if (this.ids.has(id)) {
@@ -150,28 +159,48 @@ export default class EntrySimpleOutput extends Vue {
     }
 
     private renderIteration() {
+        const renderItem = (item: Drawable) => {
+            if (!this.context || !this.canvasSize) {
+                return;
+            }
+            this.context.beginPath();
+            if(item.type==="rectangle") {
+                this.context.rect(item.c.x, item.c.y, item.size.x, item.size.y);
+            } else if(item.type==="points") {
+                let isFirst=true;
+                for(const point of item.points) {
+                    if(isFirst) {
+                        this.context.moveTo(point.x, point.y);
+                        isFirst=false;
+                    } else {
+                        this.context.lineTo(point.x, point.y);
+                    }
+                }
+            }
+            this.context.fillStyle=item.color;
+            this.context.fill();
+        }
+
         if (this.context && this.canvasSize) {
             this.context.clearRect(0, 0, this.canvasSize.width, this.canvasSize.height);
             for (const item of this.toDraw) {
-                this.context.beginPath();
-                if (item.type === "rectangle") {
-                    this.context.rect(item.c.x, item.c.y, item.size.x, item.size.y);
-                } else if (item.type === "points") {
-                    let isFirst = true;
-                    for (const point of item.points) {
-                        if (isFirst) {
-                            this.context.moveTo(point.x, point.y);
-                            isFirst = false;
-                        } else {
-                            this.context.lineTo(point.x, point.y);
-                        }
-                    }
-                }
-                this.context.fillStyle = item.color;
-                this.context.fill();
+                renderItem(item);
+            }
+
+            for (const item of this.toDrawForeground) {
+                renderItem(item);
             }
         }
 
+    }
+
+    public get style() {
+        const style: {[key: string]: string} = {};
+        if (this.backgroundColor) {
+            style["background-color"] = this.backgroundColor;
+        }
+
+        return style;
     }
 
     private destroyed() {
