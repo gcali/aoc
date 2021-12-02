@@ -18,12 +18,12 @@ export class Submarine {
             {x: 10, y: 5},
             {x: 0, y: 5}
         ];
-        
+
         this.drawable = {
             type: "points",
             color: "yellow",
             id: "submarine",
-            points: this.translationPoints.map(p => ({...p}))
+            points: this.translationPoints.map((p) => ({...p}))
         };
     }
 
