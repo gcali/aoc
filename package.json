@@ -17,6 +17,8 @@
     "console-d": "node bin/download.js",
     "cf": "node bin/console.js -f input.txt -q",
     "cs": "node bin/console.js -f input.txt -q -s",
+    "cf-slow": "node bin/console.js -f input.txt",
+    "cs-slow": "node bin/console.js -f input.txt -s",
     "preinstall": "npx npm-force-resolutions"
   },
   "dependencies": {
