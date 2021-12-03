@@ -2,10 +2,10 @@ import { opposite } from ".";
 import { OutputCallback, Pause } from "../../../entry";
 
 const printer = (
-    outputCallback: OutputCallback, 
-    pause: Pause, 
+    outputCallback: OutputCallback,
+    pause: Pause,
     isQuickRunning: boolean,
-    ...data: {name: string, els: string[]}[]
+    ...data: Array<{name: string, els: string[]}>
     ) => {
         return async () => {
             if (isQuickRunning) {
@@ -13,12 +13,12 @@ const printer = (
             }
 
             await outputCallback(
-                data.map(e => `${e.name}: ${e.els.join("")}`).join("\n"),
+                data.map((e) => `${e.name}: ${e.els.join("")}`).join("\n"),
                 true
             );
             await pause();
         };
-}
+};
 
 export const firstFactory = (
     outputCallback: OutputCallback,
@@ -39,7 +39,7 @@ export const firstFactory = (
         outputCallback,
         pause,
         isQuickRunning,
-        {name: "Gamma", els: gamma}, 
+        {name: "Gamma", els: gamma},
         {name: "Power", els: power}
     );
 
@@ -69,4 +69,4 @@ export const secondFactory = (
         {name: "Oxygen", els: oxygen},
         {name: "CO2   ", els: co2}
     );
-}
+};
