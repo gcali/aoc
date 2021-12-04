@@ -110,7 +110,7 @@ export const giantSquid = entryForFile(
                     wonBoards.push(board);
                 }
             }
-            wonBoards.forEach((b) => input.boards = input.boards.filter((x) => x !== b));
+            wonBoards.forEach((b) => input.boards.splice(input.boards.indexOf(b), 1));
         }
         if (lastWon) {
             await vs.highlight(lastWon.b);
