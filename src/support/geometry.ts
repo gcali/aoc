@@ -248,6 +248,8 @@ export const manhattanDistance = (a: FullCoordinate, b: FullCoordinate) => {
     return Math.abs(a.x - b.x) + Math.abs(a.y - b.y) + z + w;
 };
 
+export const isSameCoordinate = (a: Coordinate, b: Coordinate) => manhattanDistance(a, b) === 0;
+
 export function getSurrounding(c: Coordinate): Coordinate[];
 export function getSurrounding(c: Coordinate3d): Coordinate3d[];
 export function getSurrounding(c: Coordinate4d): Coordinate4d[];
