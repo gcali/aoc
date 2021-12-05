@@ -61,6 +61,7 @@ export const hydrothermalVenture = entryForFile(
         key: "hydrothermal-venture",
         title: "Hydrothermal Venture",
         supportsQuickRunning: true,
-        embeddedData: true
+        embeddedData: true,
+        stars: 2
     }
 );
