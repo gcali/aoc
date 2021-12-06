@@ -1,18 +1,18 @@
 import { entryForFile } from "../../../entry";
 import { buildVisualizer } from "./visualizer";
 
-export type State = {current: number; delayed: number}[];
+export type State = Array<{current: number; delayed: number}>;
 
 export const lanternfish = entryForFile(
     async ({ lines, resultOutputCallback, screen, pause }) => {
-        const ns = lines[0].split(",").map(l => parseInt(l, 10));
+        const ns = lines[0].split(",").map((l) => parseInt(l, 10));
 
         const vs = buildVisualizer(screen, pause);
 
         await vs.setup(false);
 
         let day = 0;
-        const increases: {current: number; delayed: number}[] = [];
+        const increases: Array<{current: number; delayed: number}> = [];
         for (let i = 0; i < 7; i++) {
             increases.push({current: 0, delayed: 0});
         }
@@ -31,14 +31,14 @@ export const lanternfish = entryForFile(
         await resultOutputCallback(increases.reduce((acc, next) => acc + next.delayed + next.current, 0));
     },
     async ({ lines, resultOutputCallback, screen, pause }) => {
-        const ns = lines[0].split(",").map(l => parseInt(l, 10));
+        const ns = lines[0].split(",").map((l) => parseInt(l, 10));
 
         const vs = buildVisualizer(screen, pause);
 
         await vs.setup(true);
 
         let day = 0;
-        const increases: {current: number; delayed: number}[] = [];
+        const increases: Array<{current: number; delayed: number}> = [];
         for (let i = 0; i < 7; i++) {
             increases.push({current: 0, delayed: 0});
         }
