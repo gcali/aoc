@@ -100,7 +100,7 @@ class RealVisualizer implements IVisualizer {
 
         this.printer = await this.screenBuilder.requireScreen({
             x: currentX,
-            y: 1000
+            y: logarithmic? 400 : 1000
         });
         this.drawableState.forEach(e => {
             this.printer.add(e.current);

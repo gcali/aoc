@@ -1,6 +1,6 @@
 export const baseState = {
     dates: {
-        year: 2020
+        year: 2021
     }
 };
 
