@@ -5,6 +5,7 @@ import { giantSquid } from "./giant-squid";
 import { hydrothermalVenture } from "./hydrothermal-venture";
 import { lanternfish } from "./lanternfish";
 import { theTreacheryOfWhales } from "./the-treachery-of-whales";
+import { entry } from "./entry";
 
 export const entries = [
     sonarSweep,
@@ -13,5 +14,6 @@ export const entries = [
     giantSquid,
     hydrothermalVenture,
     lanternfish,
-    theTreacheryOfWhales
+    theTreacheryOfWhales,
+    entry
 ];
