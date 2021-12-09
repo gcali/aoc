@@ -2,6 +2,7 @@ import { Queue } from "../../../../support/data-structure";
 import { Coordinate, diffCoordinate, getBoundaries, getSurrounding, isInBounds, serialization } from "../../../../support/geometry";
 import { FixedSizeMatrix } from "../../../../support/matrix";
 import { entryForFile } from "../../../entry";
+import { buildVisualizer } from "./visualizer";
 
 const getLowPoints = (matrix: FixedSizeMatrix<number>): Array<{v: number, c: Coordinate}> => {
         const lowPoints: Array<{v: number, c: Coordinate}> = [];
@@ -32,8 +33,11 @@ const getLowPoints = (matrix: FixedSizeMatrix<number>): Array<{v: number, c: Coo
 };
 
 export const smokeBasin = entryForFile(
-    async ({ lines, outputCallback, resultOutputCallback }) => {
+    async ({ lines, outputCallback, resultOutputCallback, screen, pause }) => {
+        const vs = buildVisualizer(screen, pause);
+
         const matrix = parseInput(lines);
+        await vs.setup(matrix);
 
         const lowPoints = getLowPoints(matrix);
 
