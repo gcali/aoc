@@ -69,19 +69,13 @@ export default class SimpleEntryTemplate extends Vue {
     public get supportsQuickRunning() {
         return this.selectedEntry.metadata && this.selectedEntry.metadata.supportsQuickRunning;
     }
-    @Prop() public title!: string;
-    @Prop() public id!: number;
-    @Prop() public entry!: Entry;
-    @Prop() public year!: string;
-
-    private variantSelected: string = "";
 
     private get selectedEntry(): Entry {
         if (this.variantSelected.length === 0 || !this.entry.metadata || !this.entry.metadata.variants) {
             return this.entry;
         }
 
-        const [candidate] = this.entry.metadata.variants.filter(v => v.metadata && v.metadata.key === this.variantSelected);
+        const [candidate] = this.entry.metadata.variants.filter((v) => v.metadata && v.metadata.key === this.variantSelected);
 
         if (candidate) {
             return candidate;
@@ -89,7 +83,19 @@ export default class SimpleEntryTemplate extends Vue {
         return this.entry;
     }
 
+    public get canvasBackground(): string | undefined {
+        if (this.selectedEntry && this.selectedEntry.metadata) {
+            return this.selectedEntry.metadata.canvasBackground;
+        }
+    }
+    @Prop() public title!: string;
+    @Prop() public id!: number;
+    @Prop() public entry!: Entry;
+    @Prop() public year!: string;
+
     public output: string[] = [];
+
+    private variantSelected: string = "";
     private clearScreen?: () => void;
 
     private quickRun = false;
@@ -148,12 +154,6 @@ export default class SimpleEntryTemplate extends Vue {
         this.reset();
         this.destroying = true;
         this.isCancelled = true;
-    }
-
-    public get canvasBackground(): string | undefined {
-        if (this.selectedEntry && this.selectedEntry.metadata) {
-            return this.selectedEntry.metadata.canvasBackground;
-        }
     }
 
     public async readFile(fileHandling: EntryFileHandling) {

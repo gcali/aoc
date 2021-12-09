@@ -1,11 +1,11 @@
-import { Coordinate } from '../../../../support/geometry';
-import { Drawable, Pause, ScreenBuilder, ScreenPrinter } from '../../../entry';
-import { Segment } from './bruteVariant';
+import { Coordinate } from "../../../../support/geometry";
+import { Drawable, Pause, ScreenBuilder, ScreenPrinter } from "../../../entry";
+import { Segment } from "./bruteVariant";
 
 export type LineState = {
     input: Segment[][];
     output: Segment[][];
-}
+};
 
 export interface ISegmentSearchVisualizer {
     setup(): Promise<void>;
@@ -20,7 +20,7 @@ export const buildVisualizer = (screenBuilder: ScreenBuilder | undefined, pause:
     } else {
         return new DummyVisualizer();
     }
-}
+};
 
 const c = (() => {
     const lineThickness = 2;
@@ -49,7 +49,7 @@ const c = (() => {
         turnedOffColor: "slategrey",
         winColor: "lime",
         maxLines: 10
-    }
+    };
 })();
 
 type DigitDrawable = { [key: string]: Drawable };
@@ -82,9 +82,9 @@ class RealVisualizer implements ISegmentSearchVisualizer {
                 await pause();
                 lastPrint = counter;
             }
-        }
+        };
     }
-    async finishLine(): Promise<void> {
+    public async finishLine(): Promise<void> {
         this.nextLine++;
         if (this.currentLine) {
             for (const d of this.currentLine.input) {
@@ -106,13 +106,13 @@ class RealVisualizer implements ISegmentSearchVisualizer {
 
         this.printer.forceRender();
     }
-    async setup(): Promise<void> {
+    public async setup(): Promise<void> {
         this.printer = await this.screenBuilder.requireScreen({ x: c.digitWidth * 14 + c.separatorMargin * 4 + c.lineThickness, y: c.maxLines * c.lineHeight + c.separatorMargin });
     }
-    async addLine(): Promise<void> {
+    public async addLine(): Promise<void> {
 
-        let index = this.nextLine % c.maxLines;
-        const toClearIndexes = [index+1];
+        const index = this.nextLine % c.maxLines;
+        const toClearIndexes = [index + 1];
         if (index === 0) {
             toClearIndexes.push(0);
         }
@@ -126,57 +126,57 @@ class RealVisualizer implements ISegmentSearchVisualizer {
         }
         const buildDigit = (start: Coordinate): { [key: string]: Drawable } => {
             return {
-                "a": {
+                a: {
                     type: "rectangle",
                     color: "c.turnedOffColor",
                     id: `${index}-${start.x}-a`,
                     size: { x: c.lineLength, y: c.lineThickness },
                     c: { x: start.x + c.digitPadding, y: start.y }
                 },
-                "b": {
+                b: {
                     type: "rectangle",
                     color: "c.turnedOffColor",
                     id: `${index}-${start.x}-b`,
                     size: { y: c.lineLength, x: c.lineThickness },
                     c: { x: start.x, y: start.y + c.digitPadding }
                 },
-                "c": {
+                c: {
                     type: "rectangle",
                     color: "c.turnedOffColor",
                     id: `${index}-${start.x}-c`,
                     size: { y: c.lineLength, x: c.lineThickness },
                     c: { x: start.x + c.digitPadding + c.lineLength, y: start.y + c.digitPadding }
                 },
-                "d": {
+                d: {
                     type: "rectangle",
                     color: "c.turnedOffColor",
                     id: `${index}-${start.x}-d`,
                     size: { x: c.lineLength, y: c.lineThickness },
                     c: { x: start.x + c.digitPadding, y: start.y + c.digitPadding + c.lineLength }
                 },
-                "e": {
+                e: {
                     type: "rectangle",
                     color: "c.turnedOffColor",
                     id: `${index}-${start.x}-e`,
                     size: { y: c.lineLength, x: c.lineThickness },
                     c: { x: start.x, y: start.y + c.digitPadding * 2 + c.lineLength }
                 },
-                "f": {
+                f: {
                     type: "rectangle",
                     color: "c.turnedOffColor",
                     id: `${index}-${start.x}-f`,
                     size: { y: c.lineLength, x: c.lineThickness },
                     c: { x: start.x + c.digitPadding + c.lineLength, y: start.y + c.digitPadding * 2 + c.lineLength }
                 },
-                "g": {
+                g: {
                     type: "rectangle",
                     color: "c.turnedOffColor",
                     id: `${index}-${start.x}-g`,
                     size: { x: c.lineLength, y: c.lineThickness },
                     c: { x: start.x + c.digitPadding, y: start.y + c.digitPadding * 2 + c.lineLength * 2 }
                 }
-            }
-        }
+            };
+        };
 
         const input: DigitDrawable[] = [];
 
@@ -186,7 +186,7 @@ class RealVisualizer implements ISegmentSearchVisualizer {
 
         for (let i = 0; i < 10; i++) {
             const digit = buildDigit(start);
-            Object.values(digit).forEach(d => allDrawables.push(d));
+            Object.values(digit).forEach((d) => allDrawables.push(d));
             for (const k of Object.keys(digit)) {
                 this.printer.add(digit[k]);
             }
@@ -212,7 +212,7 @@ class RealVisualizer implements ISegmentSearchVisualizer {
 
         for (let i = 0; i < 4; i++) {
             const digit = buildDigit(start);
-            Object.values(digit).forEach(d => allDrawables.push(d));
+            Object.values(digit).forEach((d) => allDrawables.push(d));
             for (const k of Object.keys(digit)) {
                 this.printer.add(digit[k]);
             }
@@ -230,7 +230,7 @@ class RealVisualizer implements ISegmentSearchVisualizer {
         await this.pause();
 
     }
-    async setCurrentLineState(state: LineState): Promise<void> {
+    public async setCurrentLineState(state: LineState): Promise<void> {
         if (this.currentLine) {
             for (let i = 0; i < state.input.length; i++) {
                 const currentDigit = this.currentLine.input[i];
@@ -259,13 +259,13 @@ class RealVisualizer implements ISegmentSearchVisualizer {
 }
 
 class DummyVisualizer implements ISegmentSearchVisualizer {
-    async setup(): Promise<void> {
+    public async setup(): Promise<void> {
     }
-    async addLine(): Promise<void> {
+    public async addLine(): Promise<void> {
     }
-    async setCurrentLineState(state: LineState): Promise<void> {
+    public async setCurrentLineState(state: LineState): Promise<void> {
     }
-    async finishLine(): Promise<void> {
+    public async finishLine(): Promise<void> {
     }
 
 }

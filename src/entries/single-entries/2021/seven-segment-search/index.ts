@@ -5,12 +5,12 @@ type Segment = "a" | "b" | "c" | "d" | "e" | "f" | "g";
 
 export const sevenSegmentSearch = entryForFile(
     async ({ lines, outputCallback, resultOutputCallback }) => {
-        const ns = lines.map(l => parseInt(l, 10));
-        let result: any = 0
+        const ns = lines.map((l) => parseInt(l, 10));
+        let result: any = 0;
         for (const x of lines) {
             const right = x.split(" | ")[1];
             const tokens = right.split(" ");
-            const interesting = tokens.filter(t => [2, 4, 3, 7].includes(t.length));
+            const interesting = tokens.filter((t) => [2, 4, 3, 7].includes(t.length));
             result += interesting.length;
         }
         for (const x of ns) {
@@ -24,13 +24,13 @@ export const sevenSegmentSearch = entryForFile(
         let result = 0;
         for (const x of lines) {
             const [left, right] = x.split(" | ");
-            const input = left.split(" ").map(x => x.split("") as Segment[]);
+            const input = left.split(" ").map((x) => x.split("") as Segment[]);
             const output = right.split(" ");
 
             const mapper: { [key: string]: Segment; } = buildMapper(input);
 
-            const rawNumber = output.map(out => segmentNumberMapper[
-                out.split("").map(e => mapper[e]).sort().join("")
+            const rawNumber = output.map((out) => segmentNumberMapper[
+                out.split("").map((e) => mapper[e]).sort().join("")
             ].toString()).join("");
 
             const number = parseInt(rawNumber, 10);
@@ -71,14 +71,14 @@ function buildMapper(input: Segment[][]) {
         }
     }
 
-    const rule4 = input.filter(i => i.length === 4)[0];
+    const rule4 = input.filter((i) => i.length === 4)[0];
 
-    const [c] = aOrC.filter(x => rule4.includes(x));
+    const [c] = aOrC.filter((x) => rule4.includes(x));
     mapper[c] = "c";
-    mapper[aOrC.filter(x => x !== c)[0]] = "a";
-    const [d] = gOrD.filter(x => rule4.includes(x));
+    mapper[aOrC.filter((x) => x !== c)[0]] = "a";
+    const [d] = gOrD.filter((x) => rule4.includes(x));
     mapper[d] = "d";
-    mapper[gOrD.filter(x => x !== d)[0]] = "g";
+    mapper[gOrD.filter((x) => x !== d)[0]] = "g";
     return mapper;
 }
 

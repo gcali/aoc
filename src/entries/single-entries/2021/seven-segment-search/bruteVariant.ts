@@ -8,12 +8,12 @@ type Mapper<T> = {[key: string]: T};
 
 export const brute = entryForFile(
     async ({ lines, outputCallback, resultOutputCallback }) => {
-        const ns = lines.map(l => parseInt(l, 10));
-        let result: any = 0
+        const ns = lines.map((l) => parseInt(l, 10));
+        let result: any = 0;
         for (const x of lines) {
             const right = x.split(" | ")[1];
             const tokens = right.split(" ");
-            const interesting = tokens.filter(t => [2, 4, 3, 7].includes(t.length));
+            const interesting = tokens.filter((t) => [2, 4, 3, 7].includes(t.length));
             result += interesting.length;
         }
         for (const x of ns) {
@@ -34,8 +34,8 @@ export const brute = entryForFile(
         for (const x of lines) {
             await vs.addLine();
             const [left, right] = x.split(" | ");
-            const input = left.split(" ").map(x => x.split("") as Segment[]);
-            const output = right.split(" ").map(d => d.split("") as Segment[]);
+            const input = left.split(" ").map((x) => x.split("") as Segment[]);
+            const output = right.split(" ").map((d) => d.split("") as Segment[]);
 
             const candidates = permutationGenerator([...allSegments]);
 
@@ -47,8 +47,8 @@ export const brute = entryForFile(
                     return acc;
                 } );
 
-                const candidateDigits = input.map(digit => digit.map(segment => candidateMapper[segment] as Segment).sort());
-                const candidateOutput = output.map(digit => digit.map(segment => candidateMapper[segment] as Segment));
+                const candidateDigits = input.map((digit) => digit.map((segment) => candidateMapper[segment] as Segment).sort());
+                const candidateOutput = output.map((digit) => digit.map((segment) => candidateMapper[segment] as Segment));
                 await vs.setCurrentLineState({input: candidateDigits, output: candidateOutput});
                 const candidateSerialization = serializeDigits(candidateDigits);
                 // const candidateSerialization = input.map(digit => digit.map(segment => candidateMapper[segment]).sort().join("")).sort().join("|");
@@ -80,14 +80,14 @@ export const brute = entryForFile(
 );
 
 const mapOutputToNumber = (output: Segment[][], segmentNumMapper: Mapper<number>, candidateMapper: Mapper<string>) => {
-    const rawNumber = output.map(out => segmentNumMapper[out.map(e => candidateMapper[e]).sort().join("")].toString()).join("");
+    const rawNumber = output.map((out) => segmentNumMapper[out.map((e) => candidateMapper[e]).sort().join("")].toString()).join("");
 
     const number = parseInt(rawNumber, 10);
     return number;
-}
+};
 
 const serializeDigits = (digits: Segment[][]): string =>
-    digits.map(segment => segment.sort().join("")).sort().join("|");
+    digits.map((segment) => segment.sort().join("")).sort().join("|");
 
 const buildSetupData = (): {
     segmentNumMapper: {[key: string]: number};
@@ -115,4 +115,4 @@ const buildSetupData = (): {
         segmentNumMapper: segmentsNum,
         targetSerialization: Object.keys(segmentsNum).sort().join("|")
     };
-}
+};
