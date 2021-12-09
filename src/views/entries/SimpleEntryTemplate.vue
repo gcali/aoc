@@ -75,7 +75,8 @@ export default class SimpleEntryTemplate extends Vue {
             return this.entry;
         }
 
-        const [candidate] = this.entry.metadata.variants.filter((v) => v.metadata && v.metadata.key === this.variantSelected);
+        const [candidate] = this.entry.metadata.variants
+            .filter((v) => v.metadata && v.metadata.key === this.variantSelected);
 
         if (candidate) {
             return candidate;

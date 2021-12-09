@@ -5,15 +5,12 @@ type Segment = "a" | "b" | "c" | "d" | "e" | "f" | "g";
 
 export const sevenSegmentSearch = entryForFile(
     async ({ lines, outputCallback, resultOutputCallback }) => {
-        const ns = lines.map((l) => parseInt(l, 10));
-        let result: any = 0;
+        let result = 0;
         for (const x of lines) {
             const right = x.split(" | ")[1];
             const tokens = right.split(" ");
             const interesting = tokens.filter((t) => [2, 4, 3, 7].includes(t.length));
             result += interesting.length;
-        }
-        for (const x of ns) {
         }
         await resultOutputCallback(result);
     },
@@ -22,8 +19,8 @@ export const sevenSegmentSearch = entryForFile(
         const segmentNumberMapper: { [key: string]: number; } = buildSegmentNumberMapper();
 
         let result = 0;
-        for (const x of lines) {
-            const [left, right] = x.split(" | ");
+        for (const line of lines) {
+            const [left, right] = line.split(" | ");
             const input = left.split(" ").map((x) => x.split("") as Segment[]);
             const output = right.split(" ");
 

@@ -3,79 +3,50 @@ import { Coordinate, diffCoordinate, getBoundaries, getSurrounding, isInBounds, 
 import { FixedSizeMatrix } from "../../../../support/matrix";
 import { entryForFile } from "../../../entry";
 
+const getLowPoints = (matrix: FixedSizeMatrix<number>): Array<{v: number, c: Coordinate}> => {
+        const lowPoints: Array<{v: number, c: Coordinate}> = [];
+
+        const bounds = getBoundaries([{x: 0, y: 0}, diffCoordinate(matrix.size, {x: -1, y: -1})]);
+
+        matrix.onEveryCellSync((c, e) => {
+            if (e === undefined) {
+                return;
+            }
+            const surrounding = getSurrounding(c);
+            let hasFoundAsLow = false;
+            for (const s of surrounding) {
+                if (isInBounds(s, bounds)) {
+                    const v = matrix.get(s);
+                    if (v !== undefined && v <= e) {
+                        hasFoundAsLow = true;
+                        break;
+                    }
+                }
+            }
+            if (!hasFoundAsLow) {
+                lowPoints.push({v: e, c});
+            }
+        });
+
+        return lowPoints;
+};
+
 export const smokeBasin = entryForFile(
     async ({ lines, outputCallback, resultOutputCallback }) => {
-        const ns = lines.filter((l) => l).map((l) => l.split("").map((e) => parseInt(e, 10)));
-        const matrix = new FixedSizeMatrix<number>({x: lines[0].length, y: lines.length});
-        for (let x = 0; x < matrix.size.x; x++) {
-            for (let y = 0; y < matrix.size.y; y++) {
-                matrix.set({x, y}, ns[y][x]);
-            }
-        }
+        const matrix = parseInput(lines);
 
-        let totalRisk = 0;
+        const lowPoints = getLowPoints(matrix);
 
-        const bounds = getBoundaries([{x: 0, y: 0}, diffCoordinate(matrix.size, {x: -1, y: -1})]);
-
-        matrix.onEveryCellSync((c, e) => {
-            if (e === undefined) {
-                return;
-            }
-            const surrounding = getSurrounding(c);
-            let hasFoundLower = false;
-            for (const s of surrounding) {
-                if (isInBounds(s, bounds)) {
-                    const v = matrix.get(s);
-                    if (v !== undefined && v <= e) {
-                        hasFoundLower = true;
-                        break;
-                    }
-                }
-            }
-            if (!hasFoundLower) {
-                totalRisk += 1 + e;
-            }
-        });
-
-
-        await resultOutputCallback(totalRisk);
+        await resultOutputCallback(lowPoints.reduce((acc, next) => acc + next.v + 1, 0));
     },
     async ({ lines, outputCallback, resultOutputCallback }) => {
-        const ns = lines.filter((l) => l).map((l) => l.split("").map((e) => parseInt(e, 10)));
-        const matrix = new FixedSizeMatrix<number>({x: lines[0].length, y: lines.length});
-        for (let x = 0; x < matrix.size.x; x++) {
-            for (let y = 0; y < matrix.size.y; y++) {
-                matrix.set({x, y}, ns[y][x]);
-            }
-        }
+        const matrix = parseInput(lines);
 
-        const bounds = getBoundaries([{x: 0, y: 0}, diffCoordinate(matrix.size, {x: -1, y: -1})]);
-
-        const lowPoints: Coordinate[] = [];
-
-        matrix.onEveryCellSync((c, e) => {
-            if (e === undefined) {
-                return;
-            }
-            const surrounding = getSurrounding(c);
-            let hasFoundLower = false;
-            for (const s of surrounding) {
-                if (isInBounds(s, bounds)) {
-                    const v = matrix.get(s);
-                    if (v !== undefined && v <= e) {
-                        hasFoundLower = true;
-                        break;
-                    }
-                }
-            }
-            if (!hasFoundLower) {
-                lowPoints.push(c);
-            }
-        });
+        const lowPoints = getLowPoints(matrix);
 
         const basinCounts: number[] = [];
 
-        for (const lowPoint of lowPoints) {
+        for (const {c: lowPoint} of lowPoints) {
             let basinSize = 1;
             const visited = new Set<string>();
             const queue = new Queue<Coordinate>();
@@ -116,3 +87,14 @@ export const smokeBasin = entryForFile(
         stars: 2
     }
 );
+const  parseInput = (lines: string[]) => {
+    const ns = lines.filter((l) => l).map((l) => l.split("").map((e) => parseInt(e, 10)));
+    const matrix = new FixedSizeMatrix<number>({ x: lines[0].length, y: lines.length });
+    for (let x = 0; x < matrix.size.x; x++) {
+        for (let y = 0; y < matrix.size.y; y++) {
+            matrix.set({ x, y }, ns[y][x]);
+        }
+    }
+    return matrix;
+};
+

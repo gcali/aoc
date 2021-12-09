@@ -107,7 +107,10 @@ class RealVisualizer implements ISegmentSearchVisualizer {
         this.printer.forceRender();
     }
     public async setup(): Promise<void> {
-        this.printer = await this.screenBuilder.requireScreen({ x: c.digitWidth * 14 + c.separatorMargin * 4 + c.lineThickness, y: c.maxLines * c.lineHeight + c.separatorMargin });
+        this.printer = await this.screenBuilder.requireScreen({
+            x: c.digitWidth * 14 + c.separatorMargin * 4 + c.lineThickness,
+            y: c.maxLines * c.lineHeight + c.separatorMargin
+        });
     }
     public async addLine(): Promise<void> {
 
@@ -124,56 +127,59 @@ class RealVisualizer implements ISegmentSearchVisualizer {
                 delete this.lines[toClear];
             }
         }
-        const buildDigit = (start: Coordinate): { [key: string]: Drawable } => {
+        const buildDigit = (digitStart: Coordinate): { [key: string]: Drawable } => {
             return {
                 a: {
                     type: "rectangle",
                     color: "c.turnedOffColor",
-                    id: `${index}-${start.x}-a`,
+                    id: `${index}-${digitStart.x}-a`,
                     size: { x: c.lineLength, y: c.lineThickness },
-                    c: { x: start.x + c.digitPadding, y: start.y }
+                    c: { x: digitStart.x + c.digitPadding, y: digitStart.y }
                 },
                 b: {
                     type: "rectangle",
                     color: "c.turnedOffColor",
-                    id: `${index}-${start.x}-b`,
+                    id: `${index}-${digitStart.x}-b`,
                     size: { y: c.lineLength, x: c.lineThickness },
-                    c: { x: start.x, y: start.y + c.digitPadding }
+                    c: { x: digitStart.x, y: digitStart.y + c.digitPadding }
                 },
                 c: {
                     type: "rectangle",
                     color: "c.turnedOffColor",
-                    id: `${index}-${start.x}-c`,
+                    id: `${index}-${digitStart.x}-c`,
                     size: { y: c.lineLength, x: c.lineThickness },
-                    c: { x: start.x + c.digitPadding + c.lineLength, y: start.y + c.digitPadding }
+                    c: { x: digitStart.x + c.digitPadding + c.lineLength, y: digitStart.y + c.digitPadding }
                 },
                 d: {
                     type: "rectangle",
                     color: "c.turnedOffColor",
-                    id: `${index}-${start.x}-d`,
+                    id: `${index}-${digitStart.x}-d`,
                     size: { x: c.lineLength, y: c.lineThickness },
-                    c: { x: start.x + c.digitPadding, y: start.y + c.digitPadding + c.lineLength }
+                    c: { x: digitStart.x + c.digitPadding, y: digitStart.y + c.digitPadding + c.lineLength }
                 },
                 e: {
                     type: "rectangle",
                     color: "c.turnedOffColor",
-                    id: `${index}-${start.x}-e`,
+                    id: `${index}-${digitStart.x}-e`,
                     size: { y: c.lineLength, x: c.lineThickness },
-                    c: { x: start.x, y: start.y + c.digitPadding * 2 + c.lineLength }
+                    c: { x: digitStart.x, y: digitStart.y + c.digitPadding * 2 + c.lineLength }
                 },
                 f: {
                     type: "rectangle",
                     color: "c.turnedOffColor",
-                    id: `${index}-${start.x}-f`,
+                    id: `${index}-${digitStart.x}-f`,
                     size: { y: c.lineLength, x: c.lineThickness },
-                    c: { x: start.x + c.digitPadding + c.lineLength, y: start.y + c.digitPadding * 2 + c.lineLength }
+                    c: {
+                        x: digitStart.x + c.digitPadding + c.lineLength,
+                        y: digitStart.y + c.digitPadding * 2 + c.lineLength
+                    }
                 },
                 g: {
                     type: "rectangle",
                     color: "c.turnedOffColor",
-                    id: `${index}-${start.x}-g`,
+                    id: `${index}-${digitStart.x}-g`,
                     size: { x: c.lineLength, y: c.lineThickness },
-                    c: { x: start.x + c.digitPadding, y: start.y + c.digitPadding * 2 + c.lineLength * 2 }
+                    c: { x: digitStart.x + c.digitPadding, y: digitStart.y + c.digitPadding * 2 + c.lineLength * 2 }
                 }
             };
         };
