@@ -1,14 +1,14 @@
-import { scalarCoordinates, serialization } from "../../../../support/geometry";
+import { Coordinate, scalarCoordinates, serialization } from "../../../../support/geometry";
 import { FixedSizeMatrix } from "../../../../support/matrix";
-import { Drawable, Pause, ScreenBuilder, ScreenPrinter } from "../../../entry";
+import { Drawable, MediaQuery, Pause, ScreenBuilder, ScreenPrinter } from "../../../entry";
 
 export interface ISmokeBasinVisualizer {
     setup(data: FixedSizeMatrix<number>): Promise<void>;
 }
 
-export const buildVisualizer = (screenBuilder: ScreenBuilder | undefined, pause: Pause) => {
+export const buildVisualizer = (screenBuilder: ScreenBuilder | undefined, pause: Pause, mediaQuery: MediaQuery) => {
     if (screenBuilder) {
-        return new RealVisualizer(screenBuilder, pause);
+        return new RealVisualizer(screenBuilder, pause, mediaQuery);
     } else {
         return new DummyVisualizer();
     }
@@ -16,19 +16,23 @@ export const buildVisualizer = (screenBuilder: ScreenBuilder | undefined, pause:
 
 const co = (() => {
     return {
-        zoom: 5
+        fullZoom: 5,
+        smallZoom: 3
     };
 })();
 
 class RealVisualizer implements ISmokeBasinVisualizer {
     private printer!: ScreenPrinter;
+    private readonly zoom: number;
     constructor(
         private readonly screenBuilder: ScreenBuilder,
-        private readonly pause: Pause
+        private readonly pause: Pause,
+        mediaQuery: MediaQuery
     ) {
+        this.zoom = mediaQuery.isMobile() ? co.smallZoom : co.fullZoom;
     }
     public async setup(data: FixedSizeMatrix<number>): Promise<void> {
-        this.printer = await this.screenBuilder.requireScreen(scalarCoordinates(data.size, co.zoom));
+        this.printer = await this.screenBuilder.requireScreen(this.scale(data.size));
         const drawables: Array<Drawable & {type: "rectangle"}> = [];
         const baseColor = "#722424";
         const colorCalculator = (v: number) => {
@@ -45,16 +49,20 @@ class RealVisualizer implements ISmokeBasinVisualizer {
             }
             drawables.push({
                 color: colorCalculator(e),
-                c: scalarCoordinates(c, co.zoom),
+                c: this.scale(c),
                 id: serialization.serialize(c),
                 type: "rectangle",
-                size: {x: co.zoom, y: co.zoom}
+                size: {x: this.zoom, y: this.zoom}
             });
         });
 
         drawables.forEach((d) => this.printer.add(d));
 
         this.printer.forceRender();
+    }
+
+    private scale(c: Coordinate): Coordinate {
+     return scalarCoordinates(c, this.zoom);
     }
 }
 

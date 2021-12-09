@@ -33,8 +33,8 @@ const getLowPoints = (matrix: FixedSizeMatrix<number>): Array<{v: number, c: Coo
 };
 
 export const smokeBasin = entryForFile(
-    async ({ lines, outputCallback, resultOutputCallback, screen, pause }) => {
-        const vs = buildVisualizer(screen, pause);
+    async ({ lines, outputCallback, resultOutputCallback, screen, pause, mediaQuery}) => {
+        const vs = buildVisualizer(screen, pause, mediaQuery);
 
         const matrix = parseInput(lines);
         await vs.setup(matrix);
