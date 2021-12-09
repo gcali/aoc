@@ -60,6 +60,7 @@ interface EntryMetadata {
     supportsQuickRunning?: boolean;
     embeddedData?: string | true;
     canvasBackground?: string;
+    variants?: Entry[];
 }
 
 export interface Entry {

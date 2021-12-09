@@ -7,6 +7,13 @@
         :disabled="disabled"
         :entryKey="this.entry.metadata.key"
     )
+        .variants(v-if="entry.metadata && entry.metadata.variants")
+            label
+                input(type="radio" value="" v-model="variantSelected")
+                | Normal
+            label(v-for="variant in entry.metadata.variants")
+                input(type="radio" :value="variant.metadata.key" v-model="variantSelected")
+                | {{variant.metadata.key}}
         .quick-run(v-if="supportsQuickRunning").unselectable
             label Quick run
             input(type="checkbox" v-model="quickRun" :disabled="executing")
@@ -47,25 +54,40 @@ import { setTimeoutAsync } from "../../support/async";
 })
 export default class SimpleEntryTemplate extends Vue {
     public get showAdditionalInput(): boolean {
-        const hasAdditionalInput = (this.entry.metadata !== undefined) &&
-            (this.entry.metadata.hasAdditionalInput === true);
+        const hasAdditionalInput = (this.selectedEntry.metadata !== undefined) &&
+            (this.selectedEntry.metadata.hasAdditionalInput === true);
         return hasAdditionalInput && this.showInput;
     }
 
     private get timeout() {
-        if (this.entry.metadata && this.entry.metadata!.suggestedDelay) {
-            return this.entry.metadata!.suggestedDelay;
+        if (this.selectedEntry.metadata && this.selectedEntry.metadata!.suggestedDelay) {
+            return this.selectedEntry.metadata!.suggestedDelay;
         }
         return 0;
     }
 
     public get supportsQuickRunning() {
-        return this.entry.metadata && this.entry.metadata.supportsQuickRunning;
+        return this.selectedEntry.metadata && this.selectedEntry.metadata.supportsQuickRunning;
     }
     @Prop() public title!: string;
     @Prop() public id!: number;
     @Prop() public entry!: Entry;
     @Prop() public year!: string;
+
+    private variantSelected: string = "";
+
+    private get selectedEntry(): Entry {
+        if (this.variantSelected.length === 0 || !this.entry.metadata || !this.entry.metadata.variants) {
+            return this.entry;
+        }
+
+        const [candidate] = this.entry.metadata.variants.filter(v => v.metadata && v.metadata.key === this.variantSelected);
+
+        if (candidate) {
+            return candidate;
+        }
+        return this.entry;
+    }
 
     public output: string[] = [];
     private clearScreen?: () => void;
@@ -116,8 +138,8 @@ export default class SimpleEntryTemplate extends Vue {
         this.clearScreen = args.clear;
     }
 
-    @Watch("entry")
-    public onEntryChanged() {
+    @Watch ("selectedEntry")
+    public onSelectedEntryChange() {
         this.reset();
         this.quickRun = false;
     }
@@ -129,8 +151,8 @@ export default class SimpleEntryTemplate extends Vue {
     }
 
     public get canvasBackground(): string | undefined {
-        if (this.entry && this.entry.metadata) {
-            return this.entry.metadata.canvasBackground;
+        if (this.selectedEntry && this.selectedEntry.metadata) {
+            return this.selectedEntry.metadata.canvasBackground;
         }
     }
 
@@ -155,7 +177,7 @@ export default class SimpleEntryTemplate extends Vue {
             this.executing = true;
             const startTime = new Date().getTime();
             await executeEntry({
-                entry: this.entry,
+                entry: this.selectedEntry,
                 choice: fileHandling.choice,
                 lines: fileHandling.content,
                 outputCallback: simpleOutputCallbackFactory(this.output, () => this.destroying),

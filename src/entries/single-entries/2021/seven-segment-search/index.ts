@@ -1,4 +1,5 @@
 import { entryForFile } from "../../../entry";
+import { brute } from "./bruteVariant";
 
 type Segment = "a" | "b" | "c" | "d" | "e" | "f" | "g";
 
@@ -43,7 +44,8 @@ export const sevenSegmentSearch = entryForFile(
         title: "Seven Segment Search",
         supportsQuickRunning: true,
         embeddedData: true,
-        stars: 2
+        stars: 2,
+        variants: [brute]
     }
 );
 
