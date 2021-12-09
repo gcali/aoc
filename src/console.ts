@@ -47,11 +47,7 @@ if (args.h) {
 }
 
 import { entryList } from "./entries/entryList";
-
-const getLastYear = (): string => {
-    const sorted = Object.keys(entryList).sort();
-    return sorted[sorted.length-1];
-}
+import {getLastIndex, getLastYear} from "./support/entry-list-helper";
 
 const year: string = args.y === null ? getLastYear() : args.y;
 
@@ -63,7 +59,7 @@ if (args.l) {
     process.exit(0);
 }
 
-const index: number = (args.e === null ? entryList[year].length : args.e) - 1;
+const index = getLastIndex(year, args.e);
 if (index < 0 || index >= entryList[year].length) {
     error();
 }

@@ -19,6 +19,7 @@
     "cs": "node bin/console.js -f input.txt -q -s",
     "cf-slow": "node bin/console.js -f input.txt",
     "cs-slow": "node bin/console.js -f input.txt -s",
+    "move-input": "node bin/move-input.js",
     "preinstall": "npx npm-force-resolutions"
   },
   "dependencies": {

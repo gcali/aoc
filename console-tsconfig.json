@@ -20,7 +20,8 @@
   },
   "include": [
     "src/console.ts",
-    "src/download.ts"
+    "src/download.ts",
+    "src/move-input.ts"
   ],
   "exclude": [
     "node_modules"
