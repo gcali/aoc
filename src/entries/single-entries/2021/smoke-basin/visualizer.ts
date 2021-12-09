@@ -40,7 +40,7 @@ class RealVisualizer implements ISmokeBasinVisualizer {
                 return "black";
             }
             const ratio = 1 - v / 9;
-            const alpha = Math.floor(256 * ratio);
+            const alpha = 128 + Math.floor(128 * ratio);
             return baseColor + alpha.toString(16).padStart(2, "0");
         };
         data.onEveryCellSync((c, e) => {
