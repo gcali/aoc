@@ -60,6 +60,7 @@ class RealVisualizer implements ISonarSweepVisualizer {
         const screenSize = size;
         this.printer = await this.screenBuilder.requireScreen(screenSize);
         this.printer.setManualRender();
+        this.printer.setManualInvalidate();
 
         const sub = new Submarine();
 
@@ -68,14 +69,6 @@ class RealVisualizer implements ISonarSweepVisualizer {
         sub.translate({x: 80, y: 18});
 
         sub.print(this.printer);
-
-        // this.printer.add({
-        //     c: {x: 2, y: 2},
-        //     id: "submarine",
-        //     color: "yellow",
-        //     type: "rectangle",
-        //     size: constants.submarineSize
-        // });
 
         this.printer.forceRender();
         await this.pause();
@@ -103,6 +96,9 @@ class RealVisualizer implements ISonarSweepVisualizer {
                 drawable.c.x -= constants.fullSize.x;
                 if (drawable.c.x > constants.leftMargin) {
                     this.drawables.push(drawable);
+                    this.printer.invalidate(drawable);
+                } else {
+                    this.printer.remove(drawable.id);
                 }
             }
         }
