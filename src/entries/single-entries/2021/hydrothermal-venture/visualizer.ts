@@ -1,6 +1,6 @@
-import { scalarCoordinates, serialization } from '../../../../support/geometry';
-import { FixedSizeMatrix } from '../../../../support/matrix';
-import { Drawable, MediaQuery, Pause, ScreenBuilder, ScreenPrinter } from '../../../entry';
+import { scalarCoordinates, serialization } from "../../../../support/geometry";
+import { FixedSizeMatrix } from "../../../../support/matrix";
+import { Drawable, MediaQuery, Pause, ScreenBuilder, ScreenPrinter } from "../../../entry";
 
 export interface IHydrothermalVentureVisualizer {
     show(matrix: FixedSizeMatrix<number>): Promise<void>;
@@ -12,7 +12,7 @@ export const buildVisualizer = (screenBuilder: ScreenBuilder | undefined, pause:
     } else {
         return new DummyVisualizer();
     }
-}
+};
 
 class RealVisualizer implements IHydrothermalVentureVisualizer {
     private printer!: ScreenPrinter;
@@ -21,10 +21,10 @@ class RealVisualizer implements IHydrothermalVentureVisualizer {
         private readonly screenBuilder: ScreenBuilder,
         private readonly pause: Pause,
         mediaQuery: MediaQuery
-    ) { 
+    ) {
         this.zoom = mediaQuery.isMobile() ? 0.35 : 1;
     }
-    async show(matrix: FixedSizeMatrix<number>): Promise<void> {
+    public async show(matrix: FixedSizeMatrix<number>): Promise<void> {
         this.printer = await this.screenBuilder.requireScreen(scalarCoordinates(matrix.size, this.zoom));
 
         let maxValue = 0;
@@ -37,9 +37,9 @@ class RealVisualizer implements IHydrothermalVentureVisualizer {
         const colorCalculator = (n: number): string => {
             const baseColor = "#000000";
             const base = 128;
-            const alpha = base + Math.ceil((256-base) * (n/maxValue));
+            const alpha = base + Math.ceil((256 - base) * (n / maxValue));
             return baseColor + alpha.toString(16).padStart(2, "0");
-        }
+        };
 
         const unpause = this.printer.pause();
 
@@ -51,7 +51,7 @@ class RealVisualizer implements IHydrothermalVentureVisualizer {
                     color: colorCalculator(e),
                     type: "rectangle",
                     size: scalarCoordinates({x: 1, y: 1}, this.zoom)
-                }
+                };
                 this.printer.add(d);
                 await this.pause();
             }
@@ -64,7 +64,7 @@ class RealVisualizer implements IHydrothermalVentureVisualizer {
 }
 
 class DummyVisualizer implements IHydrothermalVentureVisualizer {
-    async show(matrix: FixedSizeMatrix<number>): Promise<void> {
+    public async show(matrix: FixedSizeMatrix<number>): Promise<void> {
     }
 
 }
