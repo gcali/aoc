@@ -19,7 +19,7 @@ const opening: { [key: string]: ClosingBrace } = {
     "[": "]",
     "{": "}",
     "<": ">"
-}
+};
 
 const isOpening = (token: Brace): token is OpeningBrace => opening[token] !== undefined;
 
@@ -42,7 +42,7 @@ const parseLine = (tokens: Brace[]): ParsingResult => {
         type: "incomplete",
         missingTokens: expected.reverse()
     };
-}
+};
 
 export const syntaxScoring = entryForFile(
     async ({ lines, outputCallback, resultOutputCallback }) => {
@@ -51,7 +51,7 @@ export const syntaxScoring = entryForFile(
             "]": 57,
             "}": 1197,
             ">": 25137
-        }
+        };
         let result = 0;
         for (const x of lines) {
             const tokens = x.split("") as Brace[];
@@ -70,7 +70,7 @@ export const syntaxScoring = entryForFile(
             "]": 2,
             "}": 3,
             ">": 4
-        }
+        };
 
         for (const x of lines) {
             const tokens = x.split("") as Brace[];

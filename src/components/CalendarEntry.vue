@@ -104,6 +104,9 @@ export default Vue.extend({
     margin-left: 0.5em;
     margin-right: 0.5em;
     flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 .calendar-cell .stars {
     display: flex;
