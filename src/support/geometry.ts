@@ -220,6 +220,24 @@ export function sumCoordinate(a: FullCoordinate, b: FullCoordinate): FullCoordin
     }
 }
 
+export function getTopLeftBottomRight(b: Bounds) {
+    return [b.topLeft, sumCoordinate(b.topLeft, b.size)];
+}
+
+export function boundsIntersect(r1: Bounds, r2: Bounds) {
+  return !(r2.topLeft.x > r1.topLeft.x + r1.size.x ||
+           r2.topLeft.x + r2.size.x < r1.topLeft.x ||
+           r2.topLeft.y > r1.topLeft.y + r1.size.y ||
+           r2.topLeft.y + r2.size.y < r1.topLeft.y);
+}
+
+export function boundsContain(outer: Bounds, inner: Bounds) {
+    return (
+        inner.topLeft.x >= outer.topLeft.x && inner.topLeft.x + inner.size.x <= outer.topLeft.x + outer.size.x &&
+        inner.topLeft.y >= outer.topLeft.y && inner.topLeft.y + inner.size.y <= outer.topLeft.y + outer.size.y
+    );
+}
+
 export function getDirection(from: Coordinate, to: Coordinate): CCoordinate {
     if (manhattanDistance(from, to) !== 1) {
         throw new RangeError("Cannot move to distant cell");

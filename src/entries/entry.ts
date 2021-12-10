@@ -132,6 +132,8 @@ export interface ScreenPrinter {
     pause: () => (() => void);
     forceRender: () => void;
     setManualRender: () => void;
+    setManualInvalidate: () => void;
+    invalidate: (id: string | Drawable) => void;
 }
 
 export interface MediaQuery {

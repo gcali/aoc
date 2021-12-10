@@ -69,7 +69,9 @@ class RealVisualizer implements IVisualizer {
         for (let row = 0; row < 5; row++) {
             for (let col = 0; col < 5; col++) {
                 if (board[row][col].filled) {
-                    drawable.cells[row * 5 + col].color = "purple";
+                    const d = drawable.cells[row * 5 + col];
+                    d.color = "purple";
+                    this.printer.invalidate(d);
                 }
             }
         }
@@ -77,11 +79,15 @@ class RealVisualizer implements IVisualizer {
         await this.pause();
     }
     public async hasWon(board: Board): Promise<void> {
-        this.drawables.get(board)!.main.color = "green";
+        const mainItem = this.drawables.get(board)!.main;
+        mainItem.color = "green";
+        this.printer.invalidate(mainItem);
         await this.pause();
     }
     public async highlight(board: Board): Promise<void> {
-        this.drawables.get(board)!.main.color = "red";
+        const mainItem = this.drawables.get(board)!.main;
+        mainItem.color = "red";
+        this.printer.invalidate(mainItem);
         await this.pause();
     }
 
@@ -97,6 +103,7 @@ class RealVisualizer implements IVisualizer {
         );
 
         this.printer = await this.screenBuilder.requireScreen(fullSize);
+        this.printer.setManualInvalidate();
 
         let currentLine = 0;
         let currentColumn = 0;
