@@ -1,12 +1,13 @@
 import { median } from "../../../../support/sequences";
 import { entryForFile } from "../../../entry";
+import { unstackedSyntaxScoring } from "./unstacked";
 
 type OpeningBrace = "(" | "[" | "{" | "<";
-type ClosingBrace = ")" | "]" | "}" | ">";
+export type ClosingBrace = ")" | "]" | "}" | ">";
 
 type Brace = OpeningBrace | ClosingBrace;
 
-type ParsingResult = {
+export type ParsingResult = {
     type: "corrupted",
     invalidToken: ClosingBrace
 } | {
@@ -14,14 +15,15 @@ type ParsingResult = {
     missingTokens: ClosingBrace[]
 };
 
-const opening: { [key: string]: ClosingBrace } = {
+export const opening: { [key: string]: ClosingBrace } = {
     "(": ")",
     "[": "]",
     "{": "}",
     "<": ">"
 };
 
-const isOpening = (token: Brace): token is OpeningBrace => opening[token] !== undefined;
+export const isOpening = (token: string): token is OpeningBrace => opening[token] !== undefined;
+export const isClosing = (token: string): token is ClosingBrace => (Object.values(opening) as string[]).includes(token);
 
 const parseLine = (tokens: Brace[]): ParsingResult => {
     const expected: ClosingBrace[] = [];
@@ -44,20 +46,35 @@ const parseLine = (tokens: Brace[]): ParsingResult => {
     };
 };
 
-export const syntaxScoring = entryForFile(
-    async ({ lines, outputCallback, resultOutputCallback }) => {
+export const corruptedScore = (result: ParsingResult & {type: "corrupted"}): number => {
         const score: { [key: string]: number } = {
             ")": 3,
             "]": 57,
             "}": 1197,
             ">": 25137
         };
+        return score[result.invalidToken];
+};
+
+export const incompleteScore = (parseResult: ParsingResult & {type: "incomplete"}): number => {
+        const score: { [key: string]: number } = {
+            ")": 1,
+            "]": 2,
+            "}": 3,
+            ">": 4
+        };
+        return parseResult.missingTokens
+            .reduce((acc, next) => acc * 5 + score[next], 0);
+};
+
+export const syntaxScoring = entryForFile(
+    async ({ lines, outputCallback, resultOutputCallback }) => {
         let result = 0;
         for (const x of lines) {
             const tokens = x.split("") as Brace[];
             const parseResult = parseLine(tokens);
             if (parseResult.type === "corrupted") {
-                result += score[parseResult.invalidToken];
+                result += corruptedScore(parseResult);
             }
 
         }
@@ -65,23 +82,14 @@ export const syntaxScoring = entryForFile(
     },
     async ({ lines, outputCallback, resultOutputCallback }) => {
         const scores: number[] = [];
-        const incompleteScore: { [key: string]: number } = {
-            ")": 1,
-            "]": 2,
-            "}": 3,
-            ">": 4
-        };
 
         for (const x of lines) {
             const tokens = x.split("") as Brace[];
             const parseResult = parseLine(tokens);
             if (parseResult.type === "incomplete") {
-                const lineScore = parseResult.missingTokens
-                    .reduce((acc, next) => acc * 5 + incompleteScore[next], 0);
+                const lineScore = incompleteScore(parseResult);
                 scores.push(lineScore);
             }
-
-
         }
         await resultOutputCallback(median(scores));
     },
@@ -90,6 +98,7 @@ export const syntaxScoring = entryForFile(
         title: "Syntax Scoring",
         supportsQuickRunning: true,
         embeddedData: true,
-        stars: 2
+        stars: 2,
+        variants: [unstackedSyntaxScoring]
     }
 );
