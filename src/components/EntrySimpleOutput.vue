@@ -136,6 +136,7 @@ export default class EntrySimpleOutput extends Vue {
             console.log("Starting render...");
             this.context = this.$refs.canvas.getContext("2d");
             if (this.manualRender) {
+                console.log("Manual render");
                 return;
             }
             const render = () => {

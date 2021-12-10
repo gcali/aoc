@@ -26,6 +26,7 @@ class RealVisualizer implements IHydrothermalVentureVisualizer {
     }
     public async show(matrix: FixedSizeMatrix<number>): Promise<void> {
         this.printer = await this.screenBuilder.requireScreen(scalarCoordinates(matrix.size, this.zoom));
+        this.printer.setManualRender();
 
         let maxValue = 0;
 
@@ -41,8 +42,6 @@ class RealVisualizer implements IHydrothermalVentureVisualizer {
             return baseColor + alpha.toString(16).padStart(2, "0");
         };
 
-        const unpause = this.printer.pause();
-
         await matrix.onEveryCell(async (c, e) => {
             if (e && e > 0) {
                 const d: Drawable = {
@@ -57,11 +56,7 @@ class RealVisualizer implements IHydrothermalVentureVisualizer {
             }
         });
 
-        unpause();
-
         this.printer.forceRender();
-
-        this.printer.pause();
     }
 }
 
