@@ -68,6 +68,10 @@ export class Submarine {
         printer.addForeground(this.drawable);
     }
 
+    public invalidate(printer: ScreenPrinter) {
+        printer.invalidate(this.drawable);
+    }
+
 }
 
 

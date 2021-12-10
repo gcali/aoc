@@ -171,6 +171,26 @@ export function isInBounds(c: Coordinate, bounds: Bounds) {
         c.y < bounds.topLeft.y + bounds.size.y
     );
 }
+
+const getCorners = (bounds: Bounds): Coordinate[] => {
+    return [
+        bounds.topLeft,
+        sumCoordinate(bounds.topLeft, bounds.size)
+    ];
+};
+
+export const joinBoundaries = (...bounds: Bounds[]): Bounds => {
+    if (bounds.length < 1) {
+        throw new Error("Invalid bounds");
+    }
+    let current = bounds[0];
+    for (let i = 1; i < bounds.length; i++) {
+        const currentCorners = getCorners(current);
+        const nextCorners = getCorners(bounds[i]);
+        current = getBoundaries([...currentCorners, ...nextCorners]);
+    }
+    return current;
+};
 export const getBoundaries = (points: Coordinate[]): Bounds => {
     if (points.length === 0) {
         return {

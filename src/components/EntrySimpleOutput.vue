@@ -21,6 +21,7 @@ import {
     Coordinate,
     getBoundaries,
     getTopLeftBottomRight,
+    joinBoundaries,
     sumCoordinate,
 } from "../support/geometry";
 
@@ -33,6 +34,7 @@ type ScreenCallback = (
 type InvalidateItem = {
     bounds: Bounds;
     isInvalid: boolean;
+    drawable: Drawable;
 };
 
 @Component({})
@@ -181,6 +183,8 @@ export default class EntrySimpleOutput extends Vue {
                             console.error("Invalid key to invalidate: " + key);
                         }
                         item.isInvalid = true;
+                        const newBounds = this.getBoundaries(item.drawable);
+                        item.bounds = joinBoundaries(item.bounds, newBounds);
                     },
                 };
             },
@@ -207,6 +211,7 @@ export default class EntrySimpleOutput extends Vue {
         this.invalidateMap[item.id] = {
             bounds,
             isInvalid: true,
+            drawable: item
         };
         this.startRender();
     }
@@ -215,6 +220,14 @@ export default class EntrySimpleOutput extends Vue {
         if (!this.stop && this.context === null) {
             console.log("Starting render...");
             this.context = this.$refs.canvas.getContext("2d");
+            if (this.context && this.canvasSize) {
+                this.context.clearRect(
+                    0,
+                    0,
+                    this.canvasSize.width,
+                    this.canvasSize.height
+                );
+            }
             if (this.manualRender) {
                 console.log("Manual render");
                 return;
@@ -294,6 +307,12 @@ export default class EntrySimpleOutput extends Vue {
                     }
                     invalidateBounds = getBoundaries([...newPoints, ...getTopLeftBottomRight(invalidateBounds)]);
                 }
+
+                invalidateBounds.topLeft.x -= 1;
+                invalidateBounds.topLeft.y -= 1;
+                invalidateBounds.size.x += 2;
+                invalidateBounds.size.y += 2;
+                // don't know why :(
                 this.context.clearRect(
                     invalidateBounds.topLeft.x,
                     invalidateBounds.topLeft.y,
@@ -315,6 +334,7 @@ export default class EntrySimpleOutput extends Vue {
                     if (boundsIntersect(bounds, invalidateBounds)) {
                         renderItem(item);
                     }
+                    invalidateInfo.bounds = this.getBoundaries(item);
                 }
                 for (const item of this.toDrawForeground) {
                     const invalidateInfo = this.invalidateMap[item.id];
@@ -323,6 +343,7 @@ export default class EntrySimpleOutput extends Vue {
                     if (boundsIntersect(bounds, invalidateBounds)) {
                         renderItem(item);
                     }
+                    invalidateInfo.bounds = this.getBoundaries(item);
                 }
             }
         }
