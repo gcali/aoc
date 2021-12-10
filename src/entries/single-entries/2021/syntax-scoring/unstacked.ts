@@ -5,7 +5,6 @@ import { entryForFile } from "../../../entry";
 const parseLine = (line: string): ParsingResult => {
     const patterns = ["{}", "<>", "()", "[]"];
     let found = false;
-    console.log("From", line);
     do {
         found = false;
         for (const pattern of patterns) {
@@ -16,7 +15,6 @@ const parseLine = (line: string): ParsingResult => {
             }
         }
     } while (found);
-    console.log("To", line);
     const tokens = [...line];
     const [invalidCharacter] = tokens.filter((token) => isClosing(token));
     if (invalidCharacter) {
