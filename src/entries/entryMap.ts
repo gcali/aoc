@@ -59,6 +59,9 @@ export const map: { [key: string]: VueConstructor<Vue> } = [
 ].reduce((acc, next) => {
     for (const key in next) {
         if (key in next) {
+            if (key in acc) {
+                alert("Duplicate key: " + key);
+            }
             acc[key] = next[key];
         }
     }
