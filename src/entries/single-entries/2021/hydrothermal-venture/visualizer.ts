@@ -60,6 +60,8 @@ class RealVisualizer implements IHydrothermalVentureVisualizer {
         unpause();
 
         this.printer.forceRender();
+
+        this.printer.pause();
     }
 }
 
