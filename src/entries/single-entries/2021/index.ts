@@ -7,6 +7,7 @@ import { lanternfish } from "./lanternfish";
 import { theTreacheryOfWhales } from "./the-treachery-of-whales";
 import { sevenSegmentSearch } from "./seven-segment-search";
 import { smokeBasin } from "./smoke-basin";
+import {entry} from "./entry";
 
 export const entries = [
     sonarSweep,
@@ -17,5 +18,6 @@ export const entries = [
     lanternfish,
     theTreacheryOfWhales,
     sevenSegmentSearch,
-    smokeBasin
+    smokeBasin,
+    entry
 ];
