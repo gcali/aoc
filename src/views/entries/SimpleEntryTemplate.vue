@@ -8,6 +8,7 @@
         :entryKey="this.entry.metadata.key"
     )
         .variants(v-if="entry.metadata && entry.metadata.variants")
+            label(style="margin-right: 1em") Variants
             label
                 input(type="radio" value="" v-model="variantSelected")
                 | Normal
