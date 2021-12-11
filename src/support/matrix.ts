@@ -57,6 +57,20 @@ export class FixedSizeMatrix<T> {
         }
     }
 
+    public getUnsafe(c: Coordinate): T {
+        c = this._delta.opposite.sum(c);
+        const index = this.indexCalculator(c);
+        if (index === null) {
+            throw new Error("Invalid index in matrix");
+        }
+        const e = this.data[index];
+        if (e === undefined) {
+            throw new Error("Invalid value in matrix");
+
+        }
+        return e;
+    }
+
     public reduce<TAcc>(
         callback: ((accumulator: TAcc, next: {coordinate: Coordinate, cell: T | undefined}) => TAcc),
         startAccumulator: TAcc
@@ -96,6 +110,19 @@ export class FixedSizeMatrix<T> {
                     if (awaited !== undefined) {
                         return awaited;
                     }
+                }
+            }
+        }
+    }
+
+    public onEveryCellSyncUnsafe<U>(callback: (c: Coordinate, e: T) => void | U): void | U {
+        for (let x = 0; x < this.size.x; x++) {
+            for (let y = 0; y < this.size.y; y++) {
+                const c = this._delta.sum({x, y});
+                const e = this.getUnsafe(c);
+                const res = callback(c, e);
+                if (res !== undefined) {
+                    return res;
                 }
             }
         }

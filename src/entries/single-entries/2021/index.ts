@@ -8,6 +8,7 @@ import { theTreacheryOfWhales } from "./the-treachery-of-whales";
 import { sevenSegmentSearch } from "./seven-segment-search";
 import { smokeBasin } from "./smoke-basin";
 import {syntaxScoring} from "./syntax-scoring";
+import { dumboOctopus } from "./dumboOctopus";
 
 export const entries = [
     sonarSweep,
@@ -19,5 +20,6 @@ export const entries = [
     theTreacheryOfWhales,
     sevenSegmentSearch,
     smokeBasin,
-    syntaxScoring
+    syntaxScoring,
+    dumboOctopus
 ];
