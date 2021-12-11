@@ -1,4 +1,4 @@
-import { Coordinate, scalarCoordinates, serialization } from "../../../../support/geometry";
+import { Coordinate, scalarCoordinates, serialization, sumCoordinate } from "../../../../support/geometry";
 import { FixedSizeMatrix } from "../../../../support/matrix";
 import { Drawable, Pause, ScreenBuilder, ScreenPrinter } from "../../../entry";
 
@@ -34,10 +34,10 @@ class RealVisualizer implements IDumboOctopusVisualizer {
         for (let x = 0; x < size.x; x++) {
             for (let y = 0; y < size.y; y++) {
                 const d: Drawable & {type: "rectangle"} = {
-                    c: this.scale({x, y}),
+                    c: sumCoordinate({x: 1, y: 1}, this.scale({x, y})),
                     color: "black",
                     id: serialization.serialize({x, y}),
-                    size: this.scale({x: 1, y: 1}),
+                    size: this.scale({x: 0.8, y: 0.8}),
                     type: "rectangle"
                 };
 
