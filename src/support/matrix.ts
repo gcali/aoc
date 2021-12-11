@@ -7,6 +7,20 @@ export class FixedSizeMatrix<T> {
     public get delta() {
         return this._delta;
     }
+
+    public static fromPlain<T>(data: T[][]): FixedSizeMatrix<T> {
+        const matrix = new FixedSizeMatrix<T>({x: data[0].length, y: data.length});
+        for (let x = 0; x < matrix.size.x; x++) {
+            for (let y = 0; y < matrix.size.y; y++) {
+                matrix.set({x, y}, data[y][x]);
+            }
+        }
+        return matrix;
+    }
+
+    public static fromSingleDigitInput(data: string[]): FixedSizeMatrix<number> {
+        return this.fromPlain(data.map((d) => d.split("").map((e) => parseInt(e, 10))));
+    }
     public data: Array<T | undefined>;
 
     private _delta: CCoordinate = new CCoordinate(0, 0);
