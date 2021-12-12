@@ -83,7 +83,7 @@ class RealMessageSender implements IPassagePathingMessageSender {
     public async queue(node: string): Promise<void> {
         if (this.shouldAnimate) {
             const current = this.nodeQueueCount[node]++;
-            if (current <= 0) {
+            if (current > 0) {
                 await this.messageSender(buildMessage({
                         type: "queue",
                         node: this.nodes[node]
@@ -95,7 +95,7 @@ class RealMessageSender implements IPassagePathingMessageSender {
 
     public async visited(node: string): Promise<void> {
         if (this.shouldAnimate) {
-            const current = this.nodeQueueCount[node]--;
+            const current = --this.nodeQueueCount[node];
             if (current <= 0) {
                 await this.messageSender(buildMessage({
                     type: "visited",

@@ -93,8 +93,10 @@ export default class PassagePathing extends Vue {
                 break;
             case "queue":
                 this.changeColor(message.node, "red");
+                break;
             case "visited":
                 this.changeColor(message.node, "blue");
+                break
         }
     }
 
