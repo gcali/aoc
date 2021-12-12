@@ -65,15 +65,15 @@ export default class PassagePathing extends Vue {
             case "setup":
                 this.showGraph = true;
                 message.animateCallback(this.animate);
-                this.nodes = new DataSet(message.nodes.map(n => ({
-                    ...n, 
+                this.nodes = new DataSet(message.nodes.map((n) => ({
+                    ...n,
                     color: "white"
                 })));
 
                 const edges = new DataSet<any>(message.edges);
 
                 // const container = document.getElementById("pathing-graph");
-                const container = this.$refs["graph"] as HTMLElement | undefined;
+                const container = this.$refs.graph as HTMLElement | undefined;
                 if (!container) {
                     throw new Error("Could not find container");
                 }
@@ -96,14 +96,14 @@ export default class PassagePathing extends Vue {
                 break;
             case "visited":
                 this.changeColor(message.node, "blue");
-                break
+                break;
         }
     }
 
 
     private changeColor(id: number, color: string) {
-        const node=this.nodes.get(id)!;
-        node.color=color;
+        const node = this.nodes.get(id)!;
+        node.color = color;
         this.nodes.update(node);
     }
 }

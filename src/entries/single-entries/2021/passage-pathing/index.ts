@@ -114,10 +114,13 @@ export const passagePathing = entryForFile(
     }
 );
 
-function parseInput(lines: string[]): {connectedTo: { [key: string]: string[]; }, edges: {from: string; to: string}[]} {
+function parseInput(lines: string[]): {
+    connectedTo: { [key: string]: string[]; };
+    edges: Array<{from: string; to: string}>;
+} {
     const edges = lines.map((line) => {
         const [from, to] = line.split("-");
-        return { from,to };
+        return { from, to };
     });
 
     const connectedTo: { [key: string]: string[]; } = {};

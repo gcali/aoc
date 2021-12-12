@@ -122,12 +122,12 @@ class RealMessageSender implements IPassagePathingMessageSender {
 }
 
 class DummyMessageSender implements IPassagePathingMessageSender {
-    async queue(node: string): Promise<void> {
+    public async queue(node: string): Promise<void> {
     }
-    async visited(node: string): Promise<void> {
+    public async visited(node: string): Promise<void> {
     }
-    async current(node: string): Promise<void> {
+    public async current(node: string): Promise<void> {
     }
-    async setup(edges: { from: string; to: string; }[]): Promise<void> {
+    public async setup(edges: Array<{ from: string; to: string; }>): Promise<void> {
     }
 }
