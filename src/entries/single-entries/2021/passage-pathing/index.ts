@@ -6,7 +6,7 @@ const isSmallCave = (cave: string): boolean => {
     return cave.toLowerCase() === cave;
 }
 
-export const entry = entryForFile(
+export const passagePathing = entryForFile(
     async ({ lines, outputCallback, resultOutputCallback }) => {
         const connectedTo  = parseInput(lines);
 
@@ -42,7 +42,7 @@ export const entry = entryForFile(
         await resultOutputCallback(paths);
 
     },
-    async ({ lines, outputCallback, resultOutputCallback }) => {
+    async ({ lines, resultOutputCallback }) => {
         const edges = lines.map(line => line.split("-") as [string,string]);
 
         const connectedTo: {[key: string]: string[]} = {};
@@ -102,10 +102,11 @@ export const entry = entryForFile(
         await resultOutputCallback(paths);
     },
     {
-        key: "key",
-        title: "title",
+        key: "passage-pathing",
+        title: "Passage Pathing",
         supportsQuickRunning: true,
-        embeddedData: true
+        embeddedData: true,
+        stars: 2
     }
 );
 
