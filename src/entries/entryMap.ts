@@ -21,6 +21,9 @@ import {entries as entries2019} from "./single-entries/2019";
 import {entries as entries2020} from "./single-entries/2020";
 import {entries as entries2021} from "./single-entries/2021";
 
+import { passagePathing } from "./single-entries/2021/passage-pathing";
+import PassagePathing from "@/views/entries/custom/2021/PassagePathing.vue";
+
 interface EntryMap {[key: string]: VueConstructor<Vue>; }
 
 const keyMap: EntryMap = {
@@ -48,6 +51,10 @@ const map2020: EntryMap = buildMap([
     [lobbyLayout, LobbyLayout]
 ], entries2020);
 
+const map2021: EntryMap = buildMap([
+    [passagePathing, PassagePathing]
+], entries2021);
+
 export const map: { [key: string]: VueConstructor<Vue> } = [
     buildMap([], entries2015),
     buildMap([], entries2016),
@@ -55,7 +62,7 @@ export const map: { [key: string]: VueConstructor<Vue> } = [
     buildMap([], entries2018),
     buildMap([], entries2019),
     map2020,
-    buildMap([], entries2021)
+    map2021
 ].reduce((acc, next) => {
     for (const key in next) {
         if (key in next) {
