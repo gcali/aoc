@@ -9,6 +9,7 @@ import { sevenSegmentSearch } from "./seven-segment-search";
 import { smokeBasin } from "./smoke-basin";
 import {syntaxScoring} from "./syntax-scoring";
 import { dumboOctopus } from "./dumbo-octopus";
+import { entry } from "./entry";
 
 export const entries = [
     sonarSweep,
@@ -21,5 +22,6 @@ export const entries = [
     sevenSegmentSearch,
     smokeBasin,
     syntaxScoring,
-    dumboOctopus
+    dumboOctopus,
+    entry
 ];
