@@ -1,4 +1,3 @@
-import mediaQuery from "../../../../support/browser/mediaQuery";
 import { MessageSender, Pause } from "../../../entry";
 
 export interface IPassagePathingMessageSender {

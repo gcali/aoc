@@ -1,5 +1,3 @@
-import { MediaQuery } from "../../entries/entry";
-
 export default {
     isMobile() {
         const ua = navigator.userAgent;
