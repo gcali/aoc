@@ -1,5 +1,5 @@
 import { UnknownSizeField } from "../../../../support/field";
-import { Coordinate, serialization } from "../../../../support/geometry";
+import { Coordinate, CoordinateSet, serialization } from "../../../../support/geometry";
 import { entryForFile } from "../../../entry";
 import { buildVisualizer } from "./visualizer";
 
@@ -11,9 +11,7 @@ export const transparentOrigami = entryForFile(
 
         if (!isQuickRunning) {
             const matrix = mapToMatrix(foldedPoints);
-
             const vs = buildVisualizer(screen, pause, true);
-
             await vs.show(matrix);
         }
 
@@ -43,30 +41,25 @@ export const transparentOrigami = entryForFile(
     }
 );
 
-function mapToMatrix(set: Set<string>) {
+function mapToMatrix(set: CoordinateSet) {
     const field = new UnknownSizeField<"#">();
 
-    set.forEach((p) => field.set(serialization.deserialize(p), "#"));
+    set.forEach((p) => field.set(p, "#"));
 
     const matrix = field.toMatrix();
     return matrix;
 }
 
 function applyFolds(points: Coordinate[], foldsToExecute: Array<{ coordinate: "x" | "y"; value: number; }>) {
-    let set = new Set<string>();
-    points.map(serialization.serialize).forEach((p) => set.add(p));
-
+    let set = new CoordinateSet(points);
 
     for (const fold of foldsToExecute) {
-        const newSet = new Set<string>();
-        set.forEach((rawP) => {
-            const p = serialization.deserialize(rawP);
-            p[fold.coordinate] = p[fold.coordinate] < fold.value ?
-                p[fold.coordinate] : fold.value - (p[fold.coordinate] - fold.value);
-            set.add(serialization.serialize(p));
-            newSet.add(serialization.serialize(p));
+        set = set.sameTypeMap((p) => {
+            const v = p[fold.coordinate];
+            p[fold.coordinate] = v < fold.value ?
+                v : fold.value - (v - fold.value);
+            return p;
         });
-        set = newSet;
     }
     return set;
 }

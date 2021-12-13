@@ -343,3 +343,81 @@ export class CircularDoubleLinkedNode<T> {
     return this.prev.append(item);
   }
 }
+
+
+export class SerializableSet<TValue> {
+
+    public get size(): number {
+        return this.set.size;
+    }
+    private readonly set: Set<string>;
+
+    constructor(private readonly ser: {
+      serialize(e: TValue): string, deserialize(e: string): TValue
+    },          data?: TValue[] | SerializableSet<TValue>) {
+        if (!data) {
+            this.set = new Set<string>();
+        } else if (Array.isArray(data)) {
+            this.set = new Set<string>(data.map((d) => this.serialize(d)));
+        } else {
+            this.set = new Set<string>(data.set);
+        }
+    }
+
+    public has(c: TValue): boolean {
+        return this.set.has(this.serialize(c));
+    }
+
+    public remove(c: TValue): boolean {
+        return this.set.delete(this.serialize(c));
+    }
+
+    public delete(c: TValue): boolean {
+        return this.remove(c);
+    }
+
+    public includes(c: TValue): boolean {
+        return this.has(c);
+    }
+
+    public addRange(c: Iterable<TValue>) {
+        for (const x of c) {
+          this.add(x);
+        }
+    }
+    public add(c: TValue) {
+          this.set.add(this.serialize(c as TValue));
+    }
+
+    public map<T>(f: (c: TValue) => T): Set<T> {
+        const res = new Set<T>();
+        this.set.forEach((e) => res.add(f(this.deserialize(e))));
+        return res;
+    }
+
+    public sameTypeMap(f: (c: TValue) => TValue): SerializableSet<TValue> {
+        const res: TValue[] = [];
+        this.set.forEach((e) => res.push(f(this.deserialize(e))));
+        return new SerializableSet<TValue>(this.ser, res);
+    }
+
+    public *values(): Iterable<TValue> {
+        for (const value of this.set.values()) {
+            yield this.deserialize(value);
+        }
+    }
+
+    public forEach(f: (c: TValue) => void) {
+        for (const value of this.set.values()) {
+            f(this.deserialize(value));
+        }
+    }
+
+    private serialize(c: TValue): string {
+        return this.ser.serialize(c);
+    }
+
+    private deserialize(c: string): TValue {
+        return this.ser.deserialize(c);
+    }
+}

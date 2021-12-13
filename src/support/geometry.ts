@@ -1,5 +1,6 @@
 import { SimpleBest, ascending } from "./best";
 import { coordinateToKey } from "../entries/single-entries/2019/oxygen-system";
+import { SerializableSet } from "./data-structure";
 
 export interface Coordinate {
     x: number;
@@ -153,6 +154,15 @@ function fillWithZero(c: FullCoordinate): FullCoordinate {
 export interface Bounds {
     topLeft: Coordinate;
     size: Coordinate;
+}
+
+export class CoordinateSet extends SerializableSet<Coordinate> {
+    /**
+     *
+     */
+    constructor(data: Coordinate[] | SerializableSet<Coordinate>) {
+        super(serialization, data);
+    }
 }
 
 export function ascendingCompare(a: Coordinate, b: Coordinate): number {
