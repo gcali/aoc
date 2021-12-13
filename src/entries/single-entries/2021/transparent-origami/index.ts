@@ -28,6 +28,7 @@ export const transparentOrigami = entryForFile(
         if (screen) {
             const vs = buildVisualizer(screen, pause, false);
             await vs.show(matrix);
+            await resultOutputCallback(await vs.getText());
         } else {
             await resultOutputCallback(matrix.toString((e) => e || " "));
         }

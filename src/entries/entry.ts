@@ -134,6 +134,7 @@ export interface ScreenPrinter {
     setManualRender: () => void;
     setManualInvalidate: () => void;
     invalidate: (id: string | Drawable) => void;
+    getImage(): Promise<Blob>;
 }
 
 export interface MediaQuery {

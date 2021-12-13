@@ -15,7 +15,8 @@
       "node"
     ],
     "lib": [
-      "esnext"
+      "esnext",
+      "webworker"
     ]
   },
   "include": [

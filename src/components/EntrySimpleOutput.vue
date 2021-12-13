@@ -178,13 +178,27 @@ export default class EntrySimpleOutput extends Vue {
                         this.manualInvalidate = true;
                     },
                     invalidate: (key: string | Drawable) => {
-                        const item = this.invalidateMap[typeof key === "string" ? key : key.id];
+                        const item =
+                            this.invalidateMap[
+                                typeof key === "string" ? key : key.id
+                            ];
                         if (!item) {
                             console.error("Invalid key to invalidate: " + key);
                         }
                         item.isInvalid = true;
                         const newBounds = this.getBoundaries(item.drawable);
                         item.bounds = joinBoundaries(item.bounds, newBounds);
+                    },
+                    getImage: (): Promise<Blob> => {
+                        return new Promise<Blob>((res, rej) => {
+                            this.$refs.canvas.toBlob((c) => {
+                                if (c === null) {
+                                    rej();
+                                } else {
+                                    res(c);
+                                }
+                            });
+                        });
                     },
                 };
             },
@@ -211,7 +225,7 @@ export default class EntrySimpleOutput extends Vue {
         this.invalidateMap[item.id] = {
             bounds,
             isInvalid: true,
-            drawable: item
+            drawable: item,
         };
         this.startRender();
     }
@@ -288,7 +302,7 @@ export default class EntrySimpleOutput extends Vue {
                 }
 
                 for (const item of this.toDrawForeground) {
-                        renderItem(item);
+                    renderItem(item);
                 }
             } else {
                 const points = Object.values(this.invalidateMap)
@@ -297,15 +311,19 @@ export default class EntrySimpleOutput extends Vue {
                 let invalidateBounds = getBoundaries(points);
                 while (true) {
                     const newPoints = Object.values(this.invalidateMap)
-                        .filter((e) =>
-                            boundsIntersect(e.bounds, invalidateBounds) &&
-                            !boundsContain(invalidateBounds, e.bounds)
+                        .filter(
+                            (e) =>
+                                boundsIntersect(e.bounds, invalidateBounds) &&
+                                !boundsContain(invalidateBounds, e.bounds)
                         )
                         .flatMap((e) => getTopLeftBottomRight(e.bounds));
                     if (newPoints.length === 0) {
                         break;
                     }
-                    invalidateBounds = getBoundaries([...newPoints, ...getTopLeftBottomRight(invalidateBounds)]);
+                    invalidateBounds = getBoundaries([
+                        ...newPoints,
+                        ...getTopLeftBottomRight(invalidateBounds),
+                    ]);
                 }
 
                 invalidateBounds.topLeft.x -= 1;

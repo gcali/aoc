@@ -4,6 +4,8 @@ import { Drawable, Pause, ScreenBuilder, ScreenPrinter } from "../../../entry";
 
 export interface ITransparentOrigamiVisualizer {
     show(matrix: FixedSizeMatrix<"#">): Promise<void>;
+
+    getText(): Promise<string>;
 }
 
 export const buildVisualizer = (screenBuilder: ScreenBuilder | undefined, pause: Pause, isSmall: boolean) => {
@@ -35,7 +37,9 @@ class RealVisualizer implements ITransparentOrigamiVisualizer {
         this.shown = true;
 
         this.printer = await this.screenBuilder.requireScreen(
-            sumCoordinate(this.scale(matrix.size), this.cellSize)
+            sumCoordinate({x: 2, y: 2},
+                sumCoordinate(this.scale(matrix.size), this.cellSize)
+            )
         );
 
         const points: Coordinate[] = [];
@@ -48,7 +52,7 @@ class RealVisualizer implements ITransparentOrigamiVisualizer {
 
         const drawables = points.map((c) => ({
             type: "rectangle",
-            c: this.scale(c),
+            c: sumCoordinate({x: 2, y: 2}, this.scale(c)),
             color: "black",
             id: serialization.serialize(c),
             size: this.cellSize,
@@ -61,6 +65,25 @@ class RealVisualizer implements ITransparentOrigamiVisualizer {
         this.printer.forceRender();
     }
 
+    public async getText(): Promise<string> {
+        const blob = await this.printer.getImage() as any;
+
+        blob.name = "test";
+
+        const {createWorker} = require("tesseract.js");
+
+        const worker = createWorker();
+
+        await worker.load();
+        await worker.loadLanguage("eng");
+        await worker.initialize("eng");
+        const {data: { text } } = await worker.recognize(blob, {
+            tessedit_char_blacklist: "."
+        });
+
+        return [...(text as string)].filter((e) => e !== ".").join("");
+    }
+
     private scale(c: Coordinate): Coordinate {
         return {
             x: c.x * this.zoom.x,
@@ -70,6 +93,9 @@ class RealVisualizer implements ITransparentOrigamiVisualizer {
 }
 
 class DummyVisualizer implements ITransparentOrigamiVisualizer {
+    public getText(): Promise<string> {
+        throw new Error("Method not implemented.");
+    }
     public async show(matrix: FixedSizeMatrix<"#">): Promise<void> {
     }
 
