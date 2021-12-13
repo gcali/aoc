@@ -1,9 +1,10 @@
 import { UnknownSizeField } from "../../../../support/field";
 import { serialization } from "../../../../support/geometry";
 import { entryForFile } from "../../../entry";
+import { buildVisualizer } from "./visualizer";
 
 export const transparentOrigami = entryForFile(
-    async ({ lines, outputCallback, resultOutputCallback }) => {
+    async ({ lines, outputCallback, resultOutputCallback, isQuickRunning, screen, pause }) => {
         const points = lines.filter((l) => l && !l.startsWith("fold")).map((line) => {
             const [x, y] = line.split(",").map((e) => parseInt(e, 10));
             return { x, y };
@@ -32,10 +33,20 @@ export const transparentOrigami = entryForFile(
             set = newSet;
         }
 
+        if (!isQuickRunning) {
+            const field = new UnknownSizeField<"#">();
+            set.forEach((p) => field.set(serialization.deserialize(p), "#"));
+            const matrix = field.toMatrix();
+
+            const vs = buildVisualizer(screen, pause, true);
+
+            await vs.show(matrix);
+        }
+
         await resultOutputCallback(set.size);
 
     },
-    async ({ lines, outputCallback, resultOutputCallback }) => {
+    async ({ lines, outputCallback, resultOutputCallback, screen, pause }) => {
         const points = lines.filter((l) => l && !l.startsWith("fold")).map((line) => {
             const [x, y] = line.split(",").map((e) => parseInt(e, 10));
             return { x, y };
@@ -66,11 +77,15 @@ export const transparentOrigami = entryForFile(
 
         const field = new UnknownSizeField<"#">();
 
-        set.forEach(p => field.set(serialization.deserialize(p), "#"));
+        set.forEach((p) => field.set(serialization.deserialize(p), "#"));
 
         const matrix = field.toMatrix();
 
-        await resultOutputCallback(matrix.toString(e => e || "."));
+        const vs = buildVisualizer(screen, pause, false);
+
+        await vs.show(matrix);
+
+        await resultOutputCallback(matrix.toString((e) => e || " "));
     },
     {
         key: "transparent-origami",
