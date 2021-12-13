@@ -7,9 +7,10 @@ import { lanternfish } from "./lanternfish";
 import { theTreacheryOfWhales } from "./the-treachery-of-whales";
 import { sevenSegmentSearch } from "./seven-segment-search";
 import { smokeBasin } from "./smoke-basin";
-import {syntaxScoring} from "./syntax-scoring";
+import { syntaxScoring } from "./syntax-scoring";
 import { dumboOctopus } from "./dumbo-octopus";
 import { passagePathing } from "./passage-pathing";
+import { transparentOrigami } from "./transparent-origami";
 
 export const entries = [
     sonarSweep,
@@ -23,5 +24,6 @@ export const entries = [
     smokeBasin,
     syntaxScoring,
     dumboOctopus,
-    passagePathing
+    passagePathing,
+    transparentOrigami
 ];
