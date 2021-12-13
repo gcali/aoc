@@ -83,9 +83,11 @@ export const transparentOrigami = entryForFile(
 
         const vs = buildVisualizer(screen, pause, false);
 
-        await vs.show(matrix);
-
-        await resultOutputCallback(matrix.toString((e) => e || " "));
+        if (screen) {
+            await vs.show(matrix);
+        } else {
+            await resultOutputCallback(matrix.toString((e) => e || " "));
+        }
     },
     {
         key: "transparent-origami",
