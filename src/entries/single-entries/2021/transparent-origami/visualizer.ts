@@ -1,4 +1,4 @@
-import { Coordinate, scalarCoordinates, serialization } from "../../../../support/geometry";
+import { Coordinate, scalarCoordinates, serialization, sumCoordinate } from "../../../../support/geometry";
 import { FixedSizeMatrix } from "../../../../support/matrix";
 import { Drawable, Pause, ScreenBuilder, ScreenPrinter } from "../../../entry";
 
@@ -18,12 +18,14 @@ class RealVisualizer implements ITransparentOrigamiVisualizer {
     private shown: boolean = false;
     private readonly zoom: Coordinate;
     private printer!: ScreenPrinter;
+    private readonly cellSize: Coordinate;
     constructor(
         private readonly screenBuilder: ScreenBuilder,
         private readonly pause: Pause,
-        private readonly isSmall: boolean
+        isSmall: boolean
     ) {
         this.zoom = isSmall ? {x: 0.7, y: 0.7} : {x: 10, y: 10};
+        this.cellSize = isSmall ? scalarCoordinates(this.zoom, 3) : this.zoom;
     }
 
     public async show(matrix: FixedSizeMatrix<"#">): Promise<void> {
@@ -32,7 +34,9 @@ class RealVisualizer implements ITransparentOrigamiVisualizer {
         }
         this.shown = true;
 
-        this.printer = await this.screenBuilder.requireScreen(this.scale(matrix.size));
+        this.printer = await this.screenBuilder.requireScreen(
+            sumCoordinate(this.scale(matrix.size), this.cellSize)
+        );
 
         const points: Coordinate[] = [];
 
@@ -47,7 +51,7 @@ class RealVisualizer implements ITransparentOrigamiVisualizer {
             c: this.scale(c),
             color: "black",
             id: serialization.serialize(c),
-            size: this.isSmall ? scalarCoordinates(this.zoom, 3) : this.zoom
+            size: this.cellSize,
         } as Drawable & {type: "rectangle"}));
 
         this.printer.setManualRender();
