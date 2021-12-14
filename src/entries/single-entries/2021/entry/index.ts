@@ -4,9 +4,7 @@ import { entryForFile } from "../../../entry";
 
 export const entry = entryForFile(
     async ({ lines, outputCallback, resultOutputCallback }) => {
-        const start = lines[0];
-
-        const rules = parseInput(lines);
+        const {start, rules} = parseInput(lines);
 
         let res = start.split("");
         for (let i = 0; i < 10; i++) {
@@ -47,33 +45,18 @@ export const entry = entryForFile(
         await resultOutputCallback(counter[0].c - counter[counter.length-1].c);
     },
     async ({ lines, outputCallback, resultOutputCallback }) => {
-        const start = lines[0];
+        const { start, rules }: { start: string; rules: { [key: string]: string; }; } = parseInput(lines);
 
-        const rules: {[key: string]: string} = {};
-
-        for (const l of lines.slice(2)) {
-            const [a, b] = l.split(" -> ");
-            rules[a] = b;
-        }
-
-        const firstPairs = new DefaultDict<string, number>(0);
+        let pairs = new DefaultDict<string, number>(0);
 
         for (const n of new MyIterable(start).windows(2)) {
-            firstPairs.update(n.join(""), v => v + 1);
+            pairs.update(n.join(""), v => v + 1);
         }
 
-        let pairs: {[key: string]: number} = {};
 
-        for (const {key, value} of firstPairs) {
-            pairs[key] = value;
-        }
         for (let i = 0; i < 40; i++) {
             const newPairs = new DefaultDict<string, number>(0);
-            const my = new DefaultDict<string, number>(0);
-            for (const k in pairs) {
-                my.set(k, pairs[k]);
-            }
-            for (const {key: k, value} of my) {
+            for (const {key: k, value} of pairs) {
                 const match = rules[k];
                 if (match !== undefined) {
                     const t = k[0] + match + k[1];
@@ -82,23 +65,19 @@ export const entry = entryForFile(
                     }
                 }
             }
-            pairs = {};
-            for (const {key, value} of newPairs) {
-                pairs[key] = value;
-            }
+            pairs = newPairs;
         }
 
-        const frequencies: {[key: string]: number} = {};
-        for (const pair in pairs) {
-            const x = pair[0];
-            frequencies[x] = (frequencies[x] || 0) + pairs[pair];
+        const frequencies = new DefaultDict<string, number>(0);
+        for (const {key, value} of pairs) {
+            frequencies.update(key[0], v => v + value);
         }
-        frequencies[start[start.length-1]]++;
+        frequencies.update(start[start.length-1], v => v + 1);
 
         const counter: {l: string; c: number}[] = [];
 
-        for (const x in frequencies) {
-            counter.push({l: x, c: frequencies[x]});
+        for (const {key, value} of frequencies) {
+            counter.push({l: key, c: value});
         }
 
         counter.sort((a, b) => b.c - a.c);
@@ -113,12 +92,14 @@ export const entry = entryForFile(
     }
 );
 
-function parseInput(lines: string[]): { [key: string]: string; } {
+function parseInput(lines: string[]): {start: string; rules: {[key: string]: string}} {
+    const start = lines[0];
+
     const rules: { [key: string]: string; } = {};
 
     for (const l of lines.slice(2)) {
         const [a, b] = l.split(" -> ");
         rules[a] = b;
     }
-    return rules;
+    return { start, rules };
 }
