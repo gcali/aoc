@@ -2,7 +2,7 @@ import { Counter, DefaultDict } from "../../../../support/data-structure";
 import { MyIterable } from "../../../../support/sequences";
 import { entryForFile } from "../../../entry";
 
-export const entry = entryForFile(
+export const extendedPolymerization = entryForFile(
     async ({ lines, outputCallback, resultOutputCallback }) => {
         const {start, rules} = parseInput(lines);
 
@@ -85,10 +85,11 @@ export const entry = entryForFile(
         await resultOutputCallback(counter[0].c - counter[counter.length-1].c);
     },
     {
-        key: "key",
-        title: "title",
+        key: "extended-polymerization",
+        title: "Extended Polymerization",
         supportsQuickRunning: true,
-        embeddedData: true
+        embeddedData: true,
+        stars: 2
     }
 );
 

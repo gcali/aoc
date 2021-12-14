@@ -11,7 +11,7 @@ import { syntaxScoring } from "./syntax-scoring";
 import { dumboOctopus } from "./dumbo-octopus";
 import { passagePathing } from "./passage-pathing";
 import { transparentOrigami } from "./transparent-origami";
-import { entry } from "./entry";
+import { extendedPolymerization } from "./extended-polymerization";
 
 export const entries = [
     sonarSweep,
@@ -27,5 +27,5 @@ export const entries = [
     dumboOctopus,
     passagePathing,
     transparentOrigami,
-    entry
+    extendedPolymerization
 ];
