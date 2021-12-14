@@ -446,7 +446,7 @@ export class DefaultDict<TKey, TValue> {
   }
 
   public update(key: TKey, f: (e: TValue) => TValue) {
-    this.set(key, f(this.get(key)))
+    this.set(key, f(this.get(key)));
   }
 
   public get keys(): Iterable<TKey> {

@@ -6,14 +6,14 @@ export const extendedPolymerization = entryForFile(
     async ({ lines, outputCallback, resultOutputCallback }) => {
         const {start, rules} = parseInput(lines);
 
-        let res = start.split("");
+        const res = start.split("");
         for (let i = 0; i < 10; i++) {
             let current = 0;
             while (true) {
                 let found = false;
                 for (const rule in rules) {
-                    if (res[current] === rule[0] && res[current+1] === rule[1]) {
-                        res.splice(current+1, 0, rules[rule]);
+                    if (res[current] === rule[0] && res[current + 1] === rule[1]) {
+                        res.splice(current + 1, 0, rules[rule]);
                         current += 2;
                         found = true;
                         break;
@@ -22,7 +22,7 @@ export const extendedPolymerization = entryForFile(
                 if (!found) {
                     current++;
                 }
-                if (current >= res.length-1) {
+                if (current >= res.length - 1) {
                     break;
                 }
             }
@@ -34,7 +34,7 @@ export const extendedPolymerization = entryForFile(
             frequencies.incr(x);
         }
 
-        const counter: {l: string; c: number}[] = [];
+        const counter: Array<{l: string; c: number}> = [];
 
         for (const x of frequencies.keys) {
             counter.push({l: x, c: frequencies.get(x)});
@@ -42,7 +42,7 @@ export const extendedPolymerization = entryForFile(
 
         counter.sort((a, b) => b.c - a.c);
 
-        await resultOutputCallback(counter[0].c - counter[counter.length-1].c);
+        await resultOutputCallback(counter[0].c - counter[counter.length - 1].c);
     },
     async ({ lines, outputCallback, resultOutputCallback }) => {
         const { start, rules }: { start: string; rules: { [key: string]: string; }; } = parseInput(lines);
@@ -50,7 +50,7 @@ export const extendedPolymerization = entryForFile(
         let pairs = new DefaultDict<string, number>(0);
 
         for (const n of new MyIterable(start).windows(2)) {
-            pairs.update(n.join(""), v => v + 1);
+            pairs.update(n.join(""), (v) => v + 1);
         }
 
 
@@ -61,7 +61,7 @@ export const extendedPolymerization = entryForFile(
                 if (match !== undefined) {
                     const t = k[0] + match + k[1];
                     for (const w of new MyIterable(t).windows(2)) {
-                        newPairs.update(w.join(""), v => v + value);
+                        newPairs.update(w.join(""), (v) => v + value);
                     }
                 }
             }
@@ -70,11 +70,11 @@ export const extendedPolymerization = entryForFile(
 
         const frequencies = new DefaultDict<string, number>(0);
         for (const {key, value} of pairs) {
-            frequencies.update(key[0], v => v + value);
+            frequencies.update(key[0], (v) => v + value);
         }
-        frequencies.update(start[start.length-1], v => v + 1);
+        frequencies.update(start[start.length - 1], (v) => v + 1);
 
-        const counter: {l: string; c: number}[] = [];
+        const counter: Array<{l: string; c: number}> = [];
 
         for (const {key, value} of frequencies) {
             counter.push({l: key, c: value});
@@ -82,7 +82,7 @@ export const extendedPolymerization = entryForFile(
 
         counter.sort((a, b) => b.c - a.c);
 
-        await resultOutputCallback(counter[0].c - counter[counter.length-1].c);
+        await resultOutputCallback(counter[0].c - counter[counter.length - 1].c);
     },
     {
         key: "extended-polymerization",
