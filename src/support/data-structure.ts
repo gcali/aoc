@@ -1,3 +1,5 @@
+import { coordinateToKey } from "../entries/single-entries/2019/oxygen-system";
+
 interface QueueNode<T> { element: T; next?: QueueNode<T>; }
 
 export class Lifo<T> {
@@ -147,6 +149,7 @@ export class Counter {
     }
     this._data[key]++;
   }
+
   public get keys(): string[] {
     return Object.keys(this._data);
   }
@@ -420,4 +423,27 @@ export class SerializableSet<TValue> {
     private deserialize(c: string): TValue {
         return this.ser.deserialize(c);
     }
+}
+
+export class DefaultDict<TKey, TValue> {
+  data: Map<TKey, TValue>;
+  constructor(private readonly defaultValue: TValue) {
+    this.data = new Map<TKey, TValue>();
+  }
+
+  public set(key: TKey, v: TValue) {
+    this.data.set(key, v);
+  }
+
+  public get(key: TKey) {
+    const res = this.data.get(key);
+    if (res !== undefined) {
+      res;
+    }
+    return this.defaultValue;
+  }
+
+  public update(key: TKey, f: (e: TValue) => TValue) {
+    this.set(key, f(this.get(key)))
+  }
 }
