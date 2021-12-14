@@ -1,4 +1,6 @@
 import { coordinateToKey } from "../entries/single-entries/2019/oxygen-system";
+import { serialization } from "./geometry";
+import { ISerializer } from "./serialization";
 
 interface QueueNode<T> { element: T; next?: QueueNode<T>; }
 
@@ -141,6 +143,22 @@ export class Queue<T> {
 }
 
 export class Counter {
+
+  public get keys(): string[] {
+    return Object.keys(this._data);
+  }
+
+  public get values(): number[] {
+    return Object.values(this._data);
+  }
+
+  public static countCharacters(s: string | string[]): Counter {
+    const c = new Counter();
+    for (const x of s) {
+      c.incr(x);
+    }
+    return c;
+  }
   private _data: {[key: string]: number} = {};
 
   public incr(key: string) {
@@ -150,9 +168,6 @@ export class Counter {
     this._data[key]++;
   }
 
-  public get keys(): string[] {
-    return Object.keys(this._data);
-  }
   public get(key: string): number {
     return this._data[key] || 0;
   }
@@ -426,19 +441,42 @@ export class SerializableSet<TValue> {
 }
 
 export class DefaultDict<TKey, TValue> {
-  private readonly data: Map<TKey, TValue>;
-  constructor(private readonly defaultValue: TValue) {
-    this.data = new Map<TKey, TValue>();
+
+  public get keys(): Iterable<TKey> {
+    if (this.isDataSerializable(this.data)) {
+      return this.iterableKeys();
+    }
+    return this.data.keys();
+  }
+
+  public get values(): Iterable<TValue> {
+    return this.data.values();
+  }
+
+  public get publicData() {
+    return this.data;
+  }
+  private readonly data: Map<TKey, TValue> | Map<string, TValue>;
+  constructor(private readonly defaultValue: TValue, private readonly serializer: ISerializer<TKey> | null = null) {
+    if (this.serializer !== null) {
+      this.data = new Map<string, TValue>();
+    } else {
+      this.data = new Map<TKey, TValue>();
+    }
   }
 
   public set(key: TKey, v: TValue) {
-    // console.log(key, v);
-    this.data.set(key, v);
-    // console.log(this.data);
+    if (this.isDataSerializable(this.data)) {
+      this.data.set(this.serializer!.serialize(key), v);
+    } else {
+      this.data.set(key, v);
+    }
   }
 
   public get(key: TKey) {
-    const res = this.data.get(key);
+    const res = this.isDataSerializable(this.data) ?
+      this.data.get(this.serializer!.serialize(key))
+      : this.data.get(key);
     if (res !== undefined) {
       return res;
     }
@@ -447,27 +485,52 @@ export class DefaultDict<TKey, TValue> {
 
   public update(key: TKey, f: (e: TValue) => TValue) {
     this.set(key, f(this.get(key)));
-  }
-
-  public get keys(): Iterable<TKey> {
-    return this.data.keys();
-  }
-
-  public get values(): Iterable<TValue> {
-    return this.data.values();
+    return this;
   }
 
   public *[Symbol.iterator](): Iterator<{key: TKey, value: TValue}> {
-    for (const entry of this.data) {
-      yield {
-        key: entry[0],
-        value: entry[1]
-      };
+    if (this.isDataSerializable(this.data)) {
+      for (const entry of this.data) {
+        yield {
+          key: this.serializer!.deserialize(entry[0] as string),
+          value: entry[1]
+        };
+      }
+    } else {
+      for (const entry of this.data) {
+        yield {
+          key: entry[0],
+          value: entry[1]
+        };
+      }
     }
   }
 
-  public get publicData() {
-    return this.data;
+  private isDataSerializable(data: Map<TKey, TValue> | Map<string, TValue>): data is Map<string, TValue> {
+    return this.serializer !== null;
   }
 
+  private *iterableKeys(): Iterable<TKey> {
+    if (this.isDataSerializable(this.data)) {
+      for (const key of this.data.keys()) {
+        yield this.serializer!.deserialize(key);
+      }
+    } else {
+      throw new Error("Should be called only with serializable");
+    }
+  }
+
+}
+
+export class DefaultNumberDict<TKey> extends DefaultDict<TKey, number> {
+  /**
+   *
+   */
+  constructor(serializer: ISerializer<TKey> | null = null) {
+    super(0, serializer);
+  }
+
+  public incr(key: TKey, n: number = 1) {
+    return this.update(key, (v) => v + n);
+  }
 }

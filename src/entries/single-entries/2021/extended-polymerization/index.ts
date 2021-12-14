@@ -1,9 +1,9 @@
-import { Counter, DefaultDict } from "../../../../support/data-structure";
+import { Counter, DefaultDict, DefaultNumberDict } from "../../../../support/data-structure";
 import { MyIterable } from "../../../../support/sequences";
 import { entryForFile } from "../../../entry";
 
 export const extendedPolymerization = entryForFile(
-    async ({ lines, outputCallback, resultOutputCallback }) => {
+    async ({ lines, resultOutputCallback }) => {
         const {start, rules} = parseInput(lines);
 
         const res = start.split("");
@@ -28,61 +28,36 @@ export const extendedPolymerization = entryForFile(
             }
         }
 
-        const frequencies = new Counter();
+        const frequencies = Counter.countCharacters(res);
 
-        for (const x of res) {
-            frequencies.incr(x);
-        }
+        await resultOutputCallback(Math.max(...frequencies.values) - Math.min(...frequencies.values));
 
-        const counter: Array<{l: string; c: number}> = [];
-
-        for (const x of frequencies.keys) {
-            counter.push({l: x, c: frequencies.get(x)});
-        }
-
-        counter.sort((a, b) => b.c - a.c);
-
-        await resultOutputCallback(counter[0].c - counter[counter.length - 1].c);
     },
-    async ({ lines, outputCallback, resultOutputCallback }) => {
+    async ({ lines, resultOutputCallback }) => {
         const { start, rules }: { start: string; rules: { [key: string]: string; }; } = parseInput(lines);
 
-        let pairs = new DefaultDict<string, number>(0);
+        let pairs = new DefaultNumberDict<string>();
 
         for (const n of new MyIterable(start).windows(2)) {
-            pairs.update(n.join(""), (v) => v + 1);
+            pairs.incr(n.join(""));
         }
 
-
         for (let i = 0; i < 40; i++) {
-            const newPairs = new DefaultDict<string, number>(0);
+            const newPairs = new DefaultNumberDict<string>();
             for (const {key: k, value} of pairs) {
                 const match = rules[k];
                 if (match !== undefined) {
-                    const t = k[0] + match + k[1];
-                    for (const w of new MyIterable(t).windows(2)) {
-                        newPairs.update(w.join(""), (v) => v + value);
+                    for (const w of new MyIterable([k[0], match, k[1]]).windows(2)) {
+                        newPairs.incr(w.join(""), value);
                     }
                 }
             }
             pairs = newPairs;
         }
 
-        const frequencies = new DefaultDict<string, number>(0);
-        for (const {key, value} of pairs) {
-            frequencies.update(key[0], (v) => v + value);
-        }
-        frequencies.update(start[start.length - 1], (v) => v + 1);
+        const frequencies = getFrequencies(pairs, start);
 
-        const counter: Array<{l: string; c: number}> = [];
-
-        for (const {key, value} of frequencies) {
-            counter.push({l: key, c: value});
-        }
-
-        counter.sort((a, b) => b.c - a.c);
-
-        await resultOutputCallback(counter[0].c - counter[counter.length - 1].c);
+        await resultOutputCallback(Math.max(...frequencies.values) - Math.min(...frequencies.values));
     },
     {
         key: "extended-polymerization",
@@ -92,6 +67,15 @@ export const extendedPolymerization = entryForFile(
         stars: 2
     }
 );
+
+function getFrequencies(pairs: DefaultDict<string, number>, start: string) {
+    const frequencies = new DefaultNumberDict<string>();
+    for (const { key, value } of pairs) {
+        frequencies.incr(key[0], value);
+    }
+    frequencies.incr(start[start.length - 1]);
+    return frequencies;
+}
 
 function parseInput(lines: string[]): {start: string; rules: {[key: string]: string}} {
     const start = lines[0];
