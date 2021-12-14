@@ -426,19 +426,21 @@ export class SerializableSet<TValue> {
 }
 
 export class DefaultDict<TKey, TValue> {
-  data: Map<TKey, TValue>;
+  private readonly data: Map<TKey, TValue>;
   constructor(private readonly defaultValue: TValue) {
     this.data = new Map<TKey, TValue>();
   }
 
   public set(key: TKey, v: TValue) {
+    // console.log(key, v);
     this.data.set(key, v);
+    // console.log(this.data);
   }
 
   public get(key: TKey) {
     const res = this.data.get(key);
     if (res !== undefined) {
-      res;
+      return res;
     }
     return this.defaultValue;
   }
@@ -446,4 +448,26 @@ export class DefaultDict<TKey, TValue> {
   public update(key: TKey, f: (e: TValue) => TValue) {
     this.set(key, f(this.get(key)))
   }
+
+  public get keys(): Iterable<TKey> {
+    return this.data.keys();
+  }
+
+  public get values(): Iterable<TValue> {
+    return this.data.values();
+  }
+
+  public *[Symbol.iterator](): Iterator<{key: TKey, value: TValue}> {
+    for (const entry of this.data) {
+      yield {
+        key: entry[0],
+        value: entry[1]
+      };
+    }
+  }
+
+  public get publicData() {
+    return this.data;
+  }
+
 }
