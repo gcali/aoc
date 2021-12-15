@@ -12,6 +12,7 @@ import { dumboOctopus } from "./dumbo-octopus";
 import { passagePathing } from "./passage-pathing";
 import { transparentOrigami } from "./transparent-origami";
 import { extendedPolymerization } from "./extended-polymerization";
+import { chiton } from "./chiton";
 
 export const entries = [
     sonarSweep,
@@ -27,5 +28,6 @@ export const entries = [
     dumboOctopus,
     passagePathing,
     transparentOrigami,
-    extendedPolymerization
+    extendedPolymerization,
+    chiton
 ];
