@@ -1,5 +1,5 @@
 import { BinaryHeap } from "priorityqueue/lib/cjs/BinaryHeap";
-import { Coordinate, getSurrounding, scalarCoordinates } from "../../../../support/geometry";
+import { Coordinate, getSurrounding, isInBounds, scalarCoordinates } from "../../../../support/geometry";
 import { FixedSizeMatrix } from "../../../../support/matrix";
 import { defaultSerializers } from "../../../../support/serialization";
 import { entryForFile } from "../../../entry";
@@ -13,90 +13,65 @@ class MyPriorityQueue extends BinaryHeap<QueueItem> {
 
 }
 
-export const chiton = entryForFile(
-    async ({ lines, outputCallback, resultOutputCallback }) => {
-        const matrix = FixedSizeMatrix.fromSingleDigitInput(lines);
-        const queue = new MyPriorityQueue();
+const getBestCost = (lines: string[], factor: number): number => {
+    const matrix = FixedSizeMatrix.fromSingleDigitInput(lines);
 
-        queue.push({ c: { x: 0, y: 0 }, r: 0! });
+    const boundaries = { topLeft: { x: 0, y: 0 }, size: scalarCoordinates(matrix.size, factor) };
 
-        const visited = new Set<string>();
+    const queue = new MyPriorityQueue();
 
-        while (!queue.isEmpty()) {
-            const item = queue.pop();
-            if (item.c.x === matrix.size.x - 1 && item.c.y === matrix.size.y - 1) {
-                await resultOutputCallback(item.r);
-                return;
-            }
-            const serialized = defaultSerializers.coordinate2d.serialize(item.c);
-            if (visited.has(serialized)) {
+    queue.push({ c: { x: 0, y: 0 }, r: 0 });
+
+    const visited = new Set<string>();
+
+    while (!queue.isEmpty()) {
+        const item = queue.pop();
+        if (item.c.x === matrix.size.x * factor - 1 && item.c.y === matrix.size.y * factor - 1) {
+            return item.r;
+        }
+        const serialized = defaultSerializers.coordinate2d.serialize(item.c);
+        if (visited.has(serialized)) {
+            continue;
+        }
+        visited.add(serialized);
+        const ns = getSurrounding(item.c);
+        for (const n of ns) {
+            if (!isInBounds(n, boundaries)) {
                 continue;
             }
-            visited.add(serialized);
-            const ns = getSurrounding(item.c);
-            for (const n of ns) {
-                const risk = matrix.get(n);
-                if (risk === undefined) {
-                    continue;
-                }
-                queue.push({ c: n, r: risk + item.r });
-            }
-        }
+            const c = {
+                x: n.x % matrix.size.x,
+                y: n.y % matrix.size.y
+            };
 
-        await resultOutputCallback("Failed");
+            const xFactor = Math.floor(n.x / matrix.size.x);
+            const yFactor = Math.floor(n.y / matrix.size.y);
+
+            const risk = matrix.get(c);
+            if (risk === undefined) {
+                throw new Error("I'm sad :(");
+            }
+            const modifiedRisk = (risk + xFactor + yFactor - 1) % 9 + 1;
+            queue.push({ c: n, r: modifiedRisk + item.r });
+        }
+    }
+
+    throw new Error("Failed");
+};
+
+export const chiton = entryForFile(
+    async ({ lines, outputCallback, resultOutputCallback }) => {
+        await resultOutputCallback(getBestCost(lines, 1));
 
     },
     async ({ lines, outputCallback, resultOutputCallback }) => {
-        const oldMatrix = FixedSizeMatrix.fromSingleDigitInput(lines);
-        const matrix = new FixedSizeMatrix<number>(scalarCoordinates(oldMatrix.size, 5));
-
-        for (let x = 0; x < oldMatrix.size.x; x++) {
-            for (let y = 0; y < oldMatrix.size.y; y++) {
-                const r = oldMatrix.get({ x, y })!;
-                for (let xM = 0; xM < 5; xM++) {
-                    for (let yM = 0; yM < 5; yM++) {
-                        const rawNewR = r + xM + yM;
-                        const newR = (rawNewR - 1) % 9 + 1;
-                        const c = { x: x + xM * oldMatrix.size.x, y: y + yM * oldMatrix.size.y };
-                        matrix.set(c, newR);
-                    }
-                }
-            }
-        }
-
-        const queue = new MyPriorityQueue();
-
-        queue.push({ c: { x: 0, y: 0 }, r: 0! });
-
-        const visited = new Set<string>();
-
-        while (!queue.isEmpty()) {
-            const item = queue.pop();
-            if (item.c.x === matrix.size.x - 1 && item.c.y === matrix.size.y - 1) {
-                await resultOutputCallback(item.r);
-                return;
-            }
-            const serialized = defaultSerializers.coordinate2d.serialize(item.c);
-            if (visited.has(serialized)) {
-                continue;
-            }
-            visited.add(serialized);
-            const ns = getSurrounding(item.c);
-            for (const n of ns) {
-                const risk = matrix.get(n);
-                if (risk === undefined) {
-                    continue;
-                }
-                queue.push({ c: n, r: risk + item.r });
-            }
-        }
-
-        await resultOutputCallback("Failed");
+        await resultOutputCallback(getBestCost(lines, 5));
     },
     {
         key: "chiton",
         title: "Chiton",
         supportsQuickRunning: true,
-        embeddedData: true
+        embeddedData: true,
+        stars: 2
     }
 );
