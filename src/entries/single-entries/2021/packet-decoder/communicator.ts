@@ -51,8 +51,9 @@ const visit = (
     }
 
     for (const sub of packet.sub) {
-        let { nodes: subNodes, edges: subEdges, startId: subStart, rootId: subRoot }
-            = visit(sub, startId, colorGenerator);
+        const visitResult = visit(sub, startId, colorGenerator);
+        const { nodes: subNodes, edges: subEdges, rootId: subRoot } = visitResult;
+        let { startId: subStart } = visitResult;
         startId = subStart;
         edges.push({
             color: "white",
