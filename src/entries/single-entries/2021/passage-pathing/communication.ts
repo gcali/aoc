@@ -1,7 +1,8 @@
 import { MessageSender, Pause } from "../../../entry";
+import { buildGraphCommunicator, IGraphCommunicatorMessageSender } from "../../../graphCommunication";
 
 export interface IPassagePathingMessageSender {
-    setup(edges: Array<{from: string; to: string; }>): Promise<void>;
+    setup(edges: Array<{ from: string; to: string; }>): Promise<void>;
     current(node: string): Promise<void>;
     queue(node: string): Promise<void>;
     visited(node: string): Promise<void>;
@@ -20,7 +21,7 @@ export const buildCommunicator = (
 
 type PrivatePassagePathingMessage = {
     type: "setup";
-    nodes: Array<{id: number; label: string}>;
+    nodes: Array<{ id: number; label: string }>;
     edges: Array<{ from: number; to: number; }>;
     animateCallback: (shouldAnimate: boolean) => void;
 } | {
@@ -48,12 +49,14 @@ export function isPassagePathingMessage(message: any): message is PassagePathing
 }
 
 class RealMessageSender implements IPassagePathingMessageSender {
-    private readonly nodeQueueCount: {[key: string]: number} = {};
-    private readonly nodes: {[key: string]: number} = {};
+    private readonly nodeQueueCount: { [key: string]: number } = {};
+    private readonly nodes: { [key: string]: number } = {};
     private shouldAnimate = false;
-    constructor(private readonly messageSender: MessageSender, private readonly pause: Pause) { }
+    constructor(private readonly messageSender: MessageSender, private readonly pause: Pause) {
 
-    public async setup(edges: Array<{from: string; to: string; }>): Promise<void> {
+    }
+
+    public async setup(edges: Array<{ from: string; to: string; }>): Promise<void> {
         const ns = new Set<string>();
         for (const edge of edges) {
             ns.add(edge.from);
@@ -66,16 +69,16 @@ class RealMessageSender implements IPassagePathingMessageSender {
             this.nodes[node] = id++;
         }
         await this.messageSender(buildMessage({
-                type: "setup",
-                edges: edges.map((e) => ({
-                    from: this.nodes[e.from],
-                    to: this.nodes[e.to]
-                })),
-                nodes: nodes.map((n) => ({
-                    id: this.nodes[n],
-                    label: n
-                })),
-                animateCallback: (should) => this.shouldAnimate = should
+            type: "setup",
+            edges: edges.map((e) => ({
+                from: this.nodes[e.from],
+                to: this.nodes[e.to]
+            })),
+            nodes: nodes.map((n) => ({
+                id: this.nodes[n],
+                label: n
+            })),
+            animateCallback: (should) => this.shouldAnimate = should
         }));
     }
 
@@ -84,8 +87,8 @@ class RealMessageSender implements IPassagePathingMessageSender {
             const current = this.nodeQueueCount[node]++;
             if (current > 0) {
                 await this.messageSender(buildMessage({
-                        type: "queue",
-                        node: this.nodes[node]
+                    type: "queue",
+                    node: this.nodes[node]
                 }));
             }
             await this.pause();

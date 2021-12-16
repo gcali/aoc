@@ -1,34 +1,35 @@
 <template lang="pug">
-    BaseMessageTemplate(
-        :title="title"
-        :id="id"
-        :year="year"
-        :entry="entry"
-        :messageHandler="messageHandler"
-        :additionalReset="reset"
-    )
-        .graph
-            .choices
-                .title <b>Warning</b>: a lot of flashes during the animation
-                .c
-                    label
-                        input(type="checkbox" v-model="animate")
-                        | Animate
-            #pathing-graph(:class="{hidden: !showGraph}" ref="graph")
-                
+BaseMessageTemplate(
+    :title="title",
+    :id="id",
+    :year="year",
+    :entry="entry",
+    :messageHandler="messageHandler",
+    :additionalReset="reset"
+)
+    .graph
+        .choices
+            .title <b>Warning</b>: a lot of flashes during the animation
+            .c
+                label
+                    input(type="checkbox", v-model="animate")
+                    | Animate
+        Graph(@setup="handleSetup($event)")
 </template>
 
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from "vue-property-decorator";
-import {
-    Entry, MessageSender,
-} from "../../../../entries/entry";
+import { Entry, MessageSender } from "../../../../entries/entry";
 import BaseMessageTemplate from "../BaseMessageTemplate.vue";
 
-import {isPassagePathingMessage} from "../../../../entries/single-entries/2021/passage-pathing/communication";
+import { isPassagePathingMessage } from "../../../../entries/single-entries/2021/passage-pathing/communication";
 
-import {Network} from "vis-network";
-import {DataSet} from "vis-data";
+import {
+    GraphCommunicatorMessage,
+    PrivateGraphCommunicatorMessage,
+} from "../../../../entries/graphCommunication";
+
+import Graph, { GraphSetupEvent } from "../../../../components/Graph.vue";
 
 interface TicketData {
     id: number;
@@ -37,55 +38,56 @@ interface TicketData {
 }
 @Component({
     components: {
-        BaseMessageTemplate
-    }
+        BaseMessageTemplate,
+        Graph,
+    },
 })
 export default class PassagePathing extends Vue {
-
-@Prop({required: false, default: undefined}) public messageHandlerSetter?: (sender: MessageSender) => void;
     @Prop() public title!: string;
     @Prop() public id!: number;
     @Prop() public entry!: Entry;
     @Prop() public year!: number;
 
-    private showGraph = false;
-    private network: Network | null = null;
     private animate = false;
-    private nodes!: DataSet<{ color: string; id: number; label: string; }, "id">;
 
-    private reset() {
-        this.showGraph = false;
-        this.network = null;
+    private graphMessageSender?: MessageSender;
+
+    private reset: () => void = () => {};
+
+    private handleSetup(event: GraphSetupEvent) {
+        this.reset = event.reset;
+        this.graphMessageSender = event.messageSender;
     }
+
+    private sendMessage(message: PrivateGraphCommunicatorMessage) {
+        if (!this.graphMessageSender) {
+            throw new Error("Graph message sender not setup");
+        }
+        this.graphMessageSender({
+            ...message,
+            kind: "GraphCommunicatorMessage",
+        } as GraphCommunicatorMessage);
+    }
+
     private async messageHandler(message: any): Promise<void> {
         if (!isPassagePathingMessage(message)) {
             throw new Error("Invalid message");
         }
         switch (message.type) {
             case "setup":
-                this.showGraph = true;
+                // this.showGraph = true;
                 message.animateCallback(this.animate);
-                this.nodes = new DataSet(message.nodes.map((n) => ({
-                    ...n,
-                    color: "white"
-                })));
-
-                const edges = new DataSet<any>(message.edges);
-
-                // const container = document.getElementById("pathing-graph");
-                const container = this.$refs.graph as HTMLElement | undefined;
-                if (!container) {
-                    throw new Error("Could not find container");
-                }
-                const data = {
-                    nodes: this.nodes,
-                    edges
-                };
-
-                this.network = new Network(container, data, {
-                    interaction: {
-                        zoomView: false
-                    }
+                this.sendMessage({
+                    type: "setup",
+                    nodes: message.nodes.map((n) => ({
+                        ...n,
+                        color: "white",
+                    })),
+                    edges: message.edges.map((e, i) => ({
+                        ...e,
+                        id: i,
+                        color: "white",
+                    })),
                 });
                 break;
             case "current":
@@ -100,11 +102,12 @@ export default class PassagePathing extends Vue {
         }
     }
 
-
     private changeColor(id: number, color: string) {
-        const node = this.nodes.get(id)!;
-        node.color = color;
-        this.nodes.update(node);
+        this.sendMessage({
+            type: "change-node-color",
+            id,
+            color,
+        });
     }
 }
 </script>

@@ -2,7 +2,7 @@ import { Choice } from "../constants/choice";
 import { Coordinate } from "../support/geometry";
 import { Message } from "./entryStatusMessages";
 
-export interface ScreenBuilder {requireScreen: (size?: Coordinate) => Promise<ScreenPrinter>; }
+export interface ScreenBuilder { requireScreen: (size?: Coordinate) => Promise<ScreenPrinter>; }
 
 const ensureEmebedded = (e: string | true | undefined): string | true => {
     return typeof e === "string" ? e : true;
@@ -12,7 +12,7 @@ export const embedAll = (entries: Entry[]): Entry[] => entries.map((e) => {
     if (e.metadata) {
         return {
             ...e,
-            metadata: {...e.metadata, embeddedData: ensureEmebedded(e.metadata.embeddedData)}
+            metadata: { ...e.metadata, embeddedData: ensureEmebedded(e.metadata.embeddedData) }
         };
     } else {
         return e;
@@ -56,7 +56,7 @@ interface EntryMetadata {
     date?: number;
     hasAdditionalInput?: boolean;
     suggestedDelay?: number;
-    customComponent?: "pause-and-run";
+    customComponent?: "pause-and-run" | "graph";
     supportsQuickRunning?: boolean;
     embeddedData?: string | true;
     canvasBackground?: string;
@@ -208,7 +208,7 @@ export async function executeEntry({
         let resultOutput = 0;
         await callback({
             lines,
-            outputCallback: !isQuickRunning ? outputCallback : async () => {},
+            outputCallback: !isQuickRunning ? outputCallback : async () => { },
             resultOutputCallback: isQuickRunning ? async (line: any, shouldClear?: boolean) => {
                 if (resultOutput > 0) {
                     throw new Error("Cannot output results more than once");

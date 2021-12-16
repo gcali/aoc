@@ -3,9 +3,9 @@ import { MessageSender, Pause } from "./entry";
 export interface IGraphCommunicatorMessageSender {
     send(message: PrivateGraphCommunicatorMessage): Promise<void>;
 }
-export const buildCommunicator = (
-        messageSender: MessageSender | undefined
-    ): IGraphCommunicatorMessageSender => {
+export const buildGraphCommunicator = (
+    messageSender: MessageSender | undefined
+): IGraphCommunicatorMessageSender => {
     if (!messageSender) {
         return new DummyMessageSender();
     } else {
@@ -14,13 +14,13 @@ export const buildCommunicator = (
 };
 
 
-type Node = {
+export type Node = {
     id: number;
     label: string;
     color: string;
 };
 
-type Edge = {
+export type Edge = {
     id: number;
     from: number;
     to: number;
@@ -51,9 +51,12 @@ export type PrivateGraphCommunicatorMessage = {
     type: "change-edge-color";
     id: number;
     color: string;
+} | {
+    type: "title";
+    title: string;
 };
 
-export type GraphCommunicatorMessage = {kind: "GraphCommunicatorMessage"} & PrivateGraphCommunicatorMessage;
+export type GraphCommunicatorMessage = { kind: "GraphCommunicatorMessage" } & PrivateGraphCommunicatorMessage;
 
 const buildMessage = (message: PrivateGraphCommunicatorMessage): GraphCommunicatorMessage => {
     return {
@@ -68,13 +71,13 @@ export function isGraphCommunicatorMessage(message: any): message is GraphCommun
 
 class RealMessageSender implements IGraphCommunicatorMessageSender {
     constructor(private readonly messageSender: MessageSender) { }
-    send(message: PrivateGraphCommunicatorMessage): Promise<void> {
+    public send(message: PrivateGraphCommunicatorMessage): Promise<void> {
         return this.messageSender(buildMessage(message));
     }
 
 }
 
 class DummyMessageSender implements IGraphCommunicatorMessageSender {
-    async send(message: PrivateGraphCommunicatorMessage): Promise<void> {
+    public async send(message: PrivateGraphCommunicatorMessage): Promise<void> {
     }
 }

@@ -1,4 +1,5 @@
 import { entryForFile } from "../../../entry";
+import { buildCommunicator } from "./communicator";
 
 
 type Bit = 0 | 1;
@@ -18,9 +19,9 @@ type OperatorPacket = BasePacket & {
     sub: Packet[];
 };
 
-type Packet = (OperatorPacket | LiteralPacket);
+export type Packet = (OperatorPacket | LiteralPacket);
 
-const isLiteral = (e: Packet): e is LiteralPacket => {
+export const isLiteral = (e: Packet): e is LiteralPacket => {
     return e.id === 4;
 };
 
@@ -165,15 +166,22 @@ const parseInput = (lines: string[]): Bits => {
 };
 
 export const packetDecoder = entryForFile(
-    async ({ lines, resultOutputCallback }) => {
+    async ({ lines, resultOutputCallback, sendMessage, pause }) => {
         const bits = parseInput(lines);
         const [packet] = createPacket(bits, 0);
 
+        const communicator = buildCommunicator(sendMessage, pause);
+
+        await communicator.showPacketTreeVersions(packet);
+
         await resultOutputCallback(countVersions(packet));
     },
-    async ({ lines, resultOutputCallback }) => {
+    async ({ lines, resultOutputCallback, sendMessage, pause }) => {
         const bits = parseInput(lines);
         const [packet] = createPacket(bits, 0);
+        const communicator = buildCommunicator(sendMessage, pause);
+
+        await communicator.showPacketTreeFull(packet);
 
         await resultOutputCallback(calculate(packet));
     },
@@ -182,7 +190,8 @@ export const packetDecoder = entryForFile(
         title: "Packet Decoder",
         supportsQuickRunning: true,
         embeddedData: true,
-        stars: 2
+        stars: 2,
+        customComponent: "graph"
     }
 );
 

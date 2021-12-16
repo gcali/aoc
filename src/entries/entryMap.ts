@@ -2,7 +2,7 @@ import { VueConstructor } from "vue";
 import { Vue } from "vue-property-decorator";
 import { Entry } from "./entry";
 
-import {ticketTranslation} from "./single-entries/2020/ticket-translation";
+import { ticketTranslation } from "./single-entries/2020/ticket-translation";
 import TicketTranslationView from "../views/entries/custom/2020/TicketTranslationView.vue";
 
 import { conwayCubes } from "./single-entries/2020/conway-cubes";
@@ -12,22 +12,24 @@ import { lobbyLayout } from "./single-entries/2020/lobby-layout";
 import LobbyLayout from "../views/entries/custom/2020/LobbyLayout.vue";
 
 import EntryWithPauseAndRun from "@/views/entries/EntryWithPauseAndRun.vue";
+import EntryWithGraph from "@/views/entries/EntryWithGraph.vue";
 
-import {entries as entries2015} from "./single-entries/2015";
-import {entries as entries2016} from "./single-entries/2016";
-import {entries as entries2017} from "./single-entries/2017";
-import {entries as entries2018} from "./single-entries/2018";
-import {entries as entries2019} from "./single-entries/2019";
-import {entries as entries2020} from "./single-entries/2020";
-import {entries as entries2021} from "./single-entries/2021";
+import { entries as entries2015 } from "./single-entries/2015";
+import { entries as entries2016 } from "./single-entries/2016";
+import { entries as entries2017 } from "./single-entries/2017";
+import { entries as entries2018 } from "./single-entries/2018";
+import { entries as entries2019 } from "./single-entries/2019";
+import { entries as entries2020 } from "./single-entries/2020";
+import { entries as entries2021 } from "./single-entries/2021";
 
 import { passagePathing } from "./single-entries/2021/passage-pathing";
 import PassagePathing from "@/views/entries/custom/2021/PassagePathing.vue";
 
-interface EntryMap {[key: string]: VueConstructor<Vue>; }
+interface EntryMap { [key: string]: VueConstructor<Vue>; }
 
 const keyMap: EntryMap = {
-    "pause-and-run": EntryWithPauseAndRun
+    "pause-and-run": EntryWithPauseAndRun,
+    "graph": EntryWithGraph
 };
 
 const buildMap = (tuples: Array<[Entry, VueConstructor<Vue>]>, entries: Entry[]): EntryMap => {
@@ -38,10 +40,10 @@ const buildMap = (tuples: Array<[Entry, VueConstructor<Vue>]>, entries: Entry[])
         }
         return acc;
     },
-    tuples.reduce((acc, next) => {
-        acc[next[0].metadata!.key] = next[1];
-        return acc;
-    }, {} as EntryMap)
+        tuples.reduce((acc, next) => {
+            acc[next[0].metadata!.key] = next[1];
+            return acc;
+        }, {} as EntryMap)
     );
 };
 
