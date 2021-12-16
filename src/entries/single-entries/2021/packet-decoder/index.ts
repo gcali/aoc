@@ -216,6 +216,7 @@ export const packetDecoder = entryForFile(
         key: "packet-decoder",
         title: "Packet Decoder",
         supportsQuickRunning: true,
-        embeddedData: true
+        embeddedData: true,
+        stars: 2
     }
 );
