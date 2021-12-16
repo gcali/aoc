@@ -47,7 +47,7 @@ export default class BaseMessageTemplate extends Vue {
     @Prop() public id!: number;
     @Prop() public entry!: Entry;
     @Prop() public year!: number;
-    @Prop() public messageHandler!: MessageSender;
+    @Prop() public messageHandler: MessageSender | undefined;
     @Prop({required: false}) public additionalReset?: () => void;
 
     private executing: boolean = false;
