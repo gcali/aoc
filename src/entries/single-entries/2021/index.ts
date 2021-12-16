@@ -13,6 +13,7 @@ import { passagePathing } from "./passage-pathing";
 import { transparentOrigami } from "./transparent-origami";
 import { extendedPolymerization } from "./extended-polymerization";
 import { chiton } from "./chiton";
+import { packetDecoder } from "./packet-decoder";
 
 export const entries = [
     sonarSweep,
@@ -29,5 +30,6 @@ export const entries = [
     passagePathing,
     transparentOrigami,
     extendedPolymerization,
-    chiton
+    chiton,
+    packetDecoder
 ];
