@@ -14,6 +14,7 @@ import { transparentOrigami } from "./transparent-origami";
 import { extendedPolymerization } from "./extended-polymerization";
 import { chiton } from "./chiton";
 import { packetDecoder } from "./packet-decoder";
+import { trickShot } from "./trick-shot";
 
 export const entries = [
     sonarSweep,
@@ -31,5 +32,6 @@ export const entries = [
     transparentOrigami,
     extendedPolymerization,
     chiton,
-    packetDecoder
+    packetDecoder,
+    trickShot
 ];
