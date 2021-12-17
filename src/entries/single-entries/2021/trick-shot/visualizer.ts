@@ -26,7 +26,7 @@ class RealVisualizer implements ITrickShotVisualizer {
     }
 
     public async setup(from: Coordinate, to: Coordinate) {
-       await this.screenBuilder.requireScreen({x: 500, y: 600}).then((e) => {
+       await this.screenBuilder.requireScreen({x: 250, y: 550}).then((e) => {
            this.printer = e;
            this.printer.setManualRender();
        });
@@ -55,16 +55,6 @@ class RealVisualizer implements ITrickShotVisualizer {
 
         const i = 0;
 
-        // const drawables = coordinate.map(c => {
-        //     return {
-        //         color: "white",
-        //         id: (i++).toString(),
-        //         type: "rectangle",
-        //         c: c,
-        //         size: {x: 1, y: 1}
-        //     } as Drawable & {type: "rectangle"};
-        // });
-
         const drawable: Drawable & {type: "points"} = {
             type: "points",
             color: "white",
@@ -82,7 +72,7 @@ class RealVisualizer implements ITrickShotVisualizer {
 
     private scale(c: Coordinate) {
         return {
-            x: c.x * 2,
+            x: c.x,
             y: c.y * 0.1
         };
     }
