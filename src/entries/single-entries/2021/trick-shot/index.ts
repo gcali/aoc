@@ -26,8 +26,8 @@ export const trickShot = entryForFile(
         let reallyBestY = 0;
 
 
-        for (let x = 0; x < 1000; x++) {
-            for (let y = 0; y < 1000; y++) {
+        for (let x = 0; x <= xTo; x++) {
+            for (let y = 0; y <= xTo * xTo; y++) {
                 let state: State = {
                     position: { x: 0, y: 0 },
                     speed: { x, y }
