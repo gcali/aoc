@@ -113,6 +113,7 @@ export function simpleOutputCallbackFactory(output: string[], avoidOutput?: () =
 export type Drawable = {
     id: string;
     color: string;
+    shouldStroke?: boolean;
 } & ({
     type: "rectangle";
     c: Coordinate;
