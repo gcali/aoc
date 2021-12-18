@@ -15,6 +15,7 @@ import { extendedPolymerization } from "./extended-polymerization";
 import { chiton } from "./chiton";
 import { packetDecoder } from "./packet-decoder";
 import { trickShot } from "./trick-shot";
+import { snailfish } from "./snailfish";
 
 export const entries = [
     sonarSweep,
@@ -33,5 +34,6 @@ export const entries = [
     extendedPolymerization,
     chiton,
     packetDecoder,
-    trickShot
+    trickShot,
+    snailfish
 ];
