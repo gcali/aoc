@@ -285,8 +285,14 @@ export default class EntrySimpleOutput extends Vue {
                     }
                 }
             }
-            this.context.fillStyle = item.color;
-            this.context.fill();
+            if (item.shouldStroke) {
+                this.context.strokeStyle = item.color;
+                this.context.stroke();
+            } else {
+
+                this.context.fillStyle = item.color;
+                this.context.fill();
+            }
         };
 
         if (this.context && this.canvasSize) {
