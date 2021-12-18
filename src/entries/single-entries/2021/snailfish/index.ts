@@ -113,13 +113,6 @@ const findSplit = (node: Node): Value | undefined => {
 };
 
 const explode = (node: Expression) => {
-    const upExtractor = (node: Expression): Node => {
-        return node.left;
-    };
-    const downExtractor = (node: Expression): Node => {
-        return node.right;
-    };
-
     addTo(node, (n) => n.left, (n) => n.right);
     addTo(node, (n) => n.right, (n) => n.left);
 
@@ -208,14 +201,11 @@ export const snailfish = entryForFile(
 
         let biggest = Number.NEGATIVE_INFINITY;
 
-        for (const line of subsetGenerator(lines, 0, 2)) {
-            const items = [...line];
-            if (items.length === 2) {
-                console.log(items);
-                const a = magnitude(add(parseLine(items[0]), parseLine(items[1])));
-                const b = magnitude(add(parseLine(items[1]), parseLine(items[0])));
-
-                biggest = Math.max(biggest, a, b);
+        for (const a of lines) {
+            for (const b of lines) {
+                if (a !== b) {
+                    biggest = Math.max(biggest, magnitude(add(parseLine(a), parseLine(b))));
+                }
             }
         }
 
