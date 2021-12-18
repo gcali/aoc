@@ -18,35 +18,19 @@ type Node = {
         Value | Expression
     );
 
-const parseNode = (line: string, start: number): { node: Node, end: number } => {
-    if (line[start] === "[") {
-        const { node: leftNode, end: leftEnd } = parseNode(line, start + 1);
-        if (line[leftEnd] !== ",") {
-            throw new Error(`Unexpected token at position: ${leftEnd}: ${line[leftEnd]}. Expecting ,`);
-        }
-        const { node: rightNode, end: rightEnd } = parseNode(line, leftEnd + 1);
-        if (line[rightEnd] !== "]") {
-            throw new Error(`Unexpected token at position: ${leftEnd}: ${line[leftEnd]}. Expecting ,`);
-        }
+const parseList = (data: any): Node => {
+    if (typeof data === "number") {
         return {
-            node: setParents({
-                left: leftNode,
-                right: rightNode
-            }),
-            end: rightEnd + 1
+            value: data
         };
     } else {
-        let end = start;
-        while (line[end] !== "," && line[end] !== "]") {
-            end++;
-        }
-        const n = parseInt(line.slice(start, end), 10);
-        return {
-            node: {
-                value: n
-            },
-            end
-        };
+        const left = parseList(data[0]);
+        const right = parseList(data[1]);
+        const node: Node = setParents({
+            left,
+            right
+        });
+        return node;
     }
 };
 
@@ -55,7 +39,7 @@ const isValue = (node: Node): node is Value => {
 };
 
 const parseLine = (line: string): Node => {
-    return parseNode(line, 0).node;
+    return parseList(JSON.parse(line));
 };
 
 const setParents = (node: Node): Node => {
