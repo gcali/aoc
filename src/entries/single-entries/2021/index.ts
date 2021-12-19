@@ -16,6 +16,7 @@ import { chiton } from "./chiton";
 import { packetDecoder } from "./packet-decoder";
 import { trickShot } from "./trick-shot";
 import { snailfish } from "./snailfish";
+import { beaconScanner } from "./beacon-scanner";
 
 export const entries = [
     sonarSweep,
@@ -35,5 +36,6 @@ export const entries = [
     chiton,
     packetDecoder,
     trickShot,
-    snailfish
+    snailfish,
+    beaconScanner
 ];
