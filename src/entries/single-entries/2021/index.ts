@@ -17,6 +17,7 @@ import { packetDecoder } from "./packet-decoder";
 import { trickShot } from "./trick-shot";
 import { snailfish } from "./snailfish";
 import { beaconScanner } from "./beacon-scanner";
+import { trenchMap } from "./trench-map";
 
 export const entries = [
     sonarSweep,
@@ -37,5 +38,6 @@ export const entries = [
     packetDecoder,
     trickShot,
     snailfish,
-    beaconScanner
+    beaconScanner,
+    trenchMap
 ];

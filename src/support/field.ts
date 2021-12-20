@@ -1,5 +1,5 @@
 import { FixedSizeMatrix } from "./matrix";
-import { Coordinate, getBoundaries, CCoordinate } from "./geometry";
+import { Coordinate, getBoundaries, CCoordinate, Bounds } from "./geometry";
 
 export class UnknownSizeField<T> {
 
@@ -16,8 +16,15 @@ export class UnknownSizeField<T> {
         }
         return element;
     }
-    public toMatrix(): FixedSizeMatrix<T> {
+
+    public getBoundaries(): Bounds {
         const bounds = getBoundaries(Object.keys(this.cells).map(this.deserializeCoordinate));
+        return bounds;
+    }
+
+    public toMatrix(): FixedSizeMatrix<T> {
+        // const bounds = getBoundaries(Object.keys(this.cells).map(this.deserializeCoordinate));
+        const bounds = this.getBoundaries();
         const matrix = new FixedSizeMatrix<T>(bounds.size);
         matrix.setDelta(CCoordinate.fromCoordinate(bounds.topLeft));
         Object.keys(this.cells).forEach((serialized) => {
