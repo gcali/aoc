@@ -69,7 +69,8 @@ export const trenchMap = entryForFile(
         key: "trench-map",
         title: "Trench Map",
         supportsQuickRunning: true,
-        embeddedData: true
+        embeddedData: true,
+        stars: 2
     }
 );
 function countLights(field: Field): number {
