@@ -1,6 +1,7 @@
 import { UnknownSizeField } from "../../../../support/field";
 import { sumCoordinate } from "../../../../support/geometry";
 import { entryForFile } from "../../../entry";
+import { buildVisualizer } from "./visualizer";
 
 type Cell = "#" | ".";
 
@@ -32,34 +33,58 @@ const parseInput = (lines: string[]): { lookup: Cell[], field: Field } => {
 };
 
 export const trenchMap = entryForFile(
-    async ({ lines, outputCallback, resultOutputCallback }) => {
+    async ({ lines, isQuickRunning, resultOutputCallback, screen, pause }) => {
         const input = parseInput(lines);
+
 
         let field = input.field;
         const lookup = input.lookup;
 
+        const iterations = 2;
+
+        const vs = buildVisualizer(screen, pause);
+        if (!isQuickRunning) {
+            const b = field.getBoundaries();
+            await vs.setup(b.size, iterations);
+        }
+
+
         let emptyCell: Cell = ".";
 
-        for (let i = 0; i < 2; i++) {
+        for (let i = 0; i < iterations; i++) {
+            await vs.show(field, emptyCell);
             ({ field, emptyCell } = iterateField(field, emptyCell, lookup));
         }
+        await vs.show(field, emptyCell);
 
         const count = countLights(field);
 
         await resultOutputCallback(count);
 
     },
-    async ({ lines, outputCallback, resultOutputCallback }) => {
+    async ({ lines, screen, pause, isQuickRunning, resultOutputCallback }) => {
         const input = parseInput(lines);
+
 
         let field = input.field;
         const lookup = input.lookup;
 
+        const iterations = 50;
+
+        const vs = buildVisualizer(screen, pause);
+        if (!isQuickRunning) {
+            const b = field.getBoundaries();
+            await vs.setup(b.size, iterations);
+        }
+
+
         let emptyCell: Cell = ".";
 
-        for (let i = 0; i < 50; i++) {
+        for (let i = 0; i < iterations; i++) {
+            await vs.show(field, emptyCell);
             ({ field, emptyCell } = iterateField(field, emptyCell, lookup));
         }
+        await vs.show(field, emptyCell);
 
         const count = countLights(field);
 
@@ -70,7 +95,8 @@ export const trenchMap = entryForFile(
         title: "Trench Map",
         supportsQuickRunning: true,
         embeddedData: true,
-        stars: 2
+        stars: 2,
+        suggestedDelay: 10
     }
 );
 function countLights(field: Field): number {

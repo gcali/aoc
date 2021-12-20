@@ -9,6 +9,21 @@ export class UnknownSizeField<T> {
         this.cells[this.serializeCoordinate(coordinate)] = element;
     }
 
+    public *getPoints(): Iterable<{e: T, c: Coordinate}> {
+        for (const k in this.cells) {
+            if (k in this.cells) {
+                const c = this.deserializeCoordinate(k);
+                const cell = this.cells[k];
+                if (cell) {
+                    yield {
+                        e: cell,
+                        c
+                    };
+                }
+            }
+        }
+    }
+
     public get(coordinate: Coordinate): T | null {
         const element = this.cells[this.serializeCoordinate(coordinate)];
         if (element === undefined) {

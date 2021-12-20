@@ -34,18 +34,18 @@ const combine = (...mappings: Mapping[]): Mapping => {
 };
 
 function *allMappings(): Iterable<Mapping> {
-    for (const order of permutationGenerator([0,1,2])) {
-        for (const subset of subsetGenerator([0,1,2], 0)) {
+    for (const order of permutationGenerator([0, 1, 2])) {
+        for (const subset of subsetGenerator([0, 1, 2], 0)) {
             yield (c: Coordinate3d) => {
                     const raw = [c.x, c.y, c.z];
-                    const ordered = order.map(k => raw[k]);
-                    const inverted = ordered.map((k,i) => subset.includes(i) ? -k : k);
+                    const ordered = order.map((k) => raw[k]);
+                    const inverted = ordered.map((k, i) => subset.includes(i) ? -k : k);
                     return {
                         x: inverted[0],
                         y: inverted[1],
                         z: inverted[2]
                     } as Coordinate3d;
-            }
+            };
         }
         // first = false;
     }
