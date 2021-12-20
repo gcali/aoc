@@ -247,6 +247,7 @@ export const beaconScanner = entryForFile(
         key: "beacon-scanner",
         title: "Beacon Scanner",
         supportsQuickRunning: true,
-        embeddedData: true
+        embeddedData: true,
+        stars: 2
     }
 );

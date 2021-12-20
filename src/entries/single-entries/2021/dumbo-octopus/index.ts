@@ -53,7 +53,8 @@ export const dumboOctopus = entryForFile(
         title: "Dumbo Octopus",
         supportsQuickRunning: true,
         embeddedData: true,
-        suggestedDelay: 100
+        suggestedDelay: 100,
+        stars: 2
     }
 );
 function flash(matrix: FixedSizeMatrix<number>) {
