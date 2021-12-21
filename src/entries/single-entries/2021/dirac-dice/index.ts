@@ -1,9 +1,9 @@
 import { entryForFile } from "../../../entry";
+
 type State = {
     a: FullPlayerState,
     b: FullPlayerState,
 };
-
 
 type FullPlayerState = PlayerState & { missingRolls: number };
 
@@ -90,7 +90,6 @@ const findWinning = (s: State, cache: Cache): Wins => {
             e.b.missingRolls = 3;
         }), cache);
     }
-
 };
 
 type PlayerState = {
@@ -119,15 +118,29 @@ const parseInput = (lines: string[]): {
 };
 
 export const diracDice = entryForFile(
-    async ({ lines, outputCallback, resultOutputCallback }) => {
+    async ({ lines, resultOutputCallback }) => {
         const { a, b } = parseInput(lines);
         const state = {
             die: 1,
             rolls: 0
         };
+        const playTurn = (player: PlayerState) => {
+            for (let i = 0; i < 3; i++) {
+                player.space += state.die;
+                state.die++;
+                if (state.die > 100) {
+                    state.die -= 100;
+                }
+                state.rolls++;
+            }
+
+            player.space = ((player.space - 1) % 10) + 1;
+            player.score += player.space;
+        };
+
         while (true) {
             for (const { player, other } of [{ player: a, other: b }, { player: b, other: a }]) {
-                playTurn(player, state);
+                playTurn(player);
                 if (player.score >= 1000) {
                     await resultOutputCallback(state.rolls * other.score);
                     return;
@@ -135,19 +148,11 @@ export const diracDice = entryForFile(
             }
         }
     },
-    async ({ lines, outputCallback, resultOutputCallback }) => {
-        const [aS, bS] = lines.map((l) => {
-            const tk = l.split(" ");
-            return parseInt(tk[tk.length - 1], 10);
-        });
-        const baseState: FullPlayerState = {
-            score: 0,
-            space: 0,
-            missingRolls: 0
-        };
+    async ({ lines, resultOutputCallback }) => {
+        const { a, b } = parseInput(lines);
         const res = findWinning({
-            a: { ...baseState },
-            b: { ...baseState }
+            a: { ...a, missingRolls: 0 },
+            b: { ...b, missingRolls: 0 }
         }, new Map<string, Wins>());
 
         await resultOutputCallback(Math.max(res.a, res.b));
@@ -160,19 +165,3 @@ export const diracDice = entryForFile(
         stars: 2
     }
 );
-
-function playTurn(player: PlayerState, state: { die: number; rolls: number; }) {
-    for (let i = 0; i < 3; i++) {
-        player.space += state.die;
-        state.die++;
-        if (state.die > 100) {
-            state.die -= 100;
-        }
-        state.rolls++;
-    }
-
-
-    player.space = ((player.space - 1) % 10) + 1;
-    player.score += player.space;
-}
-
