@@ -18,6 +18,7 @@ import { trickShot } from "./trick-shot";
 import { snailfish } from "./snailfish";
 import { beaconScanner } from "./beacon-scanner";
 import { trenchMap } from "./trench-map";
+import { diracDice } from "./dirac-dice";
 
 export const entries = [
     sonarSweep,
@@ -39,5 +40,6 @@ export const entries = [
     trickShot,
     snailfish,
     beaconScanner,
-    trenchMap
+    trenchMap,
+    diracDice
 ];
