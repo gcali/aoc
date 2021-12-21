@@ -1,15 +1,11 @@
 import { entryForFile } from "../../../entry";
-
 type State = {
-    a: number;
-    b: number;
-    aS: number;
-    bS: number;
-    missingRolls: {
-        a: number;
-        b: number;
-    }
+    a: FullPlayerState,
+    b: FullPlayerState,
 };
+
+
+type FullPlayerState = PlayerState & { missingRolls: number };
 
 type Wins = {
     a: number;
@@ -20,21 +16,19 @@ type Cache = Map<string, Wins>;
 
 const serialize = (s: State) => {
     return [
-        s.a,
-        s.b,
-        s.aS,
-        s.bS,
-        s.missingRolls.a,
-        s.missingRolls.b
+        s.a.score,
+        s.b.score,
+        s.a.space,
+        s.b.space,
+        s.a.missingRolls,
+        s.b.missingRolls
     ].map((e) => e.toString()).join("|");
 };
 
 const clone = (s: State, update: (x: State) => void) => {
     const ns = {
-        ...s,
-        missingRolls: {
-            ...s.missingRolls
-        }
+        a: { ...s.a },
+        b: { ...s.b }
     };
     update(ns);
     return ns;
@@ -46,14 +40,14 @@ const sumWins = (target: Wins, source: Wins): void => {
 };
 
 const findWinning = (s: State, cache: Cache): Wins => {
-    if (s.a >= 21) {
+    if (s.a.score >= 21) {
         return {
             a: 1,
             b: 0
         };
     }
 
-    if (s.b >= 21) {
+    if (s.b.score >= 21) {
         return {
             a: 0,
             b: 1
@@ -70,44 +64,33 @@ const findWinning = (s: State, cache: Cache): Wins => {
         b: 0
     };
 
-    if (s.missingRolls.a > 0) {
+    const playerToRoll: keyof State | null =
+        s.a.missingRolls > 0 ? "a" :
+            (s.b.missingRolls > 0 ? "b" : null);
+
+    if (playerToRoll !== null) {
         for (let i = 1; i <= 3; i++) {
             sumWins(result, findWinning(clone(s, (e) => {
-                e.missingRolls.a--;
-                e.aS += i;
-                if (e.aS > 10) {
-                    e.aS -= 10;
+                const playerState = e[playerToRoll];
+                playerState.missingRolls--;
+                playerState.space += i;
+                if (playerState.space > 10) {
+                    playerState.space -= 10;
                 }
-                if (e.missingRolls.a === 0) {
-                    e.a += e.aS;
+                if (playerState.missingRolls === 0) {
+                    playerState.score += playerState.space;
                 }
             }), cache));
             cache.set(serialized, result);
         }
         return result;
+    } else {
+        return findWinning(clone(s, (e) => {
+            e.a.missingRolls = 3;
+            e.b.missingRolls = 3;
+        }), cache);
     }
 
-    if (s.missingRolls.b > 0) {
-        for (let i = 1; i <= 3; i++) {
-            sumWins(result, findWinning(clone(s, (e) => {
-                e.missingRolls.b--;
-                e.bS += i;
-                if (e.bS > 10) {
-                    e.bS -= 10;
-                }
-                if (e.missingRolls.b === 0) {
-                    e.b += e.bS;
-                }
-            }), cache));
-            cache.set(serialized, result);
-        }
-        return result;
-    }
-
-    return findWinning(clone(s, (e) => {
-        e.missingRolls.a = 3;
-        e.missingRolls.b = 3;
-    }), cache);
 };
 
 type PlayerState = {
@@ -157,15 +140,14 @@ export const diracDice = entryForFile(
             const tk = l.split(" ");
             return parseInt(tk[tk.length - 1], 10);
         });
+        const baseState: FullPlayerState = {
+            score: 0,
+            space: 0,
+            missingRolls: 0
+        };
         const res = findWinning({
-            a: 0,
-            b: 0,
-            aS,
-            bS,
-            missingRolls: {
-                a: 0,
-                b: 0
-            }
+            a: { ...baseState },
+            b: { ...baseState }
         }, new Map<string, Wins>());
 
         await resultOutputCallback(Math.max(res.a, res.b));
