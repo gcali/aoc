@@ -19,6 +19,7 @@ import { snailfish } from "./snailfish";
 import { beaconScanner } from "./beacon-scanner";
 import { trenchMap } from "./trench-map";
 import { diracDice } from "./dirac-dice";
+import { reactorReboot } from "./reactor-reboot";
 
 export const entries = [
     sonarSweep,
@@ -41,5 +42,6 @@ export const entries = [
     snailfish,
     beaconScanner,
     trenchMap,
-    diracDice
+    diracDice,
+    reactorReboot
 ];
