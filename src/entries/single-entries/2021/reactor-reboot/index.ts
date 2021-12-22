@@ -1,6 +1,3 @@
-import { defaultMaxListeners } from "stream";
-import { Coordinate3d, isInBounds, serialization } from "../../../../support/geometry";
-import { defaultSerializers } from "../../../../support/serialization";
 import { entryForFile } from "../../../entry";
 
 type Range = {
@@ -8,17 +5,118 @@ type Range = {
     to: number;
 };
 
-type Instruction = {
-    action: "on" | "off";
+type Cube = {
     x: Range;
     y: Range;
     z: Range;
-};
+}
 
-function* overRange(range: Range, bounds?: Range): Iterable<number> {
-    for (let i = Math.max(range.from, (bounds || range).from); i <= Math.min(range.to, (bounds || range).to); i++) {
-        yield i;
+type Instruction = {
+    action: "on" | "off";
+} & Cube;
+
+function *segments(a: Range, b: Range): Iterable<Range> {
+    if ((b.to < a.from || a.to < b.from) || 
+    (b.from <= a.from && b.to >= a.to)) {
+        //all inside or all outside
+        yield a;
+        return;
     }
+    if (b.from <= a.from) {
+        yield {from: a.from, to: b.to};
+        yield {from: b.to+1, to: a.to};
+    } else if (b.to >= a.to) {
+        yield {from: a.from, to: b.from - 1};
+        yield {from: b.from, to: a.to};
+    } else {
+        //clipper is entirely inside
+        yield {from: a.from, to: b.from-1};
+        yield {from: b.from, to: b.to};
+        yield {from: b.to+1, to: a.to};
+    }
+}
+
+const splitCube = (target: Cube, clipper: Cube): Cube[] => {
+    const candidateCubes: Cube[] = [];
+    for (const x of segments(target.x, clipper.x)) {
+        for (const y of segments(target.y, clipper.y)) {
+            for (const z of segments(target.z, clipper.z)) {
+                candidateCubes.push({ x, y, z });
+            }
+        }
+    }
+    return candidateCubes;
+}
+
+
+const isInside = (inner: Cube, outer: Cube): boolean => {
+    for (const key of ["x","y","z"] as (keyof Cube)[]) {
+        if (inner[key].from < outer[key].from || inner[key].to > outer[key].to) {
+            return false;
+        }
+    }
+    return true;
+}
+const filterOut = (cubes: Cube[], clipper: Cube): Cube[] => cubes.filter(c => !isInside(c, clipper));
+
+const splitFilter = (target: Cube, clipper: Cube): Cube[] => joinCubes(filterOut(splitCube(target, clipper), clipper));
+
+const cubeKeys = ["x", "y", "z"] as (keyof Cube)[];
+
+const tryJoin = (a: Cube, b: Cube): Cube | null => {
+    const matching = cubeKeys.filter(k => a[k].from === b[k].from && a[k].to === b[k].to);
+    if (matching.length === 3) {
+        return a;
+    }
+    if (matching.length !== 2) {
+        return null;
+    }
+    const [mismatched] = cubeKeys.filter(k => !matching.includes(k));
+    let first = b;
+    let second = a;
+    if (a[mismatched].from < b[mismatched].from) {
+        first = a;
+        second = b;
+    }
+    if (first[mismatched].to === second[mismatched].from - 1) {
+        const cube = {
+            x: {from: 0, to: 0},
+            y: {from: 0, to: 0},
+            z: {from: 0, to: 0},
+        };
+        for (const k of matching) {
+            cube[k] = {...a[k]}
+        }
+        cube[mismatched] = {
+            from: first[mismatched].from,
+            to: second[mismatched].to
+        };
+        return cube;
+    }
+    return null;
+}
+
+const joinCubes = (cubes: Cube[]): Cube[] => {
+    if (cubes.length === 0) {
+        return [];
+    }
+    let toJoin = [...cubes];
+    const joined: Cube[] = [];
+
+    while (toJoin.length > 0) {
+        let current = toJoin.pop()!;
+        const matched: Cube[] = [];
+        for (const other of toJoin) {
+            const joinResult = tryJoin(current, other);
+            if (joinResult !== null) {
+                matched.push(other);
+                current = joinResult;
+            }
+        }
+        toJoin = toJoin.filter(e => !matched.includes(e));
+        joined.push(current);
+    }
+    return joined;
 }
 
 const parseInput = (lines: string[]): Instruction[] => {
@@ -36,74 +134,49 @@ const parseInput = (lines: string[]): Instruction[] => {
     });
 };
 
-class Grid {
-    private readonly turnedOn = new Set<string>();
-
-    public turnOn(c: Coordinate3d) {
-        this.turnedOn.add(this.ser(c));
-    }
-
-    public turnOff(c: Coordinate3d) {
-        this.turnedOn.delete(this.ser(c));
-    }
-
-    public *getTurnedOn(): Iterable<Coordinate3d> {
-        for (const item of this.turnedOn) {
-            yield this.de(item);
-        }
-    }
-
-    public isTurnedOn(c: Coordinate3d): boolean {
-        return this.turnedOn.has(this.ser(c));
-    }
-
-    private ser(c: Coordinate3d) {
-        return serialization.serialize(c);
-    }
-
-    private de(s: string): Coordinate3d {
-        return serialization.deserialize3d(s);
-    }
+const area = (c: Cube): number => {
+    const sides = (["x","y","z"] as (keyof Cube)[]).map(axis => c[axis].to - c[axis].from + 1);
+    return sides.reduce((acc, next) => acc * next, 1);
 }
 
-const isInRange = (c: Coordinate3d | number, r: Range): boolean => {
-    if (typeof c === "number") {
-        return c >= r.from && c <= r.to;
-    }
-    return isInRange(c.x, r) && isInRange(c.y, r) && isInRange(c.z, r);
-};
-
 export const reactorReboot = entryForFile(
-    async ({ lines, outputCallback, resultOutputCallback }) => {
+    async ({ lines, resultOutputCallback }) => {
         const instructions = parseInput(lines);
-        const grid = new Grid();
         const baseRange = { from: -50, to: 50 };
+        let cubes: Cube[] = [];
         for (const i of instructions) {
-            for (const x of overRange(i.x, baseRange)) {
-                for (const y of overRange(i.y, baseRange)) {
-                    for (const z of overRange(i.z, baseRange)) {
-                        const c = { x, y, z };
-                        if (i.action === "on") {
-                            grid.turnOn(c);
-                        } else {
-                            grid.turnOff(c);
-                        }
-                    }
-                }
+            const isOut = cubeKeys.some(key => i[key].to < baseRange.from || i[key].from > baseRange.to);
+            if (isOut) {
+                continue;
             }
-            // console.log(...grid.getTurnedOn());
-            // console.log(([...grid.getTurnedOn()].length));
+            cubes = cubes.flatMap(c => splitFilter(c, i));
+            if (i.action === "on") {
+                cubes.push(i);
+            }
+
         }
 
-        const count = [...grid.getTurnedOn()].length;
-        await resultOutputCallback(count);
+        const sizes = cubes.map(area);
+        await resultOutputCallback(sizes.reduce((acc, next) => acc + next, 0))
     },
-    async ({ lines, outputCallback, resultOutputCallback }) => {
+    async ({ lines, resultOutputCallback }) => {
+        const instructions = parseInput(lines);
+        let cubes: Cube[] = [];
+        for (const i of instructions) {
+            cubes = cubes.flatMap(c => splitFilter(c, i));
+            if (i.action === "on") {
+                cubes.push(i);
+            }
+
+        }
+        const sizes = cubes.map(area);
+        await resultOutputCallback(sizes.reduce((acc, next) => acc + next, 0))
     },
     {
         key: "reactor-reboot",
         title: "Reactor Reboot",
         supportsQuickRunning: true,
-        embeddedData: true
+        embeddedData: true,
+        stars: 2
     }
 );
