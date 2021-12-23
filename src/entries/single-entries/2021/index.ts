@@ -20,6 +20,7 @@ import { beaconScanner } from "./beacon-scanner";
 import { trenchMap } from "./trench-map";
 import { diracDice } from "./dirac-dice";
 import { reactorReboot } from "./reactor-reboot";
+import { amphipod } from "./amphipod";
 
 export const entries = [
     sonarSweep,
@@ -43,5 +44,6 @@ export const entries = [
     beaconScanner,
     trenchMap,
     diracDice,
-    reactorReboot
+    reactorReboot,
+    amphipod
 ];
