@@ -162,14 +162,18 @@ export const reactorReboot = entryForFile(
     async ({ lines, resultOutputCallback }) => {
         const instructions = parseInput(lines);
         let cubes: Cube[] = [];
+        let max = 0;
         for (const i of instructions) {
             cubes = cubes.flatMap(c => splitFilter(c, i));
             if (i.action === "on") {
                 cubes.push(i);
             }
 
+            max = Math.max(cubes.length, max);
+
         }
         const sizes = cubes.map(area);
+        console.log(max);
         await resultOutputCallback(sizes.reduce((acc, next) => acc + next, 0))
     },
     {
