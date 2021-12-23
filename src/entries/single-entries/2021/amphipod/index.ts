@@ -47,17 +47,19 @@ const parseInput = (lines: string[]): State => {
 export const amphipod = entryForFile(
     async ({ lines, outputCallback, resultOutputCallback }) => {
         const baseState = parseInput(lines);
-        const destinations = [0, 0, 1, 1, 2, 2, 3, 3] as Room[];
+        const destinations = [0, 1, 2, 3] as Room[];
+        const indexes = { A: 0, B: 1, C: 2, D: 3 };
         const startingStates = [...permutationGenerator(destinations)].map((p) => {
             const newState = {
-                ...baseState, amphis: baseState.amphis.map((a, i) => ({
+                ...baseState, amphis: baseState.amphis.map((a) => ({
                     ...a,
-                    destination: p[i]
+                    destination: p[indexes[a.amphiType]]
                 }))
             };
             return newState;
 
         });
+        console.log(startingStates.length);
         const queue = new BinaryHeap<State>({ comparator: (a, b) => b.cost - a.cost });
         const ns = lines.map((l) => parseInt(l, 10));
         const result: any = 0;
@@ -65,7 +67,7 @@ export const amphipod = entryForFile(
         }
         for (const x of ns) {
         }
-        await resultOutputCallback(result.amphis);
+        // await resultOutputCallback(result.amphis);
     },
     async ({ lines, outputCallback, resultOutputCallback }) => {
         const ns = lines.map((l) => parseInt(l, 10));
