@@ -21,6 +21,7 @@ import { trenchMap } from "./trench-map";
 import { diracDice } from "./dirac-dice";
 import { reactorReboot } from "./reactor-reboot";
 import { amphipod } from "./amphipod";
+import { arithmeticLogicUnit } from "./arithmetic-logic-unit";
 
 export const entries = [
     sonarSweep,
@@ -45,5 +46,6 @@ export const entries = [
     trenchMap,
     diracDice,
     reactorReboot,
-    amphipod
+    amphipod,
+    arithmeticLogicUnit
 ];
