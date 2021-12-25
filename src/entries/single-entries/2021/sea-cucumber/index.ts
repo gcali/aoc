@@ -40,7 +40,8 @@ const move = (matrix: FixedSizeMatrix<Cell>, cellType: ">" | "v"): { result: Fix
 };
 
 export const seaCucumber = entryForFile(
-    async ({ lines, screen, pause, resultOutputCallback }) => {
+    async ({ lines, screen, pause, resultOutputCallback, setAutoStop }) => {
+        setAutoStop();
         const vs = buildVisualizer(screen, pause);
         let matrix = parseInput(lines);
 

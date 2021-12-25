@@ -13,7 +13,7 @@
         div(v-else :style="{marginBottom: '1em'}") No input available: 
             | you cannot select your input for the current year in order to avoid cheating!
         .choices(:class="{hidden: hideChoices}")
-            EntryChoice(:key="this.$route.path", @execute="loadFile", :disabled="disabled")
+            EntryChoice(:key="this.$route.path", @execute="loadFile", :disabled="disabled", :date="date")
 </template>
 
 <script lang="ts">
@@ -34,6 +34,7 @@ export default class EntryInput extends Vue {
     @Prop({ default: false }) public disabled!: boolean;
     @Prop({required: true, default: ""}) public entryKey!: string;
     @Prop({required: true}) public year!: string;
+    @Prop({required: true}) public date!: number;
 
     private inputContent: string | null = null;
     private forceEmbedded: boolean = false;

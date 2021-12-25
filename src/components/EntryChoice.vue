@@ -1,7 +1,7 @@
 <template lang="pug">
 .entry-choice(:class="{hidden: hidden}")
-    label.question Which entry?
-    .choices
+    label.question {{label}}
+    .choices(v-if="!isLast")
         label 
             input(type="radio", value="first", v-model="choice", :disabled="disabled")
             | First
@@ -17,7 +17,14 @@ import { Component, Vue, Prop } from "vue-property-decorator";
 export default class EntryChoice extends Vue {
     @Prop({ default: false }) public hidden!: boolean;
     @Prop({ default: false }) public disabled!: boolean;
+    @Prop({required: true}) public date!: number;
     private choice: string = "first";
+    public get isLast() {
+        return this.date === 25;
+    }
+    public get label() {
+        return this.isLast ? "" : "Which entry?";
+    }
     public show() {
         const emitResult = this.$emit("execute", this.choice);
     }
