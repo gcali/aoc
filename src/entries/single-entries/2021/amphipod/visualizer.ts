@@ -1,6 +1,6 @@
-import { State } from '.';
-import { permutationGenerator } from '../../../../support/sequences';
-import { Drawable, Pause, ScreenBuilder, ScreenPrinter } from '../../../entry';
+import { State } from ".";
+import { permutationGenerator } from "../../../../support/sequences";
+import { Drawable, Pause, ScreenBuilder, ScreenPrinter } from "../../../entry";
 
 export interface IAmphipodVisualizer {
     showStates(states: string[]): Promise<void>;
@@ -12,15 +12,15 @@ export const buildVisualizer = (screenBuilder: ScreenBuilder | undefined, pause:
     } else {
         return new DummyVisualizer();
     }
-}
+};
 
 class RealVisualizer implements IAmphipodVisualizer {
     constructor(
         private readonly screenBuilder: ScreenBuilder,
         private readonly pause: Pause
-    ) { 
+    ) {
     }
-    async showStates(states: string[]): Promise<void> {
+    public async showStates(states: string[]): Promise<void> {
         const matching: {[key: string]: string} = {
             "#": "black",
             // ".": "white",
@@ -33,12 +33,12 @@ class RealVisualizer implements IAmphipodVisualizer {
         const cellSize = 20;
         const cellPadding = 1;
 
-        const grids = states.map(state => state.split("\n"));
+        const grids = states.map((state) => state.split("\n"));
 
         const height = grids[0].length;
-        const width = Math.max(...grids[0].map(s => s.length));
+        const width = Math.max(...grids[0].map((s) => s.length));
 
-        const printer = await this.screenBuilder.requireScreen({x: width * cellSize, y: height * cellSize})
+        const printer = await this.screenBuilder.requireScreen({x: width * cellSize, y: height * cellSize});
 
         printer.setManualRender();
 
@@ -71,7 +71,7 @@ class RealVisualizer implements IAmphipodVisualizer {
 }
 
 class DummyVisualizer implements IAmphipodVisualizer {
-    async showStates(states: string[]): Promise<void> {
+    public async showStates(states: string[]): Promise<void> {
     }
 
 }

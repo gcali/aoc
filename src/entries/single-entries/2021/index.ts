@@ -22,6 +22,7 @@ import { diracDice } from "./dirac-dice";
 import { reactorReboot } from "./reactor-reboot";
 import { amphipod } from "./amphipod";
 import { arithmeticLogicUnit } from "./arithmetic-logic-unit";
+import { seaCucumber } from "./sea-cucumber";
 
 export const entries = [
     sonarSweep,
@@ -47,5 +48,6 @@ export const entries = [
     diracDice,
     reactorReboot,
     amphipod,
-    arithmeticLogicUnit
+    arithmeticLogicUnit,
+    seaCucumber
 ];
