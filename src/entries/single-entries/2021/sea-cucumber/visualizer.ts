@@ -28,7 +28,8 @@ class RealVisualizer implements ISeaCucumberVisualizer {
         const cellSize = 5;
         const cellPadding = 1;
         this.printer = await this.screenBuilder.requireScreen(scalarCoordinates(size, cellSize));
-        this.printer.setManualRender();
+        // this.printer.setManualRender();
+        // this.printer.setManualInvalidate();
         this.drawables = new FixedSizeMatrix<Drawable>(size);
         for (let x = 0; x < size.x; x++) {
             for (let y = 0; y < size.y; y++) {
@@ -54,9 +55,10 @@ class RealVisualizer implements ISeaCucumberVisualizer {
                 throw new Error("Setup not called");
             }
             const drawable = this.drawables.getUnsafe(c);
+            // this.printer.invalidate(drawable);
             drawable.color = color;
         });
-        this.printer.forceRender();
+        // this.printer.forceRender();
         await this.pause();
     }
 }
