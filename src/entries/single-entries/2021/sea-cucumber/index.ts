@@ -2,6 +2,7 @@ import { NotImplementedError } from "../../../../support/error";
 import { directions, sumCoordinate } from "../../../../support/geometry";
 import { FixedSizeMatrix } from "../../../../support/matrix";
 import { entryForFile } from "../../../entry";
+import { seaBackground } from "../support/submarine";
 import { buildVisualizer } from "./visualizer";
 
 export type Cell = ">" | "v" | ".";
@@ -40,9 +41,9 @@ const move = (matrix: FixedSizeMatrix<Cell>, cellType: ">" | "v"): { result: Fix
 };
 
 export const seaCucumber = entryForFile(
-    async ({ lines, screen, pause, resultOutputCallback, setAutoStop }) => {
+    async ({ lines, mediaQuery, screen, pause, resultOutputCallback, setAutoStop }) => {
         setAutoStop();
-        const vs = buildVisualizer(screen, pause);
+        const vs = buildVisualizer(screen, pause, mediaQuery);
         let matrix = parseInput(lines);
 
         await vs.setup(matrix.size);
@@ -78,7 +79,7 @@ export const seaCucumber = entryForFile(
         embeddedData: true,
         suggestedDelay: 10,
         stars: 2,
-        customComponent: "pause-and-run"
+        customComponent: "pause-and-run",
     }
 );
 

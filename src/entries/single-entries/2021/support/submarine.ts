@@ -76,3 +76,4 @@ export class Submarine {
 
 
 export const seaBackground = "#000071";
+export const deepSea = "#07131f";

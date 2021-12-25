@@ -1,16 +1,17 @@
 import { Cell } from ".";
 import { Coordinate, diffCoordinate, scalarCoordinates, sumCoordinate } from "../../../../support/geometry";
 import { FixedSizeMatrix } from "../../../../support/matrix";
-import { Drawable, Pause, ScreenBuilder, ScreenPrinter } from "../../../entry";
+import { Drawable, MediaQuery, Pause, ScreenBuilder, ScreenPrinter } from "../../../entry";
+import { deepSea, seaBackground } from "../support/submarine";
 
 export interface ISeaCucumberVisualizer {
     setup(size: Coordinate): Promise<void>;
     show(matrix: FixedSizeMatrix<Cell>): Promise<void>;
 }
 
-export const buildVisualizer = (screenBuilder: ScreenBuilder | undefined, pause: Pause) => {
+export const buildVisualizer = (screenBuilder: ScreenBuilder | undefined, pause: Pause, mediaQuery: MediaQuery) => {
     if (screenBuilder) {
-        return new RealVisualizer(screenBuilder, pause);
+        return new RealVisualizer(screenBuilder, pause, mediaQuery);
     } else {
         return new DummyVisualizer();
     }
@@ -21,12 +22,13 @@ class RealVisualizer implements ISeaCucumberVisualizer {
     private drawables?: FixedSizeMatrix<Drawable>;
     constructor(
         private readonly screenBuilder: ScreenBuilder,
-        private readonly pause: Pause
+        private readonly pause: Pause,
+        private readonly mediaQuery: MediaQuery
     ) {
     }
     public async setup(size: Coordinate): Promise<void> {
-        const cellSize = 5;
-        const cellPadding = 1;
+        const cellSize = this.mediaQuery.isMobile() ? 2 : 5;
+        const cellPadding = this.mediaQuery.isMobile() ? 0 : 1;
         this.printer = await this.screenBuilder.requireScreen(scalarCoordinates(size, cellSize));
         // this.printer.setManualRender();
         // this.printer.setManualInvalidate();
@@ -50,7 +52,7 @@ class RealVisualizer implements ISeaCucumberVisualizer {
     }
     public async show(matrix: FixedSizeMatrix<Cell>): Promise<void> {
         matrix.onEveryCellSyncUnsafe((c, e) => {
-            const color = e === "." ? "white" : (e === ">" ? "red" : "blue");
+            const color = e === "." ? deepSea : (e === ">" ? "#fae520" : "teal");
             if (!this.drawables) {
                 throw new Error("Setup not called");
             }
