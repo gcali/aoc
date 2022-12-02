@@ -21,6 +21,7 @@ import { entries as entries2018 } from "./single-entries/2018";
 import { entries as entries2019 } from "./single-entries/2019";
 import { entries as entries2020 } from "./single-entries/2020";
 import { entries as entries2021 } from "./single-entries/2021";
+import { entries as entries2022 } from "./single-entries/2022";
 
 import { passagePathing } from "./single-entries/2021/passage-pathing";
 import PassagePathing from "@/views/entries/custom/2021/PassagePathing.vue";
@@ -64,7 +65,8 @@ export const map: { [key: string]: VueConstructor<Vue> } = [
     buildMap([], entries2018),
     buildMap([], entries2019),
     map2020,
-    map2021
+    map2021,
+    buildMap([], entries2022),
 ].reduce((acc, next) => {
     for (const key in next) {
         if (key in next) {
