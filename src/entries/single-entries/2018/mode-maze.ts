@@ -264,5 +264,5 @@ export function calculatePath(
             serializeNode({ coordinate: target, tool: "light" }),
             { cost: true }
         );
-    return resultPath;
+    return resultPath as { path: string[], cost: number };
 }
