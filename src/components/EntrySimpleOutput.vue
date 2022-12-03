@@ -285,6 +285,7 @@ export default class EntrySimpleOutput extends Vue {
                     }
                 }
             }
+
             if (item.shouldStroke) {
                 this.context.strokeStyle = item.color;
                 this.context.stroke();

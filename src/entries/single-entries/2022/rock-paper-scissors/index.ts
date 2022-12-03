@@ -99,6 +99,7 @@ export const rockPaperScissors = entryForFile(
         key: "rock-paper-scissors",
         title: "Rock Paper Scissors",
         supportsQuickRunning: true,
-        embeddedData: true
+        embeddedData: true,
+        stars: 2
     }
 );

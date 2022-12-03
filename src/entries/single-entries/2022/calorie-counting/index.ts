@@ -85,6 +85,7 @@ export const calorieCounting = entryForFile(
         title: "Calorie Counting",
         supportsQuickRunning: true,
         embeddedData: true,
-        suggestedDelay: 10
+        suggestedDelay: 10,
+        stars: 2
     }
 );
