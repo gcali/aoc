@@ -57,9 +57,6 @@ export const rockPaperScissors = entryForFile(
             };
         });
 
-        const candidates: Mapper[] = [
-        ];
-
         const all = ["A", "B", "C"] as RPS[];
 
         const mapper = (e: Strategy): RPS => {
@@ -70,6 +67,7 @@ export const rockPaperScissors = entryForFile(
             };
             return trans[e];
         };
+
         let points = 0;
         for (const e of data) {
             points += pointCalculator(e.opp, mapper(e.mine));
@@ -78,15 +76,7 @@ export const rockPaperScissors = entryForFile(
         await resultOutputCallback(points);
     },
     async ({ lines, outputCallback, resultOutputCallback }) => {
-        const data = lines.map((l) => {
-            const [a, b] = l.split(" ");
-            return {
-                opp: a as RPS,
-                mine: b as Strategy
-            };
-        });
-
-        const all = ["A", "B", "C"] as RPS[];
+        const data = parseInput(lines);
 
         let points = 0;
         for (const e of data) {
@@ -103,3 +93,14 @@ export const rockPaperScissors = entryForFile(
         stars: 2
     }
 );
+
+function parseInput(lines: string[]) {
+    return lines.map((l) => {
+        const [a, b] = l.split(" ");
+        return {
+            opp: a as RPS,
+            mine: b as Strategy
+        };
+    });
+}
+
