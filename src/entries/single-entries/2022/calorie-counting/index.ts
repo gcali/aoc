@@ -7,16 +7,16 @@ export type CalorieCountingData = number[][];
 
 export const calorieCounting = entryForFile(
     async ({ lines, outputCallback, resultOutputCallback, screen, pause }) => {
-        const groups = [...buildGroupsFromSeparator(lines, e => e.trim().length === 0)]
-            .map(g => g.map(e => parseInt(e, 10)));
+        const groups = [...buildGroupsFromSeparator(lines, (e) => e.trim().length === 0)]
+            .map((g) => g.map((e) => parseInt(e, 10)));
 
         const visualizer = buildVisualizer(screen, pause);
 
         await visualizer.showOnScreen(groups);
 
-        const groupTotals = groups.map(g => g.reduce((acc, next) => acc + next, 0));
+        const groupTotals = groups.map((g) => g.reduce((acc, next) => acc + next, 0));
 
-        let max = {
+        const max = {
             index: undefined as undefined | number,
             value: 0
         };
@@ -38,14 +38,14 @@ export const calorieCounting = entryForFile(
         await resultOutputCallback(max.value);
     },
     async ({ lines, outputCallback, resultOutputCallback, screen, pause }) => {
-        const groups = [...buildGroupsFromSeparator(lines, e => e.trim().length === 0)]
-            .map(g => g.map(e => parseInt(e, 10)));
+        const groups = [...buildGroupsFromSeparator(lines, (e) => e.trim().length === 0)]
+            .map((g) => g.map((e) => parseInt(e, 10)));
 
         const visualizer = buildVisualizer(screen, pause);
 
         await visualizer.showOnScreen(groups);
 
-        const groupTotals = groups.map(g => g.reduce((acc, next) => acc + next, 0));
+        const groupTotals = groups.map((g) => g.reduce((acc, next) => acc + next, 0));
 
         type MyMax = {
             index: number,
@@ -76,7 +76,7 @@ export const calorieCounting = entryForFile(
             heap.pop(),
             heap.pop(),
             heap.pop()
-        ].reduce((acc, next) => acc + next.value, 0)
+        ].reduce((acc, next) => acc + next.value, 0);
 
         await resultOutputCallback(result);
     },

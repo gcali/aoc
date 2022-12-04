@@ -76,7 +76,11 @@ const canReach = (amphi: AmphiState, state: State, depth: number): ReachResult[]
         return [];
     }
     if (rooms.some((r) => r === amphi.position.x)) {
-        const others = state.amphis.filter((a) => a !== amphi && a.position.x === amphi.position.x && a.position.y < amphi.position.y);
+        const others = state.amphis.filter(
+            (a) => a !== amphi &&
+                   a.position.x === amphi.position.x &&
+                   a.position.y < amphi.position.y
+        );
         if (others.length > 0) {
             return [];
         }
@@ -106,7 +110,10 @@ const canReach = (amphi: AmphiState, state: State, depth: number): ReachResult[]
                 }
                 if (rooms.some((r) => r === current)) {
                     const matching = state.amphis.filter((a) => a !== amphi && a.position.x === current);
-                    if (matching.every((a) => a.amphiType === amphi.amphiType) && (amphi.destination === null || amphi.destination === current)) {
+                    if (
+                        matching.every((a) => a.amphiType === amphi.amphiType) &&
+                        (amphi.destination === null || amphi.destination === current)
+                    ) {
                         const lastEmpty = 1 + depth - matching.length;
                         result.push({
                             c: {x: current, y: lastEmpty},

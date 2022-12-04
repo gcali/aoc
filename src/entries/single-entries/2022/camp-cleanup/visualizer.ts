@@ -1,6 +1,6 @@
-import { Dictionary } from 'linq-typescript';
-import { Pair, Range } from '.';
-import { Drawable, Pause, ScreenBuilder, ScreenPrinter } from '../../../entry';
+import { Dictionary } from "linq-typescript";
+import { Pair, Range } from ".";
+import { Drawable, Pause, ScreenBuilder, ScreenPrinter } from "../../../entry";
 
 export interface ICampCleanupVisualizer {
     showPairs(pairs: Pair[]): Promise<void>;
@@ -13,7 +13,7 @@ export const buildVisualizer = (screenBuilder: ScreenBuilder | undefined, pause:
     } else {
         return new DummyVisualizer();
     }
-}
+};
 
 const constants = (() => {
     const internalPadding = 2;
@@ -32,22 +32,22 @@ const constants = (() => {
             y: borderThickness * 2 + internalPadding * 3 + lineThickness * 2
         },
         cols: 15
-    }
+    };
 })();
 
 class RealVisualizer implements ICampCleanupVisualizer {
     private printer!: ScreenPrinter;
+
+    private pairs: Dictionary<number, Drawable> = new Dictionary<number, Drawable>();
     constructor(
         private readonly screenBuilder: ScreenBuilder,
         private readonly pause: Pause
     ) {
     }
 
-    private pairs: Dictionary<number, Drawable> = new Dictionary<number, Drawable>();
+    public async showPairs(pairs: Pair[]): Promise<void> {
 
-    async showPairs(pairs: Pair[]): Promise<void> {
-
-        const maxValue = Math.max(...pairs.flatMap(p => [p.a.from, p.a.to, p.b.from, p.b.to]));
+        const maxValue = Math.max(...pairs.flatMap((p) => [p.a.from, p.a.to, p.b.from, p.b.to]));
 
         this.printer = await this.screenBuilder.requireScreen({
             x: (constants.boxSize.x + constants.boxPadding) * constants.cols,
@@ -80,7 +80,7 @@ class RealVisualizer implements ICampCleanupVisualizer {
 
             this.pairs.set(pair.id, box);
 
-            const buildLine = (range: Range, startY: number): Drawable & {type: 'rectangle'} => {
+            const buildLine = (range: Range, myY: number): Drawable & {type: "rectangle"} => {
                 const width = ((range.to - range.from) / maxValue) * constants.lineMaxWidth;
                 const startX = (range.from / maxValue) * constants.lineMaxWidth;
 
@@ -88,19 +88,19 @@ class RealVisualizer implements ICampCleanupVisualizer {
                     type: "rectangle",
                     c: {
                         x: topLeft.x + constants.borderThickness + constants.internalPadding + startX,
-                        y: startY
+                        y: myY
                     },
                     color: "white",
                     size: {
                         x: width,
                         y: constants.lineThickness
                     },
-                    id: `${pair.id}_${startY}`
-                }
+                    id: `${pair.id}_${myY}`
+                };
             };
 
             currentY += constants.borderThickness + constants.internalPadding;
-            
+
             const first = buildLine(pair.a, currentY);
 
             currentY += first.size.y + constants.internalPadding;
@@ -121,7 +121,7 @@ class RealVisualizer implements ICampCleanupVisualizer {
         this.printer.forceRender();
         await this.pause();
     }
-    async higlightPairs(pairs: Pair[]): Promise<void> {
+    public async higlightPairs(pairs: Pair[]): Promise<void> {
         for (const pair of pairs) {
             this.pairs.get(pair.id).color = "yellow";
             this.printer.forceRender();
@@ -131,7 +131,7 @@ class RealVisualizer implements ICampCleanupVisualizer {
 }
 
 class DummyVisualizer implements ICampCleanupVisualizer {
-    async showPairs(pairs: Pair[]): Promise<void> { }
-    async higlightPairs(pairs: Pair[]): Promise<void> { }
+    public async showPairs(pairs: Pair[]): Promise<void> { }
+    public async higlightPairs(pairs: Pair[]): Promise<void> { }
 
 }

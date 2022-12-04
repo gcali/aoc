@@ -7,7 +7,8 @@ import { buildVisualizer } from "./visualizer";
 
 export type Cell = ">" | "v" | ".";
 
-const move = (matrix: FixedSizeMatrix<Cell>, cellType: ">" | "v"): { result: FixedSizeMatrix<Cell>, hasMoved: boolean } => {
+const move = (matrix: FixedSizeMatrix<Cell>, cellType: ">" | "v"):
+    { result: FixedSizeMatrix<Cell>, hasMoved: boolean } => {
     let hasMoved = false;
     const result = new FixedSizeMatrix<Cell>(matrix.size);
     for (let x = 0; x < matrix.size.x; x++) {

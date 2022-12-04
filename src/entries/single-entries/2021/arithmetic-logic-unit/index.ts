@@ -158,18 +158,13 @@ export const arithmeticLogicUnit = entryForFile(
         // js.filter((l) => l.startsWith("z")).forEach((l) => console.log(l));
     },
     async ({ lines, outputCallback, resultOutputCallback }) => {
-        const ns = lines.map((l) => parseInt(l, 10));
-        const result: any = 0;
-        for (const x of lines) {
-        }
-        for (const x of ns) {
-        }
-        await resultOutputCallback(result);
+        await resultOutputCallback("N/A");
     },
     {
         key: "arithmetic-logic-unit",
         title: "Arithmetic Logic Unit",
         supportsQuickRunning: true,
-        embeddedData: true
+        embeddedData: true,
+        stars: 2
     }
 );

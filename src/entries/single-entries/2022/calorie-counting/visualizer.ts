@@ -1,6 +1,6 @@
-import { CalorieCountingData } from '.';
-import { sumCoordinate } from '../../../../support/geometry';
-import { Drawable, Pause, ScreenBuilder, ScreenPrinter } from '../../../entry';
+import { CalorieCountingData } from ".";
+import { sumCoordinate } from "../../../../support/geometry";
+import { Drawable, Pause, ScreenBuilder, ScreenPrinter } from "../../../entry";
 
 export interface ICalorieCountingVisualizer {
     showOnScreen(data: CalorieCountingData): Promise<void>;
@@ -36,7 +36,7 @@ const constants = (() => {
             max: "greenyellow",
             current: "slateblue"
         }
-    }
+    };
 })();
 
 export const buildVisualizer = (screenBuilder: ScreenBuilder | undefined, pause: Pause) => {
@@ -45,7 +45,7 @@ export const buildVisualizer = (screenBuilder: ScreenBuilder | undefined, pause:
     } else {
         return new DummyVisualizer();
     }
-}
+};
 
 class RealVisualizer implements ICalorieCountingVisualizer {
     private printer!: ScreenPrinter;
@@ -56,9 +56,9 @@ class RealVisualizer implements ICalorieCountingVisualizer {
     constructor(
         private readonly screenBuilder: ScreenBuilder,
         private readonly pause: Pause
-    ) { 
+    ) {
     }
-    async setCurrent(index: number | undefined): Promise<void> {
+    public async setCurrent(index: number | undefined): Promise<void> {
         if (this.current !== undefined) {
             if (this.items[this.current].color === constants.itemBackgrounds.current) {
                 this.items[this.current].color = constants.itemBackgrounds.normal;
@@ -71,7 +71,7 @@ class RealVisualizer implements ICalorieCountingVisualizer {
         await this.printer.forceRender();
         await this.pause();
     }
-    async showOnScreen(data: CalorieCountingData): Promise<void> {
+    public async showOnScreen(data: CalorieCountingData): Promise<void> {
         const rows = Math.ceil(data.length / constants.cols);
         this.printer = await this.screenBuilder.requireScreen({
             x: constants.padding * (constants.cols + 1) + constants.cols * constants.itemSize.x,
@@ -80,14 +80,14 @@ class RealVisualizer implements ICalorieCountingVisualizer {
 
         this.printer.setManualRender();
 
-        const minCalorie = data.flatMap(e => e).reduce((acc, next) => Math.min(acc, next), Number.POSITIVE_INFINITY);
-        const maxCalorie = data.flatMap(e => e).reduce((acc, next) => Math.max(acc, next), Number.NEGATIVE_INFINITY);
+        const minCalorie = data.flatMap((e) => e).reduce((acc, next) => Math.min(acc, next), Number.POSITIVE_INFINITY);
+        const maxCalorie = data.flatMap((e) => e).reduce((acc, next) => Math.max(acc, next), Number.NEGATIVE_INFINITY);
 
         const colorCalculator = (e: number): string => {
             const percentage = 1 - ((e - minCalorie) / (maxCalorie / minCalorie));
             const value = ((255 - 120) * percentage) + 120;
             return `rgb(${value}, 0, 0)`;
-        }
+        };
 
         for (let i = 0; i < data.length; i++) {
             const row = Math.floor(i / constants.cols);
@@ -101,12 +101,12 @@ class RealVisualizer implements ICalorieCountingVisualizer {
                 c: topLeft,
                 color: "white",
                 id: i.toString(),
-                type: 'rectangle',
+                type: "rectangle",
                 size: constants.itemSize
-            }
+            };
 
             await this.printer.add(item);
-            
+
             this.items.push(item);
 
             for (let j = 0; j < data[i].length; j++) {
@@ -114,8 +114,10 @@ class RealVisualizer implements ICalorieCountingVisualizer {
                 const c = colorCalculator(mini);
                 const miniItem: Drawable = {
                     c: sumCoordinate(topLeft, {
-                        x: constants.padding + (constants.padding + constants.miniSize) * (j % constants.miniCols),
-                        y: constants.padding + (constants.padding + constants.miniSize) * Math.floor(j / constants.miniCols)
+                        x: constants.padding +
+                           (constants.padding + constants.miniSize) * (j % constants.miniCols),
+                        y: constants.padding +
+                           (constants.padding + constants.miniSize) * Math.floor(j / constants.miniCols)
                     }),
                     color: c,
                     id: `mini_${i}_${j}`,
@@ -124,26 +126,26 @@ class RealVisualizer implements ICalorieCountingVisualizer {
                         x: constants.miniSize,
                         y: constants.miniSize
                     }
-                }
+                };
                 await this.printer.add(miniItem);
             }
         }
 
         await this.printer.forceRender();
     }
-    async setMax(index: number): Promise<void> {
+    public async setMax(index: number): Promise<void> {
         this.items[index].color = constants.itemBackgrounds.max;
         await this.pause();
     }
-    async removeMax(index: number): Promise<void> {
+    public async removeMax(index: number): Promise<void> {
         this.items[index].color = constants.itemBackgrounds.normal;
     }
 }
 
 class DummyVisualizer implements ICalorieCountingVisualizer {
-    async setCurrent(index: number | undefined): Promise<void> { }
-    async showOnScreen(data: CalorieCountingData): Promise<void> { }
-    async setMax(index: number): Promise<void> { }
-    async removeMax(index: number): Promise<void> { }
+    public async setCurrent(index: number | undefined): Promise<void> { }
+    public async showOnScreen(data: CalorieCountingData): Promise<void> { }
+    public async setMax(index: number): Promise<void> { }
+    public async removeMax(index: number): Promise<void> { }
 
 }

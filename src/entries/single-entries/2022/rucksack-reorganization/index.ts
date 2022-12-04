@@ -2,23 +2,23 @@ import { buildGroups } from "../../../../support/sequences";
 import { entryForFile } from "../../../entry";
 
 class Sack implements Iterable<string> {
-    readonly left: Set<string>;
-    readonly right: Set<string>;
-
-    public has = (e: string): boolean => this.left.has(e) || this.right.has(e);
+    public readonly left: Set<string>;
+    public readonly right: Set<string>;
 
     constructor(line: string) {
         const length = line.length;
         if (length % 2 !== 0) {
             throw new Error("Invalid input: " + line);
         }
-        const left = line.slice(0, length/2);
-        const right = line.slice(length/2, length);
+        const left = line.slice(0, length / 2);
+        const right = line.slice(length / 2, length);
         this.left = buildSet(left);
         this.right = buildSet(right);
     }
 
-    *[Symbol.iterator](): Iterator<string, any, undefined> {
+    public has = (e: string): boolean => this.left.has(e) || this.right.has(e);
+
+    public *[Symbol.iterator](): Iterator<string, any, undefined> {
         for (const item of this.left) {
             yield item;
         }
@@ -29,12 +29,12 @@ class Sack implements Iterable<string> {
 }
 
 const parseInput = (lines: string[]): Sack[] =>
-    lines.map(line => new Sack(line));
+    lines.map((line) => new Sack(line));
 
 
 const getPriority = (() => {
-    const lowerPart = 'a'.charCodeAt(0);
-    const higherPart = 'A'.charCodeAt(0);
+    const lowerPart = "a".charCodeAt(0);
+    const higherPart = "A".charCodeAt(0);
     return (s: string | undefined): number => {
         if (s === undefined) {
             throw new Error("Invalid");
@@ -44,14 +44,14 @@ const getPriority = (() => {
     };
 })();
 
-const buildSet = (x: string): Set<string> => 
+const buildSet = (x: string): Set<string> =>
     new Set<string>(x.split(""));
 
 export const rucksackReorganization = entryForFile(
     async ({ lines, resultOutputCallback }) =>
         await resultOutputCallback(
             parseInput(lines).reduce(
-                (acc, next) => acc + getPriority([...next.left].find(x => next.right.has(x))),
+                (acc, next) => acc + getPriority([...next.left].find((x) => next.right.has(x))),
                 0
             )
         )
@@ -62,8 +62,8 @@ export const rucksackReorganization = entryForFile(
         for (const group of buildGroups(input, 3, 3)) {
             const [candidate] = group;
             const rest = group.slice(1);
-            for(const x of candidate) {
-                if (rest.every(r => r.has(x))) {
+            for (const x of candidate) {
+                if (rest.every((r) => r.has(x))) {
                     result += getPriority(x);
                     break;
                 }
