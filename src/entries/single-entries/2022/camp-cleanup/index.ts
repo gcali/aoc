@@ -1,13 +1,15 @@
 import { entryForFile } from "../../../entry";
+import { buildVisualizer } from "./visualizer";
 
-type Range = {
+export type Range = {
     from: number;
     to: number;
 }
 
-type Pair = {
+export type Pair = {
     a: Range;
     b: Range;
+    id: number;
 }
 
 const isIncludedIn = (outer: Range, inner: Range) => {
@@ -28,27 +30,41 @@ const parseRange = (token: string): Range => {
 }
 
 const parseInput = (lines: string[]): Pair[] => 
-    lines.map(line => {
+    lines.map((line, index) => {
         const [a, b] = line.split(",");
         return {
             a: parseRange(a),
-            b: parseRange(b)
+            b: parseRange(b),
+            id: index
         }
     });
 
 export const campCleanup = entryForFile(
-    async ({ lines, outputCallback, resultOutputCallback }) => {
+    async ({ lines, resultOutputCallback, screen, pause }) => {
+
+        const visualizer = buildVisualizer(screen, pause);
         
         const pairs = parseInput(lines);
 
+        await visualizer.showPairs(pairs);
+
         const interesting = pairs.filter(pair => isIncludedIn(pair.a, pair.b) || isIncludedIn(pair.b, pair.a));
+
+        await visualizer.higlightPairs(interesting);
 
         await resultOutputCallback(interesting.length);
     },
-    async ({ lines, outputCallback, resultOutputCallback }) => {
+    async ({ lines, resultOutputCallback, screen, pause }) => {
+
+        const visualizer = buildVisualizer(screen, pause);
+
         const pairs = parseInput(lines);
 
+        await visualizer.showPairs(pairs);
+
         const interesting = pairs.filter(pair => overlap(pair.a, pair.b));
+
+        await visualizer.higlightPairs(interesting);
 
         await resultOutputCallback(interesting.length);
     },
@@ -57,6 +73,7 @@ export const campCleanup = entryForFile(
         title: "Camp Cleanup",
         supportsQuickRunning: true,
         embeddedData: true,
-        stars: 2
+        stars: 2,
+        suggestedDelay: 10
     }
 );
