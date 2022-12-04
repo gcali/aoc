@@ -1,4 +1,4 @@
-import { entryForFile } from "../../../entry";
+import { entryForFile, Pause, ResultOutputCallback, ScreenBuilder } from "../../../entry";
 import { buildVisualizer } from "./visualizer";
 
 export type Range = {
@@ -41,32 +41,23 @@ const parseInput = (lines: string[]): Pair[] =>
 
 export const campCleanup = entryForFile(
     async ({ lines, resultOutputCallback, screen, pause }) => {
-
-        const visualizer = buildVisualizer(screen, pause);
-
-        const pairs = parseInput(lines);
-
-        await visualizer.showPairs(pairs);
-
-        const interesting = pairs.filter((pair) => isIncludedIn(pair.a, pair.b) || isIncludedIn(pair.b, pair.a));
-
-        await visualizer.higlightPairs(interesting);
-
-        await resultOutputCallback(interesting.length);
+        await executeEntry(
+            screen, 
+            pause, 
+            lines, 
+            (pair: Pair) => isIncludedIn(pair.a, pair.b) || isIncludedIn(pair.b, pair.a), 
+            resultOutputCallback
+        );
     },
     async ({ lines, resultOutputCallback, screen, pause }) => {
+        await executeEntry(
+            screen, 
+            pause, 
+            lines, 
+            (pair: Pair) => overlap(pair.a, pair.b),
+            resultOutputCallback
+        );
 
-        const visualizer = buildVisualizer(screen, pause);
-
-        const pairs = parseInput(lines);
-
-        await visualizer.showPairs(pairs);
-
-        const interesting = pairs.filter((pair) => overlap(pair.a, pair.b));
-
-        await visualizer.higlightPairs(interesting);
-
-        await resultOutputCallback(interesting.length);
     },
     {
         key: "camp-cleanup",
@@ -77,3 +68,24 @@ export const campCleanup = entryForFile(
         suggestedDelay: 10
     }
 );
+
+async function executeEntry(
+    screen: ScreenBuilder | undefined, 
+    pause: Pause, 
+    lines: string[], 
+    interestingCondition: (pair: Pair) => boolean, 
+    resultOutputCallback: ResultOutputCallback
+) {
+    const visualizer = buildVisualizer(screen, pause);
+
+    const pairs = parseInput(lines);
+
+    await visualizer.showPairs(pairs);
+
+    const interesting = pairs.filter(interestingCondition);
+
+    await visualizer.higlightPairs(interesting);
+
+    await resultOutputCallback(interesting.length);
+}
+
