@@ -63,8 +63,14 @@ export default Vue.extend({
                 }
             }
             if (current.floor.length > 0) {
+                let shouldPrepend = false;
                 while (current.floor.length < current.size) {
-                    current.floor.push("");
+                    if (shouldPrepend) {
+                        current.floor.unshift("");
+                    } else {
+                        current.floor.push("");
+                    }
+                    shouldPrepend = !shouldPrepend;
                 }
                 result.push(current.floor);
             }
