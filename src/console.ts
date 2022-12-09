@@ -116,7 +116,7 @@ reader(async (lines) => {
     let resultCalls = 0;
     const outputCallback = args.q ? async () => {} : baseOutputCallback;
     const startTime = new Date().getTime();
-    const resultOutputCallback = args.q ? async (line: any) => {
+    const resultOutputCallback = async (line: any) => {
         if (resultCalls > 0) {
             throw new Error("Can execute result output only once");
         }
@@ -127,8 +127,11 @@ reader(async (lines) => {
         } else {
             console.log(JSON.stringify(line));
         }
-        console.log(`Time: ${new Date().getTime() - startTime}ms`);
-    } : baseOutputCallback;
+        if (args.q) {
+            console.log(`Time: ${new Date().getTime() - startTime}ms`);
+
+        }
+    };
 
     try {
         if (args.s) {
