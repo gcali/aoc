@@ -4,6 +4,7 @@ import { noSpaceLeftOnDevice } from "./no-space-left-on-device";
 import { rockPaperScissors } from "./rock-paper-scissors";
 import { rucksackReorganization } from "./rucksack-reorganization";
 import { supplyStacks } from "./supply-stacks";
+import { treetopTreeHouse } from "./treetop-tree-house";
 import { tuningTrouble } from "./tuning-trouble";
 
 export const entries = [
@@ -13,5 +14,6 @@ export const entries = [
     campCleanup,
     supplyStacks,
     tuningTrouble,
-    noSpaceLeftOnDevice
+    noSpaceLeftOnDevice,
+    treetopTreeHouse
 ];
