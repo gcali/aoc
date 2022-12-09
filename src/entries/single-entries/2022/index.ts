@@ -2,6 +2,7 @@ import { calorieCounting } from "./calorie-counting";
 import { campCleanup } from "./camp-cleanup";
 import { noSpaceLeftOnDevice } from "./no-space-left-on-device";
 import { rockPaperScissors } from "./rock-paper-scissors";
+import { ropeBridge } from "./rope-bridge";
 import { rucksackReorganization } from "./rucksack-reorganization";
 import { supplyStacks } from "./supply-stacks";
 import { treetopTreeHouse } from "./treetop-tree-house";
@@ -15,5 +16,6 @@ export const entries = [
     supplyStacks,
     tuningTrouble,
     noSpaceLeftOnDevice,
-    treetopTreeHouse
+    treetopTreeHouse,
+    ropeBridge
 ];
