@@ -1,5 +1,6 @@
 import { calorieCounting } from "./calorie-counting";
 import { campCleanup } from "./camp-cleanup";
+import { cathodeRayTube } from "./cathode-ray-tube";
 import { noSpaceLeftOnDevice } from "./no-space-left-on-device";
 import { rockPaperScissors } from "./rock-paper-scissors";
 import { ropeBridge } from "./rope-bridge";
@@ -17,5 +18,6 @@ export const entries = [
     tuningTrouble,
     noSpaceLeftOnDevice,
     treetopTreeHouse,
-    ropeBridge
+    ropeBridge,
+    cathodeRayTube
 ];
