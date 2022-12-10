@@ -57,7 +57,7 @@ export default Vue.extend({
             for (const year of years) {
                 current.floor.push(year);
                 if (current.floor.length === current.size) {
-                    result.push(current.floor);
+                    result.push(current.floor.reverse());
                     current.floor = [];
                     current.size++;
                 }
@@ -72,7 +72,7 @@ export default Vue.extend({
                     }
                     shouldPrepend = !shouldPrepend;
                 }
-                result.push(current.floor);
+                result.push(current.floor.reverse());
             }
             return result;
 
