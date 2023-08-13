@@ -92,7 +92,8 @@ export default class BaseMessageTemplate extends Vue {
                 isQuickRunning: this.quickRun,
                 stopTimer: () => this.time = `${new Date().getTime() - startTime}ms`,
                 sendMessage: this.quickRun ? undefined : this.messageHandler,
-                mediaQuery
+                mediaQuery,
+                isExample: false
             });
         } catch (e) {
             throw e;

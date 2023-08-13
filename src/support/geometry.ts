@@ -94,6 +94,18 @@ export const directions = {
     downRight: new CCoordinate(1, 1)
 };
 
+export const drawStraightLine = (from: Coordinate, to: Coordinate, toIncluded: boolean): Coordinate[] => {
+    const result = [];
+    while (manhattanDistance(from, to) !== 0) {
+        result.push(from);
+        from = {x: from.x + Math.sign(to.x - from.x), y: from.y + Math.sign(to.y - from.y)};
+    }
+    if (toIncluded) {
+        result.push(to);
+    }
+    return result;
+}
+
 export const directionList = [
     directions.up,
     directions.down,
@@ -298,9 +310,10 @@ export const manhattanDistance = (a: FullCoordinate, b: FullCoordinate) => {
 
 export const isSameCoordinate = (a: Coordinate, b: Coordinate) => manhattanDistance(a, b) === 0;
 
-export function getSurrounding(c: Coordinate): Coordinate[];
-export function getSurrounding(c: Coordinate3d): Coordinate3d[];
+export function getSurrounding(c: FullCoordinate): FullCoordinate[];
 export function getSurrounding(c: Coordinate4d): Coordinate4d[];
+export function getSurrounding(c: Coordinate3d): Coordinate3d[];
+export function getSurrounding(c: Coordinate): Coordinate[];
 export function getSurrounding(c: FullCoordinate): FullCoordinate[] {
     if (is2d(c)) {
         return [
@@ -314,9 +327,10 @@ export function getSurrounding(c: FullCoordinate): FullCoordinate[] {
     }
 }
 
-export function getFullSurrounding(coordinate: Coordinate): Coordinate[];
-export function getFullSurrounding(coordinate: Coordinate3d): Coordinate3d[];
+export function getFullSurrounding(coordinate: FullCoordinate): FullCoordinate[];
 export function getFullSurrounding(coordinate: Coordinate4d): Coordinate4d[];
+export function getFullSurrounding(coordinate: Coordinate3d): Coordinate3d[];
+export function getFullSurrounding(coordinate: Coordinate): Coordinate[];
 export function getFullSurrounding(coordinate: FullCoordinate): FullCoordinate[] {
     if (is4d(coordinate)) {
         const result: Coordinate4d[] = [];

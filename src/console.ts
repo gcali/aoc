@@ -10,7 +10,8 @@ const args = (minimist as any)(process.argv.slice(2), {
         y: "year", 
         n: "noNumber", 
         f: "file",
-        q: "quick"
+        q: "quick",
+        x: "example"
     },
     number: ["e", "y"],
     default: {
@@ -18,10 +19,11 @@ const args = (minimist as any)(process.argv.slice(2), {
         "e": null,
         "n": false,
         "f": null,
-        "q": false
+        "q": false,
+        "x": false
     },
     string: ["file"],
-    boolean: ["help", "second", "list", "noNumber", "quick"],
+    boolean: ["help", "second", "list", "noNumber", "quick", "example"],
 });
 
 
@@ -37,6 +39,7 @@ Options:
     -n, --noNumber: hide number in list, optional, default to false
     -q, --quick: run with minimal output and prints the time of execution
     -f, --file: file to read from
+    -x, --example: use example input
 `;
 
 const error = () => { console.log(usage); process.exit(1); };
@@ -76,7 +79,18 @@ let additionalInputReader: undefined | {
     read: () => Promise<string | null>;
     close: () => void;
 };
-if (isReadingFromFile) {
+
+const isExample = args.x === true;
+if (isExample) {
+    if (!entryCallback.metadata || !entryCallback.metadata.exampleInput) {
+        throw new Error("Cannot use example input if not given");
+    }
+    reader = (callback) => {
+        const lines = entryCallback.metadata!.exampleInput!.split("\n");
+        callback(lines);
+    };
+
+} else if (isReadingFromFile) {
     reader = generateFileReader(args.f);
     const lines: (string | null)[] = [];
     let resolver: ((s: string | null) => void) | null = null;
@@ -148,7 +162,8 @@ reader(async (lines) => {
                     isMobile() {
                         return false;
                     }
-                }
+                },
+                isExample
             });
         } else {
             await entryCallback.first({
@@ -164,7 +179,8 @@ reader(async (lines) => {
                     isMobile() {
                         return false;
                     }
-                }
+                },
+                isExample
             });
         }
     } finally {

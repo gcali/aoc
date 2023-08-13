@@ -20,7 +20,7 @@ const parseLines = (lines: string[]): { row: number, column: number } => {
 };
 
 export const letItSnow = entryForFile(
-    async ({ lines, outputCallback }) => {
+    async ({ lines, resultOutputCallback }) => {
         const coordinates = parseLines(lines);
         const start = 20151125;
         const base = 252533;
@@ -28,7 +28,7 @@ export const letItSnow = entryForFile(
         const index = fromRowColumn(coordinates.row, coordinates.column);
         const factor = pow(BigInt(base), BigInt(index - 1), BigInt(mod));
         const result = (BigInt(start) * factor) % BigInt(mod);
-        await outputCallback(result);
+        await resultOutputCallback(Number(result));
     },
     async ({ lines, outputCallback }) => {
         throw Error("Not implemented");

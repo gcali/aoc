@@ -142,6 +142,21 @@ export class FixedSizeMatrix<T> {
         }
     }
 
+    public filter(predicate: (c: Coordinate, e: T | undefined) => boolean): Coordinate[] {
+        const result = [];
+        for (let x = 0; x < this.size.x; x++) {
+            for (let y = 0; y < this.size.y; y++) {
+                const lc = this._delta.sum({x, y});
+                const e = this.get(lc);
+                const res = predicate(lc, e);
+                if (res) {
+                    result.push({x,y});
+                }
+            }
+        }
+        return result;
+    }
+
     public onEveryCellSync<U>(callback: (c: Coordinate, e: T | undefined) => void | U): void | U {
         for (let x = 0; x < this.size.x; x++) {
             for (let y = 0; y < this.size.y; y++) {

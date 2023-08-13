@@ -30,11 +30,9 @@ export const readStdin: Reader = (callback: (lines: string[]) => Promise<void>) 
     i.on("line", (line: string) => {
         lines.push(line);
     });
-    const promise = new Promise<void>((resolve) => {
-        i.on("close", () => {
-            callback(lines).then((value) => resolve());
-        });
-    });
+    // const promise = new Promise<void>((resolve) => {
+    i.on("close", () => callback(lines));
+    // });
 } 
 
 export const generateFileReader = (filePath: string): Reader => {

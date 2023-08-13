@@ -1,8 +1,4 @@
 import { entryForFile } from "../../entry";
-import { Queue } from "../../../support/data-structure";
-import { parse } from "path";
-import { isProbablyPrime } from "bigint-crypto-utils";
-import { setTimeoutAsync } from "../../../support/async";
 
 interface Rule {
     from: string;

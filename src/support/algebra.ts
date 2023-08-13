@@ -1,13 +1,20 @@
-import * as bigintCryptoUtils from "bigint-crypto-utils";
-
 export const modInverse = (n: bigint, mod: bigint): bigint => {
-    return bigintCryptoUtils.modInv(n, mod);
-    // const {a, b} = calculateExtended(n, mod, 1);
-    // return a > 0 ? a : a + mod;
+    const {a, b} = calculateExtended(n, mod, 1);
+    return a > 0n ? a : a + mod;
 };
 
+function modPow(expo: bigint, base: bigint, mod: bigint): bigint {
+  // "expo" needs to be of type BigInt
+    let x = BigInt(base) % mod, res = expo & 1n? x: 1n
+    do {
+        x = x**2n % mod
+        if (expo & 2n) res = res * x % mod
+    } while (expo /= 2n)
+    return res
+}
+
 export const pow = (n: bigint, exp: bigint, mod: bigint): bigint => {
-    return bigintCryptoUtils.modPow(n, exp, mod);
+    return modPow(exp, n, mod);
 };
 
 export const factorial = (n: number): number => {
@@ -22,23 +29,26 @@ export const logarithm = (base: number, target: number): number => {
   return Math.log(base) / Math.log(target);
 };
 
-export const calculateExtended = (aP: number, bP: number, m: number): {
-    a: number,
-    b: number
+export const calculateExtended = (aP: number | bigint, bP: number | bigint, m: number | bigint): {
+    a: bigint,
+    b: bigint
 } => {
+    aP = BigInt(aP);
+    bP = BigInt(bP);
+    m = BigInt(m);
     let a = {
         n: aP,
-        a: 1,
-        b: 0
+        a: 1n,
+        b: 0n
     };
     let b = {
         n: bP,
-        a: 0,
-        b: 1
+        a: 0n,
+        b: 1n
     };
 
-    while (!(m % b.n === 0)) {
-        const f = Math.floor(a.n / b.n);
+    while (!(m % b.n === 0n)) {
+        const f = a.n / b.n;
         const q = {
             n: a.n % b.n,
             a: a.a - (f * b.a),

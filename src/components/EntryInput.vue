@@ -11,7 +11,7 @@
                 button(v-if="forceEmbedded" disabled ) Using embedded data
                 button(v-else @click="useEmbedded") Use embedded
         div(v-else :style="{marginBottom: '1em'}") No input available: 
-            | you cannot select your input for the current year in order to avoid cheating!
+            | {{ reasonForNoInput }}
         .choices(:class="{hidden: hideChoices}")
             EntryChoice(:key="this.$route.path", @execute="loadFile", :disabled="disabled", :date="date")
 </template>
@@ -35,12 +35,21 @@ export default class EntryInput extends Vue {
     @Prop({required: true, default: ""}) public entryKey!: string;
     @Prop({required: true}) public year!: string;
     @Prop({required: true}) public date!: number;
+    @Prop({required: false, default: false}) public isExample!: boolean;
 
     private inputContent: string | null = null;
     private forceEmbedded: boolean = false;
 
+    private get reasonForNoInput() {
+        if (this.isExample) {
+            return "you are using the example input";
+        } else {
+            return "you cannot select your input for the current year in order to avoid cheating!";
+        }
+    }
+
     public get noInput(): boolean {
-        return this.entryKey in embeddedLines && this.year === disabledYear;
+        return (this.entryKey in embeddedLines && this.year === disabledYear) || this.isExample;
     }
 
     public get hasEmbedded(): boolean {

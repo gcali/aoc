@@ -6,11 +6,13 @@ export interface CellWithDistance<TValue, TCoordinate> {
     cell: TValue;
     coordinate: TCoordinate;
     distance: number | null;
+    parent: CellWithDistance<TValue, TCoordinate> | null;
 }
 
 interface DistanceGetter<TValue, TCoordinate> {
     list: Array<CellWithDistance<TValue, TCoordinate>>;
     map(c: TCoordinate): (number | null);
+    pathTo(c: TCoordinate): CellWithDistance<TValue, TCoordinate>[];
 }
 
 type DistanceCalculator<TValue, TCoordinate> =
@@ -29,13 +31,14 @@ export function calculateDistancesGenericCoordinates<TValue, TCoordinate>(
     const visitQueue = new Queue<CellWithDistance<TValue, TCoordinate>>();
 
     const startCell = fieldGetter(start);
-    if (!startCell) {
+    if (startCell === undefined) {
         throw new RangeError("Cannot find starting cell");
     }
     const startNode: CellWithDistance<TValue, TCoordinate> = {
         cell: startCell,
         coordinate: start,
-        distance: 0
+        distance: 0,
+        parent: null
     };
 
     distanceMap[serializer(startNode.coordinate)] = startNode;
@@ -49,13 +52,14 @@ export function calculateDistancesGenericCoordinates<TValue, TCoordinate>(
             const withDistance = distanceMap[serializer(s)];
             if (!withDistance) {
                 const cell = fieldGetter(s);
-                if (cell) {
+                if (cell !== undefined) {
                     const distance = distanceCalculator(node, s);
                     if (distance) {
                         const sWithDistance: CellWithDistance<TValue, TCoordinate> = {
                             cell,
                             coordinate: s,
-                            distance
+                            distance,
+                            parent: node
                         };
                         distanceMap[serializer(s)] = sWithDistance;
                         if (stopAt && stopAt(sWithDistance))  {
@@ -80,6 +84,15 @@ export function calculateDistancesGenericCoordinates<TValue, TCoordinate>(
             } else {
                 return null;
             }
+        },
+        pathTo: (c: TCoordinate): CellWithDistance<TValue, TCoordinate>[] => {
+            const queue = [];
+            let node: CellWithDistance<TValue, TCoordinate> | null = distanceMap[serializer(c)];
+            while (node) {
+                queue.push(node);
+                node = node.parent;
+            }
+            return queue.reverse();
         },
         list: Object.values(distanceMap)
     };

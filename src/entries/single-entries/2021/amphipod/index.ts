@@ -2,6 +2,7 @@ import BinaryHeap from "priorityqueue/lib/cjs";
 import { Coordinate, manhattanDistance, serialization } from "../../../../support/geometry";
 import { entryForFile } from "../../../entry";
 import { buildVisualizer } from "./visualizer";
+import { exampleInput } from "./example";
 
 type Amphi = "A" | "B" | "C" | "D";
 
@@ -243,9 +244,11 @@ export const amphipod = entryForFile(
         title: "Amphipod",
         supportsQuickRunning: true,
         embeddedData: true,
-        suggestedDelay: 300
+        suggestedDelay: 300,
+        exampleInput: require("./example").exampleInput
     }
 );
+
 function combineStates(destination: ReachResult, current: State, amphi: AmphiState): State {
     const isFinished = rooms.some((r) => r === destination.c.x);
     const combinedState = {

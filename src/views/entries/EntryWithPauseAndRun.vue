@@ -115,7 +115,8 @@ export default class EntryWithPauseAndRun extends Vue {
                 screen: this.requireScreen && !this.quickRun ? { requireScreen: this.requireScreen } : undefined,
                 isQuickRunning: this.quickRun,
                 stopTimer: () => this.time = `${new Date().getTime() - startTime}ms`,
-                mediaQuery
+                mediaQuery,
+                isExample: false
             });
         } catch (e) {
             throw e;

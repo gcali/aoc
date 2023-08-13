@@ -34,6 +34,7 @@ export interface EntryCallbackArg {
     mediaQuery: MediaQuery;
     isQuickRunning: boolean;
     sendMessage?: MessageSender;
+    isExample: boolean;
 }
 
 export type Pause = (times?: number) => Promise<void>;
@@ -61,6 +62,7 @@ interface EntryMetadata {
     embeddedData?: string | true;
     canvasBackground?: string;
     variants?: Entry[];
+    exampleInput?: string;
 }
 
 export interface Entry {
@@ -161,6 +163,7 @@ interface ExecutionArgs {
     mediaQuery: MediaQuery;
     isQuickRunning: boolean;
     stopTimer: () => void;
+    isExample: boolean;
 }
 
 export class StopException extends Error {
@@ -179,7 +182,8 @@ export async function executeEntry({
     isQuickRunning,
     stopTimer,
     sendMessage,
-    mediaQuery
+    mediaQuery,
+    isExample
 }: ExecutionArgs
 ) {
     let callback: EntryCallback;
@@ -225,7 +229,8 @@ export async function executeEntry({
             setAutoStop: () => shouldAutoStop = true,
             isQuickRunning,
             sendMessage,
-            mediaQuery
+            mediaQuery,
+            isExample
         });
     } catch (e) {
         if ((e as StopException).isStop) {

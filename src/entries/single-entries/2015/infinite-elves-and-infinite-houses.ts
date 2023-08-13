@@ -1,5 +1,11 @@
 import { entryForFile } from "../../entry";
-import { isProbablyPrime } from "bigint-crypto-utils";
+const {primalityTest} = require("primality-test");
+
+const isProbablyPrime = async (e: number, rounds?: number): Promise<boolean> => {
+    const res = rounds !== undefined ? (await primalityTest(e, {numRounds: rounds})) : await primalityTest(e);
+    return res.probablePrime;
+}
+
 
 const findExponent = (n: number, divisor: number): number => {
     let i = 0;

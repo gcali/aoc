@@ -1,7 +1,7 @@
 <template lang="pug">
     div.wrapper
         EntryTitle(:date="id", :name="title", :year="year")
-        EntryInput(:key="$route.path", @file-loaded="fileLoaded", :disabled="disabled" :entryKey="entryKey" :year="year", :date="id")
+        EntryInput(:key="$route.path", @file-loaded="fileLoaded", :disabled="disabled" :entryKey="entryKey" :year="year", :date="id" :isExample="isExample")
         slot
 </template>
 
@@ -9,7 +9,7 @@
 import { Component, Vue, Prop, Emit } from "vue-property-decorator";
 import EntryTitle from "@/components/EntryTitle.vue";
 import EntryInput from "@/components/EntryInput.vue";
-import { EntryFileHandling, executeEntry } from "../entries/entry";
+import { EntryFileHandling } from "../entries/entry";
 import { updateYear } from "../state/state";
 @Component({
     components: {
@@ -24,6 +24,7 @@ export default class EntryTemplate extends Vue {
     @Prop({ required: true }) public year!: string;
     @Prop({required: false, default: false}) public noInput!: boolean;
     @Prop({required: true}) public entryKey!: string;
+    @Prop({default: false}) public isExample!: boolean;
     @Emit("file-loaded")
     public fileLoaded(fileHandling: EntryFileHandling) {
         return fileHandling;

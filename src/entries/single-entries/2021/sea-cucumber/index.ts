@@ -80,7 +80,7 @@ export const seaCucumber = entryForFile(
         embeddedData: true,
         suggestedDelay: 10,
         stars: 2,
-        customComponent: "pause-and-run",
+        customComponent: "pause-and-run"
     }
 );
 

@@ -9,6 +9,10 @@ export class UnknownSizeField<T> {
         this.cells[this.serializeCoordinate(coordinate)] = element;
     }
 
+    public unset(coordinate: Coordinate): void {
+        delete this.cells[this.serializeCoordinate(coordinate)];
+    }
+
     public *getPoints(): Iterable<{e: T, c: Coordinate}> {
         for (const k in this.cells) {
             if (k in this.cells) {

@@ -6,6 +6,7 @@
         @file-loaded="readFile"
         :disabled="disabled"
         :entryKey="this.entry.metadata.key"
+        :isExample="this.example"
     )
         .variants(v-if="entry.metadata && entry.metadata.variants")
             label(style="margin-right: 1em") Variants
@@ -15,10 +16,14 @@
             label(v-for="variant in entry.metadata.variants")
                 input(type="radio" :value="variant.metadata.key" v-model="variantSelected")
                 | {{variant.metadata.key}}
-        .quick-run(v-if="supportsQuickRunning").unselectable
-            label Quick run
-            input(type="checkbox" v-model="quickRun" :disabled="executing")
-            label(v-if="time") Time: {{time}}
+        .options
+            .quick-run(v-if="supportsQuickRunning").unselectable
+                label Quick run
+                input(type="checkbox" v-model="quickRun" :disabled="executing")
+                label(v-if="time") Time: {{time}}
+            .example(v-if="supportsExample").unselectable
+                label Use example input
+                input(type="checkbox" v-model="example" :disabled="executing")
         .output
             EntrySimpleOutput(:key="$route.path", :lines="output" @print-factory="readFactory" :backgroundColor="canvasBackground")
         .input(v-if="showAdditionalInput" ).unselectable
@@ -71,6 +76,17 @@ export default class SimpleEntryTemplate extends Vue {
         return this.selectedEntry.metadata && this.selectedEntry.metadata.supportsQuickRunning;
     }
 
+    public get supportsExample() {
+        return this.selectedEntry.metadata && this.selectedEntry.metadata.exampleInput;
+    }
+
+    private get exampleInput() {
+        if (!this.selectedEntry.metadata || !this.selectedEntry.metadata.exampleInput) {
+            throw new Error("Cannot find example input");
+        }
+        return this.selectedEntry.metadata!.exampleInput!.split("\n");
+    }
+
     private get selectedEntry(): Entry {
         if (this.variantSelected.length === 0 || !this.entry.metadata || !this.entry.metadata.variants) {
             return this.entry;
@@ -96,6 +112,8 @@ export default class SimpleEntryTemplate extends Vue {
     @Prop() public year!: string;
 
     public output: string[] = [];
+
+    private example: boolean = false;
 
     private variantSelected: string = "";
     private clearScreen?: () => void;
@@ -181,7 +199,7 @@ export default class SimpleEntryTemplate extends Vue {
             await executeEntry({
                 entry: this.selectedEntry,
                 choice: fileHandling.choice,
-                lines: fileHandling.content,
+                lines: this.example ? this.exampleInput : fileHandling.content,
                 outputCallback: simpleOutputCallbackFactory(this.output, () => this.destroying),
                 additionalInputReader,
                 screen: this.requireScreen ? { requireScreen: this.requireScreen } : undefined,
@@ -189,7 +207,8 @@ export default class SimpleEntryTemplate extends Vue {
                 pause: this.createPause(),
                 isQuickRunning: this.quickRun,
                 stopTimer: () => this.time = `${new Date().getTime() - startTime}ms`,
-                mediaQuery
+                mediaQuery,
+                isExample: this.example
             });
         } finally {
             this.executing = false;
@@ -205,7 +224,7 @@ export default class SimpleEntryTemplate extends Vue {
         return async () => {
             if (this.timeout === 0) {
                 const current = new Date().getTime();
-                if (current - lastPause < 500) {
+                if (current - lastPause < 200) {
                     return;
                 } else {
                     lastPause = current;
@@ -250,6 +269,11 @@ export default class SimpleEntryTemplate extends Vue {
         .choices {
             margin-bottom: 2em;
         }
+    }
+    .options {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
     }
     .input {
         display: flex;
