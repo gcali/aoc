@@ -32,6 +32,9 @@
   "exclude": [
     "node_modules",
     "src/console.ts",
-    "src/support/stdin-reader.ts"
+    "src/support/stdin-reader.ts",
+    "src/download.ts",
+    "src/move-input.ts",
+    "src/init.ts"
   ]
 }

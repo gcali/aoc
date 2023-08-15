@@ -57,7 +57,10 @@ const year: string = args.y === null ? getLastYear() : args.y;
 if (args.l) {
     let i = 0;
     for (const entry of entryList[year]) {
-        console.log(args.n ? entry.title : `${++i} - ${entry.title} ${[...new Array(entry.stars || 0)].map(e => "★").join(" ")}`);
+        if (entry.date) {
+            i = entry.date;
+        }
+        console.log(args.n ? entry.title : `${i++} - ${entry.title} ${[...new Array(entry.stars || 0)].map(e => "★").join(" ")}`);
     }
     process.exit(0);
 }

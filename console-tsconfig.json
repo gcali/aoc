@@ -22,7 +22,8 @@
   "include": [
     "src/console.ts",
     "src/download.ts",
-    "src/move-input.ts"
+    "src/move-input.ts",
+    "src/init.ts"
   ],
   "exclude": [
     "node_modules"
