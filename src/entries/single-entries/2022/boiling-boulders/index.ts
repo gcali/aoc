@@ -196,6 +196,7 @@ This component can always be identified since the space with the largest x compo
         title: "Boiling Boulders",
         supportsQuickRunning: true,
         embeddedData: true,
-        exampleInput
+        exampleInput,
+        stars: 2
     }
 );

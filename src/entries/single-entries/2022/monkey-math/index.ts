@@ -81,6 +81,16 @@ const invertMonkey = (find: string, monkey: Monkey): Monkey => {
             }
         }
     } else if (monkey.instruction.b === find) {
+        if (monkey.instruction.operator === "-") {
+            return {
+                name: find,
+                instruction: {
+                    operator: "-",
+                    b: monkey.name,
+                    a: monkey.instruction.a
+                }
+            }
+        }
         return {
             name: find,
             instruction: {
@@ -101,7 +111,7 @@ const calculate = (
     lookup: MonkeyLookup,
     options?: {errorOnHuman?: boolean, oldCalculator?: (label: string) => number | null}
 ): number | null => {
-    if (options?.errorOnHuman === true && name === "humn") {
+    if ((options && options.errorOnHuman) === true && name === "humn") {
         return null;
     }
     if (results[name] !== undefined) {
@@ -112,7 +122,7 @@ const calculate = (
 
 
     if (!monkey) {
-        if (options?.oldCalculator) {
+        if (options && options.oldCalculator) {
             const r = options.oldCalculator(name);
             if (r !== null) {
                 return r;
@@ -146,6 +156,13 @@ const calculate = (
     return res;
 }
 
+const toString = (monkey: Monkey): string => {
+    if (typeof monkey.instruction === "number") {
+        return `${monkey.name}: ${monkey.instruction}}`;
+    }
+    return `${monkey.name}=${monkey.instruction.a}${monkey.instruction.operator}${monkey.instruction.b}`;
+}
+
 export const monkeyMath = entryForFile(
     async ({ lines, outputCallback, resultOutputCallback }) => {
         const {monkeys, lookup} = parseLines(lines);
@@ -164,6 +181,9 @@ export const monkeyMath = entryForFile(
             }
             const [current] = humns;
             const newMonkey = invertMonkey(target, current);
+            await outputCallback(`${toString(current)}->`);
+            await outputCallback(`${toString(newMonkey)}`);
+            await outputCallback("--------")
             newMonkeys.push(newMonkey);
             target = current.name;
             if (target === "root") {
@@ -176,7 +196,6 @@ export const monkeyMath = entryForFile(
                 newMonkeys.push(monkey);
             }
         }
-        const newRoot = newMonkeys.filter(e => e.name === "humn")[0];
         if (typeof root.instruction === "number") {
             throw new Error("Yeah, no");
         }
@@ -186,18 +205,10 @@ export const monkeyMath = entryForFile(
         const b = calculate(root.instruction.b, bResults, monkeys, lookup, {errorOnHuman: true});
         let results: Results = {};
         if (a === null) {
-            results["root"] = b;
-            // results[root.instruction.b] = b;
-            // results[root.instruction.a] = b;
+            results[root.instruction.a] = b;
         } else {
-            results["root"] = a;
-            // results[root.instruction.a] = a;
-            // results[root.instruction.b] = a;
+            results[root.instruction.b] = a;
         }
-
-        console.log(a, b);
-
-        console.log(results);
 
         const newLookup: MonkeyLookup = {};
         for (const m of newMonkeys) {
@@ -215,35 +226,15 @@ export const monkeyMath = entryForFile(
             throw new Error("Cannot calculate");
         }
 
-        monkeys.filter(m => m.name === "humn").forEach(e => e.instruction = res);
-
-        const newRes = calculate("root", {}, monkeys, lookup);
-        const limit = 6655937950880;
-        const [humn] = monkeys.filter(e => e.name === "humn");
-        console.log(humn);
-        console.log(lookup["root"]);
-        const as = calculate("gqjg", {}, monkeys, lookup);
-        for (let i = 10; i < limit; i++) {
-            humn.instruction = i;
-            const b = calculate("rpjv", {}, monkeys, lookup);
-            if (as === b) {
-                await resultOutputCallback(i);
-                return;
-            } else if (i % 100000 === 0) {
-                console.log(i/limit);
-            }
-        }
-        console.log(calculate("root", {}, monkeys, lookup));
-        console.log(calculate("gqjg", {}, monkeys, lookup));
-        console.log(calculate("rpjv", {}, monkeys, lookup));
-
         await resultOutputCallback(res);
+
     },
     {
         key: "monkey-math",
         title: "Monkey Math",
         supportsQuickRunning: true,
         embeddedData: true,
-        exampleInput
+        exampleInput,
+        stars: 2
     }
 );

@@ -1,5 +1,5 @@
 <template lang="pug">
-    router-link(:to="{name: name}").calendar-cell
+    router-link(:to="{name: name}").calendar-cell.clickable
         .header 
             | {{ordinalDate}}
             //- .icon.left

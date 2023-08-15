@@ -72,6 +72,8 @@ export const grovePositioningSystem = entryForFile(
         title: "Grove Positioning System",
         supportsQuickRunning: true,
         embeddedData: true,
-        exampleInput
+        exampleInput,
+        stars: 2,
+        date: 20
     }
 );
