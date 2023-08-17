@@ -36,6 +36,7 @@ export default class EntryInput extends Vue {
     @Prop({required: true}) public year!: string;
     @Prop({required: true}) public date!: number;
     @Prop({required: false, default: false}) public isExample!: boolean;
+    @Prop({default: false}) public hasFixedInput!: boolean;
 
     private inputContent: string | null = null;
     private forceEmbedded: boolean = false;
@@ -43,13 +44,16 @@ export default class EntryInput extends Vue {
     private get reasonForNoInput() {
         if (this.isExample) {
             return "you are using the example input";
+        }
+        else if (this.hasFixedInput) {
+            return "this solution only works on my own input";
         } else {
             return "you cannot select your input for the current year in order to avoid cheating!";
         }
     }
 
     public get noInput(): boolean {
-        return (this.entryKey in embeddedLines && this.year === disabledYear) || this.isExample;
+        return (this.entryKey in embeddedLines && this.year === disabledYear) || this.isExample || this.hasFixedInput;
     }
 
     public get hasEmbedded(): boolean {

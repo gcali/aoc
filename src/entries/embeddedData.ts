@@ -1,6 +1,11 @@
 import { entryList } from "./entryList";
 
-const parse = (data: string): string[] => data.trim().split("\n");
+const parse = (data: string): string[] => {
+    if (data.endsWith("\n")) {
+        data = data.slice(0, data.length-1);
+    }
+    return data.split("\n");
+};
 
 export const disabledYear: string | undefined = "2022";
 

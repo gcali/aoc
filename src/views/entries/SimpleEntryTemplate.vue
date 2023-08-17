@@ -7,6 +7,7 @@
         :disabled="disabled"
         :entryKey="this.entry.metadata.key"
         :isExample="this.example"
+        :fixedInput="this.hasFixedInput"
     )
         .variants(v-if="entry.metadata && entry.metadata.variants")
             label(style="margin-right: 1em") Variants
@@ -78,6 +79,10 @@ export default class SimpleEntryTemplate extends Vue {
 
     public get supportsExample() {
         return this.selectedEntry.metadata && this.selectedEntry.metadata.exampleInput;
+    }
+
+    public get hasFixedInput() {
+        return this.selectedEntry.metadata && this.selectedEntry.metadata.fixedInput;
     }
 
     private get exampleInput() {

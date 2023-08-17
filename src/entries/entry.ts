@@ -63,6 +63,7 @@ interface EntryMetadata {
     canvasBackground?: string;
     variants?: Entry[];
     exampleInput?: string;
+    fixedInput?: boolean;
 }
 
 export interface Entry {
