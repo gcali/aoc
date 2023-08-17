@@ -1,5 +1,5 @@
 import { lcm } from "../../../../support/algebra";
-import { DefaultDict, Queue, SerializableDictionary, SerializableSet } from "../../../../support/data-structure";
+import { DefaultDict, Queue, SerializableSet } from "../../../../support/data-structure";
 import { Bounds, CCoordinate, directions, getSurrounding, isInBounds, isLiteralDirection, manhattanDistance, mapLiteralToDirection, sumCoordinate } from "../../../../support/geometry";
 import { Coordinate, serialization } from "../../../../support/geometry";
 import { FixedSizeMatrix } from "../../../../support/matrix";
@@ -140,7 +140,7 @@ const findMinutes = (
 }
 
 export const blizzardBasin = entryForFile(
-    async ({ lines, outputCallback, resultOutputCallback }) => {
+    async ({ lines, outputCallback, resultOutputCallback, pause }) => {
         const {
             blizzards,
             bounds,
@@ -160,6 +160,7 @@ export const blizzardBasin = entryForFile(
         const occupied: SerializableSet<Coordinate>[] = [];
 
         for (let i = 0; i < period; i++) {
+            await pause();
             const newBlizzards = new DefaultDict<Coordinate, CCoordinate[]>(() => [], serialization);
             const occupation = new SerializableSet<Coordinate>(serialization);
             for (const blizzard of simulatedBlizzards) {
@@ -194,7 +195,7 @@ export const blizzardBasin = entryForFile(
         await resultOutputCallback(result);
 
     },
-    async ({ lines, outputCallback, resultOutputCallback }) => {
+    async ({ lines, outputCallback, resultOutputCallback, pause }) => {
         const {
             blizzards,
             bounds,
@@ -214,6 +215,7 @@ export const blizzardBasin = entryForFile(
         const occupied: SerializableSet<Coordinate>[] = [];
 
         for (let i = 0; i < period; i++) {
+            await pause();
             const newBlizzards = new DefaultDict<Coordinate, CCoordinate[]>(() => [], serialization);
             const occupation = new SerializableSet<Coordinate>(serialization);
             for (const blizzard of simulatedBlizzards) {

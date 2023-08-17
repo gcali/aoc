@@ -466,7 +466,7 @@ export class SerializableDictionary<TKey, TValue> {
   }
 
   public has(key: TKey) {
-    return Object.hasOwn(this.dict, this.serializer.serialize(key));
+    return this.dict.hasOwnProperty(this.serializer.serialize(key));
   }
 
   public keys(): TKey[] {
