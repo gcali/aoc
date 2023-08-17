@@ -5,6 +5,7 @@ import { calorieCounting } from "./calorie-counting";
 import { campCleanup } from "./camp-cleanup";
 import { cathodeRayTube } from "./cathode-ray-tube";
 import { distressSignal } from "./distress-signal";
+import { fullOfHotAir } from "./full-of-hot-air";
 import { grovePositioningSystem } from "./grove-positioning-system";
 import { hillClimbingAlgorithm } from "./hill-climbing-algorithm";
 import { monkeyInTheMiddle } from "./monkey-in-the-middle";
@@ -45,5 +46,6 @@ export const entries = [
     monkeyMath,
     monkeyMap,
     unstableDiffusion,
-    blizzardBasin
+    blizzardBasin,
+    fullOfHotAir
 ];
