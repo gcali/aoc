@@ -178,7 +178,8 @@ export const unstableDiffusion = entryForFile(
         supportsQuickRunning: true,
         embeddedData: true,
         date: 23,
-        exampleInput
+        exampleInput,
+        stars: 2
     }
 );
 

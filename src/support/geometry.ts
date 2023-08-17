@@ -85,6 +85,10 @@ export class CCoordinate implements Coordinate {
 
 export type LiteralDirection = "v" | "^" | "<" | ">";
 
+export const isLiteralDirection = (s: string): s is LiteralDirection => {
+    return ["v" , "^" , "<" , ">"].includes(s);
+}
+
 export const mapLiteralToDirection = (s: LiteralDirection): CCoordinate => {
     if (s === "v") {
         return directions.down;

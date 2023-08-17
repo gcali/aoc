@@ -1,3 +1,4 @@
+import { Dictionary } from "linq-typescript";
 import { coordinateToKey } from "../entries/single-entries/2019/oxygen-system";
 import { serialization } from "./geometry";
 import { ISerializer } from "./serialization";
@@ -449,6 +450,51 @@ export class SerializableSet<TValue> {
     }
 }
 
+export class SerializableDictionary<TKey, TValue> {
+  private readonly dict: {[key: string]: TValue} = {};
+
+  constructor(private readonly serializer: ISerializer<TKey>) {
+    
+  }
+
+  public set(key: TKey, value: TValue) {
+    this.dict[this.serializer.serialize(key)] = value;
+  }
+
+  public get(key: TKey): TValue | undefined {
+    return this.dict[this.serializer.serialize(key)];
+  }
+
+  public has(key: TKey) {
+    return Object.hasOwn(this.dict, this.serializer.serialize(key));
+  }
+
+  public keys(): TKey[] {
+    return Object.keys(this.dict).map(this.serializer.deserialize);
+  }
+
+  public values(): TValue[] {
+    return Object.values(this.dict);
+  }
+
+  public entries(): {key: TKey, value: TValue}[] {
+    return Object.keys(this.dict).map(k => ({
+      key: this.serializer.deserialize(k),
+      value: this.dict[k]!
+    }));
+  }
+
+  public sameTypeMap(f: (key: TKey, value: TValue) => {key: TKey, value: TValue}): SerializableDictionary<TKey, TValue> {
+    const res = new SerializableDictionary<TKey, TValue>(this.serializer);
+    for (const entry of this.entries()) {
+      const {key, value} = f(entry.key, entry.value);
+      res.set(key, value);
+    }
+    return res;
+  }
+
+}
+
 export class DefaultDict<TKey, TValue> {
 
   public get keys(): Iterable<TKey> {
@@ -460,6 +506,14 @@ export class DefaultDict<TKey, TValue> {
 
   public get values(): Iterable<TValue> {
     return this.data.values();
+  }
+
+  public has(key: TKey): boolean {
+    if (this.isDataSerializable(this.data)) {
+      return this.data.has(this.serializer!.serialize(key));
+    } else {
+      return this.data.has(key);
+    }
   }
 
   public get publicData() {

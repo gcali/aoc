@@ -1,4 +1,5 @@
 import { beaconExclusionZone } from "./beacon-exclusion-zone";
+import { blizzardBasin } from "./blizzard-basin";
 import { boilingBoulders } from "./boiling-boulders";
 import { calorieCounting } from "./calorie-counting";
 import { campCleanup } from "./camp-cleanup";
@@ -43,5 +44,6 @@ export const entries = [
     grovePositioningSystem,
     monkeyMath,
     monkeyMap,
-    unstableDiffusion
+    unstableDiffusion,
+    blizzardBasin
 ];
