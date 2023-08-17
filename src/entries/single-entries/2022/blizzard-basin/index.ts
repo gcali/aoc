@@ -60,9 +60,9 @@ type BlizzardLookup = DefaultDict<Coordinate, CCoordinate[]>;
 
 type State = {
     position: Coordinate;
-    blizzards: BlizzardLookup;
+    // blizzards: BlizzardLookup;
     minute: number;
-    states: string[];
+    // states: string[];
 }
 
 const show = (blizzards: BlizzardLookup, position: Coordinate, bounds: Bounds): string => {
@@ -98,6 +98,44 @@ const show = (blizzards: BlizzardLookup, position: Coordinate, bounds: Bounds): 
         matrix.set(position, "E");
     }
     return matrix.toString(e => e || ".");
+
+}
+
+const findMinutes = (
+    start: Coordinate, 
+    end: Coordinate, 
+    startMinute: number,
+    period: number,
+    bounds: Bounds,
+    occupied: SerializableSet<Coordinate>[]
+) => {
+        const queue = new Queue<State>();
+        queue.add({
+            position: start,
+            minute: startMinute,
+        });
+
+        const encountered = new Set<string>();
+
+        while (!queue.isEmpty) {
+            const {position, minute} = queue.get()!;
+            if (manhattanDistance(position, end) === 0) {
+                return minute;
+            }
+            const candidatePositions = getSurrounding(position).concat([position])
+                .filter(e => isInBounds(e, bounds) || [start,end].some(x => manhattanDistance(e,x) === 0))
+                .filter(e => !occupied[minute%period].has(e));
+            for (const candidate of candidatePositions) {
+                const serialized = `${minute%period}_${serialization.serialize(candidate)}`;
+                if (!encountered.has(serialized)) {
+                    queue.add({
+                        minute: minute+1,
+                        position: candidate,
+                    });
+                    encountered.add(serialized);
+                }
+            }
+        }
 
 }
 
@@ -141,37 +179,44 @@ export const blizzardBasin = entryForFile(
                     occupation.add(newPosition);
                 }
             }
+            simulatedBlizzards = newBlizzards;
             occupied.push(occupation);
         }
 
-        await outputCallback("Done: " + occupied.length);
+        const startMinute = 0;
 
-        const queue = new Queue<State>();
-        queue.add({
+        const result = findMinutes(start, end, startMinute, period, bounds, occupied);
+
+        if (!result) {
+            throw new Error("Could not get to the exit");
+        }
+
+        await resultOutputCallback(result);
+
+    },
+    async ({ lines, outputCallback, resultOutputCallback }) => {
+        const {
             blizzards,
-            position: start,
-            minute: 0,
-            states: [/*show(blizzards, start, bounds)*/]
-        });
+            bounds,
+            start,
+            end
+        } = parseInput(lines);
 
-        let highestMinute = 0;
+        const period = lcm(bounds.size.x, bounds.size.y);
+        await outputCallback(period);
 
-        const encountered = new Set<string>();
+        let simulatedBlizzards = new DefaultDict<Coordinate, CCoordinate[]>(() => [], serialization);
 
-        while (!queue.isEmpty) {
-            const {blizzards, position, minute, states} = queue.get()!;
-            if (minute > highestMinute) {
-                highestMinute = minute;
-                await outputCallback(highestMinute);
-            }
-            if (manhattanDistance(position, end) === 0) {
-                //finished
-                // await outputCallback(states.join("\n----\n"));
-                await resultOutputCallback(minute);
-                return;
-            }
+        for (const blizzard of blizzards) {
+            simulatedBlizzards.set(blizzard.key, blizzard.value);
+        }
+
+        const occupied: SerializableSet<Coordinate>[] = [];
+
+        for (let i = 0; i < period; i++) {
             const newBlizzards = new DefaultDict<Coordinate, CCoordinate[]>(() => [], serialization);
-            for (const blizzard of blizzards) {
+            const occupation = new SerializableSet<Coordinate>(serialization);
+            for (const blizzard of simulatedBlizzards) {
                 for (const direction of blizzard.value) {
                     const position = blizzard.key;
                     const newPosition = sumCoordinate(position, direction);
@@ -185,37 +230,35 @@ export const blizzardBasin = entryForFile(
                         newPosition.y = 0;
                     }
                     newBlizzards.ensureAndGet(newPosition).push(direction);
+                    occupation.add(newPosition);
                 }
             }
-            const candidatePositions = getSurrounding(position).concat([position])
-                .filter(e => isInBounds(e, bounds) || [start,end].some(x => manhattanDistance(e,x) === 0))
-                .filter(e => !newBlizzards.has(e));
-            for (const candidate of candidatePositions) {
-                const serialized = show(newBlizzards, candidate, bounds);
-                if (!encountered.has(serialized)) {
-                    queue.add({
-                        blizzards: newBlizzards,
-                        minute: minute+1,
-                        position: candidate,
-                        // states: [...states, show(newBlizzards, candidate, bounds)]
-                        states: []
-                    });
-                    encountered.add(serialized);
-                }
-            }
+            simulatedBlizzards = newBlizzards;
+            occupied.push(occupation);
         }
 
-        throw new Error("Could not get to the exit");
+        const startMinute = 0;
 
-    },
-    async ({ lines, outputCallback, resultOutputCallback }) => {
-        const ns = lines.map(l => parseInt(l, 10));
-        let result: any = 0
-        for (const x of lines) { 
+        const toEnd = findMinutes(start, end, startMinute, period, bounds, occupied);
+
+        if (!toEnd) {
+            throw new Error("Could not get to the end");
         }
-        for (const x of ns) { 
+
+        const backToStart = findMinutes(end, start, toEnd, period, bounds, occupied);
+
+        if (!backToStart) {
+            throw new Error("Could not get back to start");
         }
+
+        const result = findMinutes(start, end, backToStart, period, bounds, occupied);
+
+        if (!result) {
+            throw new Error("Could not finish");
+        }
+
         await resultOutputCallback(result);
+
     },
     {
         key: "blizzard-basin",
@@ -223,6 +266,7 @@ export const blizzardBasin = entryForFile(
         supportsQuickRunning: true,
         embeddedData: true,
         date: 24,
-        exampleInput
+        exampleInput,
+        stars: 2
     }
 );
