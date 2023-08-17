@@ -83,6 +83,20 @@ export class CCoordinate implements Coordinate {
     }
 }
 
+export type LiteralDirection = "v" | "^" | "<" | ">";
+
+export const mapLiteralToDirection = (s: LiteralDirection): CCoordinate => {
+    if (s === "v") {
+        return directions.down;
+    } else if (s === "<") {
+        return directions.left;
+    } else if (s === ">") {
+        return directions.right;
+    } else {
+        return directions.up;
+    }
+}
+
 export const directions = {
     up: new CCoordinate(0, -1),
     down: new CCoordinate(0, 1),

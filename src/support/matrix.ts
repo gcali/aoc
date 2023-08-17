@@ -8,8 +8,13 @@ export class FixedSizeMatrix<T> {
         return this._delta;
     }
 
+    public static fromLines<T>(lines: string[], parser: (e: string) => T): FixedSizeMatrix<T> {
+        return FixedSizeMatrix.fromPlain(lines.map(l => l.split("").map(parser)));
+    }
+
     public static fromPlain<T>(data: T[][]): FixedSizeMatrix<T> {
-        const matrix = new FixedSizeMatrix<T>({x: data[0].length, y: data.length});
+        const size = {x: data[0].length, y: data.length};
+        const matrix = new FixedSizeMatrix<T>(size);
         for (let x = 0; x < matrix.size.x; x++) {
             for (let y = 0; y < matrix.size.y; y++) {
                 matrix.set({x, y}, data[y][x]);

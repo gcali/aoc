@@ -7,6 +7,7 @@ import { distressSignal } from "./distress-signal";
 import { grovePositioningSystem } from "./grove-positioning-system";
 import { hillClimbingAlgorithm } from "./hill-climbing-algorithm";
 import { monkeyInTheMiddle } from "./monkey-in-the-middle";
+import { monkeyMap } from "./monkey-map";
 import { monkeyMath } from "./monkey-math";
 import { noSpaceLeftOnDevice } from "./no-space-left-on-device";
 import { proboscideaVolcanium } from "./proboscidea-volcanium";
@@ -39,5 +40,6 @@ export const entries = [
     pyroclasticFlow,
     boilingBoulders,
     grovePositioningSystem,
-    monkeyMath
+    monkeyMath,
+    monkeyMap
 ];
