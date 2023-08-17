@@ -341,10 +341,10 @@ export function getSurrounding(c: FullCoordinate): FullCoordinate[] {
     }
 }
 
+export function getFullSurrounding(coordinate: Coordinate): Coordinate[];
 export function getFullSurrounding(coordinate: FullCoordinate): FullCoordinate[];
 export function getFullSurrounding(coordinate: Coordinate4d): Coordinate4d[];
 export function getFullSurrounding(coordinate: Coordinate3d): Coordinate3d[];
-export function getFullSurrounding(coordinate: Coordinate): Coordinate[];
 export function getFullSurrounding(coordinate: FullCoordinate): FullCoordinate[] {
     if (is4d(coordinate)) {
         const result: Coordinate4d[] = [];

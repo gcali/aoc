@@ -431,6 +431,15 @@ export class SerializableSet<TValue> {
         }
     }
 
+    public hasSameValuesAs(other: SerializableSet<TValue>) {
+      for (const value of this.values()) {
+        if (!other.has(value)) {
+          return false;
+        }
+      }
+      return other.size === this.size;
+    }
+
     private serialize(c: TValue): string {
         return this.ser.serialize(c);
     }
@@ -457,7 +466,7 @@ export class DefaultDict<TKey, TValue> {
     return this.data;
   }
   private readonly data: Map<TKey, TValue> | Map<string, TValue>;
-  constructor(private readonly defaultValue: TValue, private readonly serializer: ISerializer<TKey> | null = null) {
+  constructor(private readonly defaultValue: () => TValue, private readonly serializer: ISerializer<TKey> | null = null) {
     if (this.serializer !== null) {
       this.data = new Map<string, TValue>();
     } else {
@@ -473,14 +482,20 @@ export class DefaultDict<TKey, TValue> {
     }
   }
 
-  public get(key: TKey) {
+  public get(key: TKey): TValue {
     const res = this.isDataSerializable(this.data) ?
       this.data.get(this.serializer!.serialize(key))
       : this.data.get(key);
     if (res !== undefined) {
       return res;
     }
-    return this.defaultValue;
+    return this.defaultValue();
+  }
+
+  public ensureAndGet(key: TKey): TValue {
+    const v = this.get(key);
+    this.set(key, v);
+    return v;
   }
 
   public update(key: TKey, f: (e: TValue) => TValue) {
@@ -527,7 +542,7 @@ export class DefaultNumberDict<TKey> extends DefaultDict<TKey, number> {
    *
    */
   constructor(serializer: ISerializer<TKey> | null = null) {
-    super(0, serializer);
+    super(() => 0, serializer);
   }
 
   public incr(key: TKey, n: number = 1) {

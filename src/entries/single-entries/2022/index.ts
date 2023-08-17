@@ -19,6 +19,7 @@ import { rucksackReorganization } from "./rucksack-reorganization";
 import { supplyStacks } from "./supply-stacks";
 import { treetopTreeHouse } from "./treetop-tree-house";
 import { tuningTrouble } from "./tuning-trouble";
+import { unstableDiffusion } from "./unstable-diffusion";
 
 export const entries = [
     calorieCounting,
@@ -41,5 +42,6 @@ export const entries = [
     boilingBoulders,
     grovePositioningSystem,
     monkeyMath,
-    monkeyMap
+    monkeyMap,
+    unstableDiffusion
 ];
