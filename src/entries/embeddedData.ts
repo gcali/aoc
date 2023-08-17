@@ -7,7 +7,7 @@ const parse = (data: string): string[] => {
     return data.split("\n");
 };
 
-export const disabledYear: string | undefined = "2022";
+export const disabledYear: string | undefined = "2023";
 
 
 export const embeddedLines = Object.keys(entryList).flatMap((year) => entryList[year].map((entry) => {

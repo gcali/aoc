@@ -194,8 +194,6 @@ const parseInstructions = (line: string): Instruction[] => {
 }
 export const monkeyMap = entryForFile(
     async ({ lines, outputCallback, resultOutputCallback }) => {
-        console.log(lines.join("\n").length);
-        console.log({line: lines[0]});
         const matrixLines = lines.slice(0, lines.length - 2);
         const instructions = parseInstructions(lines[lines.length - 1]);
         const matrix = FixedSizeMatrix.fromLines(matrixLines, e => e === " " ? undefined : e as Cell);
@@ -248,7 +246,7 @@ export const monkeyMap = entryForFile(
         await resultOutputCallback(finalPosition.y * 1000 + finalPosition.x * 4 + directionValue);
 
     },
-    async ({ lines, isExample, resultOutputCallback, outputCallback, isQuickRunning }) => {
+    async ({ lines, isExample, resultOutputCallback, outputCallback, isQuickRunning, pause }) => {
         const faceSize = isExample ? 4 : 50;
 
         const matrixLines = lines.slice(0, lines.length - 2);
@@ -256,9 +254,6 @@ export const monkeyMap = entryForFile(
         const matrix = FixedSizeMatrix.fromLines(matrixLines, e => e === " " ? undefined : e as Cell);
 
         const faceCorners: Bounds[] = [];
-
-        await outputCallback(lines[0]);
-
 
         for (let x = 0; x < matrix.size.x; x += faceSize) {
             for (let y = 0; y < matrix.size.y; y += faceSize) {
@@ -340,9 +335,11 @@ export const monkeyMap = entryForFile(
 
         const connections = new Connections(mappings, faceCorners, matrix, faceSize);
 
+
         if (!isQuickRunning) {
 
             //test cases
+            await outputCallback("Warning: running test cases. This could take a while");
 
             const inPlaceInstructions = ["", "L", "LL", "LLL"].map(e => e + (faceSize * 4).toString()).map(parseInstructions);
 
@@ -350,6 +347,7 @@ export const monkeyMap = entryForFile(
             const emptyConnections = new Connections(mappings, faceCorners, emptyMatrix, faceSize);
 
             for (let x = 0; x < matrix.size.x; x++) {
+                await pause();
                 for (let y = 0; y < matrix.size.y; y++) {
                     if (emptyMatrix.get({ x, y }) !== ".") {
                         continue;
