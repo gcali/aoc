@@ -5,7 +5,7 @@ import { getLastYear } from "./support/entry-list-helper";
 export const download = async (day: number, year: number) => {
 
     const time = new Date().getTime();
-    fs.writeFileSync("time", time, { encoding: 'utf8'});
+    fs.writeFileSync("time", time.toString(), { encoding: 'utf8'});
 
     const token = fs.readFileSync("session", { encoding: "utf-8" }).split("\n")[0].trim();
 

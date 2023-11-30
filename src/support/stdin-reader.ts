@@ -41,7 +41,7 @@ export const generateFileReader = (filePath: string): Reader => {
             if (err && err.code) {
                 throw new Error(`(${err.code}) ${err.message}`);
             }
-            let lines = data.toString().split("\n");
+            let lines = data.toString().replace(/\r\n/g, "\n").split("\n");
             if (lines.length > 0 && lines[lines.length-1].length === 0) {
                 lines = lines.slice(0, lines.length - 1);
             }

@@ -2,13 +2,13 @@ import { PairingHeap } from "priorityqueue/lib/cjs";
 import { buildGroupsFromSeparator } from "../../../../support/sequences";
 import { entryForFile } from "../../../entry";
 import { buildVisualizer } from "./visualizer";
+import { Parser } from "../../../../support/parser";
 
 export type CalorieCountingData = number[][];
 
 export const calorieCounting = entryForFile(
     async ({ lines, outputCallback, resultOutputCallback, screen, pause }) => {
-        const groups = [...buildGroupsFromSeparator(lines, (e) => e.trim().length === 0)]
-            .map((g) => g.map((e) => parseInt(e, 10)));
+        const groups = new Parser(lines).group("").numbers().run();
 
         const visualizer = buildVisualizer(screen, pause);
 
@@ -38,8 +38,7 @@ export const calorieCounting = entryForFile(
         await resultOutputCallback(max.value);
     },
     async ({ lines, outputCallback, resultOutputCallback, screen, pause }) => {
-        const groups = [...buildGroupsFromSeparator(lines, (e) => e.trim().length === 0)]
-            .map((g) => g.map((e) => parseInt(e, 10)));
+        const groups = new Parser(lines).group("").numbers().run();
 
         const visualizer = buildVisualizer(screen, pause);
 

@@ -1,6 +1,7 @@
 import { entryList } from "./entryList";
 
 const parse = (data: string): string[] => {
+    data = data.replaceAll("\r\n", "\n");
     if (data.endsWith("\n")) {
         data = data.slice(0, data.length-1);
     }
@@ -18,13 +19,19 @@ export const embeddedLines = Object.keys(entryList).flatMap((year) => entryList[
 })).filter((e) => e.entry.entry.metadata && e.entry.entry.metadata.embeddedData)
 .reduce((acc, next) => {
     const metadata = next.entry.entry.metadata!;
-    acc[metadata.key] = async () => {
+    acc[metadata.key] = () => {
+        console.log("Loading " + metadata.key);
         const key = metadata.embeddedData === true ? metadata.key : metadata.embeddedData!;
-        const data = (await import(
+        return import(
             /* webpackChunkName: "[request]" */
             `../../data/${next.year}/${key}.txt`
-        )).default as string;
-        return parse(data);
+        ).then(e => e.default as string).then(e => parse(e));
+        // return parse(data);
+        // const data = (await import(
+        //     /* webpackChunkName: "[request]" */
+        //     `../../data/${next.year}/${key}.txt`
+        // )).default as string;
+        // return parse(data);
     };
     return acc;
 }, {} as { [key: string]: () => Promise<string[]>});

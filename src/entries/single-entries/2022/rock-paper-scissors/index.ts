@@ -37,6 +37,7 @@ const pointCalculator = (a: RPS, b: RPS): number => {
     };
 
     const points = basePoints[b];
+
     if (a === b) {
         return points + 3;
     }
@@ -70,7 +71,12 @@ export const rockPaperScissors = entryForFile(
 
         let points = 0;
         for (const e of data) {
-            points += pointCalculator(e.opp, mapper(e.mine));
+            const current = pointCalculator(e.opp, mapper(e.mine));
+            points += current;
+            if (Number.isNaN(points)) {
+                console.error(current, e);
+                throw new Error("What happened?");
+            }
         }
 
         await resultOutputCallback(points);

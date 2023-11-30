@@ -35,8 +35,8 @@ module.exports = {
             ]
         },
     },
-    // chainWebpack: (config) => {
-    //     config.plugins.store.delete('prefetch');
-    //     config.plugins.store.delete('preload');
-    // }
+    chainWebpack: (config) => {
+        config.plugins.store.delete('prefetch');
+        config.plugins.store.delete('preload');
+    }
 }

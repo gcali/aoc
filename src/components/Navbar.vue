@@ -189,6 +189,11 @@ export default Vue.extend({
             .spaced {
                 margin-left: 0.5em;
             }
+            @include small-screen {
+                a {
+                    display: none;
+                }
+            }
         }
         .author {
             text-align: end;
