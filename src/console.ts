@@ -1,5 +1,6 @@
 import minimist from "minimist";
 import clipboard from "clipboardy";
+import fs from "fs";
 
 const args = (minimist as any)(process.argv.slice(2), {
     alias: { 
@@ -75,6 +76,7 @@ const entryCallback = entryList[year][index].entry;
 
 
 import { readStdin, Reader, generateFileReader, stdinReadLineByLine } from "./support/stdin-reader";
+import { serializeTime } from "./support/time";
 
 const isReadingFromFile = args.f !== null && args.f.length > 0;
 let reader: Reader | null = null;
@@ -147,6 +149,13 @@ reader(async (lines) => {
         if (args.q) {
             console.log(`Time: ${new Date().getTime() - startTime}ms`);
 
+        }
+        const timeData = fs.readFileSync("time", {encoding: "utf8"});
+        if (timeData) {
+            const time = parseInt(timeData, 10);
+            const currentTime = new Date().getTime();
+            const delta = currentTime - time;
+            console.log("Total time: " + serializeTime(delta));
         }
     };
 

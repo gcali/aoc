@@ -2,7 +2,11 @@ import fetch from "node-fetch";
 import fs from "fs";
 import { getLastYear } from "./support/entry-list-helper";
 
-export const download = async (day: number, year: string) => {
+export const download = async (day: number, year: number) => {
+
+    const time = new Date().getTime();
+    fs.writeFileSync("time", time, { encoding: 'utf8'});
+
     const token = fs.readFileSync("session", { encoding: "utf-8" }).split("\n")[0].trim();
 
     const result = await fetch(`https://adventofcode.com/${year}/day/${day}/input`, {
@@ -18,20 +22,25 @@ export const download = async (day: number, year: string) => {
 
 
 const main = async () => {
-    const arg = process.argv[2];
+    const dayArg = process.argv[2];
+    const yearArg = process.argv[3];
 
-    let day = new Date().getDate();
+    const day = parseArg(dayArg, new Date().getDate());
 
-    const year = getLastYear();
-
-    if (arg && arg.length > 0) {
-        day = parseInt(arg, 10);
-        if (day.toString() !== arg) {
-            throw new Error("Invalid input");
-        }
-    }
+    const year = parseArg(yearArg, parseInt(getLastYear(), 10));
 
     await download(day, year);
 };
 
 main().catch((e) => console.error(e));
+
+export function parseArg(dayArg: string, day: number) {
+    if (dayArg && dayArg.length > 0) {
+        day = parseInt(dayArg, 10);
+        if (day.toString() !== dayArg) {
+            throw new Error("Invalid input");
+        }
+    }
+    return day;
+}
+

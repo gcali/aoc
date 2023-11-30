@@ -3,7 +3,6 @@ import { FullCoordinate, getSurrounding, serialization } from "../../../../suppo
 import { Coordinate3d } from "../../../../support/geometry";
 import { manhattanDistance } from "../../../../support/geometry";
 import { entryForFile } from "../../../entry";
-import { arithmeticLogicUnit } from "../../2021/arithmetic-logic-unit";
 
 const exampleInput =
 `2,2,2
