@@ -22,9 +22,12 @@ import { entries as entries2019 } from "./single-entries/2019";
 import { entries as entries2020 } from "./single-entries/2020";
 import { entries as entries2021 } from "./single-entries/2021";
 import { entries as entries2022 } from "./single-entries/2022";
+import { entries as entries2023 } from "./single-entries/2023";
 
 import { passagePathing } from "./single-entries/2021/passage-pathing";
 import PassagePathing from "@/views/entries/custom/2021/PassagePathing.vue";
+import { trebuchet } from "./single-entries/2023/trebuchet";
+import TrebuchetView from "../views/entries/custom/2023/Trebuchet.vue";
 
 interface EntryMap { [key: string]: VueConstructor<Vue>; }
 
@@ -58,6 +61,10 @@ const map2021: EntryMap = buildMap([
     [passagePathing, PassagePathing]
 ], entries2021);
 
+const map2023: EntryMap = buildMap([
+    [trebuchet, TrebuchetView]
+], entries2023);
+
 export const map: { [key: string]: VueConstructor<Vue> } = [
     buildMap([], entries2015),
     buildMap([], entries2016),
@@ -67,6 +74,7 @@ export const map: { [key: string]: VueConstructor<Vue> } = [
     map2020,
     map2021,
     buildMap([], entries2022),
+    map2023
 ].reduce((acc, next) => {
     for (const key in next) {
         if (key in next) {

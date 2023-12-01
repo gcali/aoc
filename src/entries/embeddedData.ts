@@ -19,19 +19,14 @@ export const embeddedLines = Object.keys(entryList).flatMap((year) => entryList[
 })).filter((e) => e.entry.entry.metadata && e.entry.entry.metadata.embeddedData)
 .reduce((acc, next) => {
     const metadata = next.entry.entry.metadata!;
-    acc[metadata.key] = () => {
+    acc[metadata.key] = async () => {
         console.log("Loading " + metadata.key);
         const key = metadata.embeddedData === true ? metadata.key : metadata.embeddedData!;
-        return import(
+        const data = (await import(
             /* webpackChunkName: "[request]" */
             `../../data/${next.year}/${key}.txt`
-        ).then(e => e.default as string).then(e => parse(e));
-        // return parse(data);
-        // const data = (await import(
-        //     /* webpackChunkName: "[request]" */
-        //     `../../data/${next.year}/${key}.txt`
-        // )).default as string;
-        // return parse(data);
+        )).default as string;
+        return parse(data);
     };
     return acc;
 }, {} as { [key: string]: () => Promise<string[]>});
