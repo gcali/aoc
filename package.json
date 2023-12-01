@@ -44,8 +44,6 @@
     "priorityqueue": "^1.0.0",
     "tesseract.js": "^2.1.5",
     "ts-md5": "^1.2.7",
-    "vis-data": "^7.1.2",
-    "vis-network": "^9.1.0",
     "vue": "^2.6.11",
     "vue-class-component": "^6.0.0",
     "vue-property-decorator": "^7.3.0",
