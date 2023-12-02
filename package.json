@@ -41,8 +41,8 @@
     "minimist": "^1.2.5",
     "node-dijkstra": "^2.5.0",
     "node-fetch": "^2.6.6",
-    "primality-test": "^4.4.1",
     "node-html-parser": "^6.1.4",
+    "primality-test": "^4.4.1",
     "priorityqueue": "^1.0.0",
     "tesseract.js": "^2.1.5",
     "ts-md5": "^1.2.7",
@@ -77,7 +77,7 @@
     "ts-mocha": "^6.0.0",
     "ts-node": "^8.10.2",
     "tslint-no-unused-expression-chai": "^0.1.4",
-    "typescript": "^3.9.7",
+    "typescript": "^4.9.5",
     "vue-template-compiler": "^2.6.11"
   },
   "resolutions": {

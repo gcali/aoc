@@ -112,5 +112,5 @@ export const entry = entryForFile(
         }
         await outputCallback(iterationCounter - 1);
     },
-    { key: "stars-align", title: "The Stars Align", stars: 2, }
+    { key: "the-stars-align", title: "The Stars Align", stars: 2, }
 );

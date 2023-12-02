@@ -142,7 +142,7 @@ class StopExecution extends Error {
     public readonly flag = "IS_STOP_EXECUTION";
 }
 
-function isStopExecution(e: Error): e is StopExecution {
+function isStopExecution(e: unknown): e is StopExecution {
     return (e as StopExecution).flag === "IS_STOP_EXECUTION";
 }
 
