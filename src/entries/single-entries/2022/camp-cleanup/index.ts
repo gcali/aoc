@@ -1,3 +1,4 @@
+import { Parser } from "../../../../support/parser";
 import { entryForFile, Pause, ResultOutputCallback, ScreenBuilder } from "../../../entry";
 import { buildVisualizer } from "./visualizer";
 
@@ -30,14 +31,13 @@ const parseRange = (token: string): Range => {
 };
 
 const parseInput = (lines: string[]): Pair[] =>
-    lines.map((line, index) => {
-        const [a, b] = line.split(",");
-        return {
-            a: parseRange(a),
-            b: parseRange(b),
-            id: index
-        };
-    });
+    new Parser(lines)
+        .tokenize(",")
+        .startLabeling()
+        .label(a => parseRange(a.s()), "a")
+        .label(b => parseRange(b.s()), "b")
+        .map((d, i) => ({...d, id: i}))
+        .run();
 
 export const campCleanup = entryForFile(
     async ({ lines, resultOutputCallback, screen, pause }) => {

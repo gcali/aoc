@@ -2,6 +2,7 @@ import { Queue } from "../../../../support/data-structure";
 import { FullCoordinate, getSurrounding, serialization } from "../../../../support/geometry";
 import { Coordinate3d } from "../../../../support/geometry";
 import { manhattanDistance } from "../../../../support/geometry";
+import { Parser } from "../../../../support/parser";
 import { entryForFile } from "../../../entry";
 
 const exampleInput =
@@ -20,6 +21,9 @@ const exampleInput =
 2,3,5`;
 
 const parseLines = (lines: string[]): Coordinate3d[] => {
+    return new Parser(lines)
+        .stringParse(s => s.extract3dCoordinates())
+        .run();
     return lines.map(line => {
         const [x,y,z] = line.split(",").map(e => parseInt(e, 10));
         return {x,y,z};

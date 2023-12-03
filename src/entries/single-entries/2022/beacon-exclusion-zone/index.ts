@@ -1,4 +1,5 @@
 import { Coordinate, drawStraightLine, getBoundaries, isInBounds, manhattanDistance, serialization } from "../../../../support/geometry";
+import { Parser } from "../../../../support/parser";
 import { entryForFile } from "../../../entry";
 
 const exampleInput = `Sensor at x=2, y=18: closest beacon is at x=-2, y=15
@@ -24,20 +25,17 @@ type SensorReading = {
 };
 
 const parseLines = (lines: string[]): SensorReading[] => {
-    return lines.map(line => {
-        const matches = line.match(/x=(-?\d*).*y=(-?\d*).*x=(-?\d*).*y=(-?\d*)/);
-        if (!matches) {
-            throw new Error("Invalid line: " + line);
-        }
-        const [sx,sy,bx,by] = matches.slice(1).map(e => parseInt(e, 10));
-        const sensor = {x: sx, y: sy};
-        const beacon = {x: bx, y: by};
-        return {
-            sensor,
-            beacon,
-            radius: manhattanDistance(sensor, beacon)
-        };
-    });
+    const res = new Parser(lines)
+        .tokenize(": ")
+        .startLabeling()
+        .label(sensor => sensor.extractCoordinates(), "sensor")
+        .label(beacon => beacon.extractCoordinates(), "beacon")
+        .map(e => ({
+            ...e,
+            radius: manhattanDistance(e.sensor, e.beacon)
+        }))
+        .run();
+    return res;
 }
 
 const isInRange = (reading: SensorReading, position: Coordinate) => {

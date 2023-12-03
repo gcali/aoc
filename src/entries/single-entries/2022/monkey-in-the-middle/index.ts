@@ -1,6 +1,7 @@
 import bigInt from "big-integer";
 import { buildGroups } from "../../../../support/sequences";
 import { entryForFile } from "../../../entry";
+import { Parser } from "../../../../support/parser";
 
 type Item = {
     value: number;
@@ -53,39 +54,55 @@ class Monkey {
 const serialize = (monkeys: Monkey[]) => monkeys.map(m => m.serialize()).join("_");
 
 const parseInput = (lines: string[]): Monkey[] => {
-    const grouped = buildGroups(lines, 6, 7);
-    const result: Monkey[] = [];
+
     const getLast = (line: string) => {
         const tokenized = line.split(" ");
         return tokenized[tokenized.length - 1];
     }
+
     let prefix = 0;
-    for (const group of grouped) {
-        const startingStart = group[1].indexOf(":");
-        const items = group[1].slice(startingStart + 2).split(", ").map(e => parseInt(e, 10));
-        const rawoperand = getLast(group[2]);
-        let operation = (old: number) => old.valueOf();
-        if (rawoperand === "old") {
-            operation = (old: number) => old.valueOf() * old.valueOf();
-        } else {
-            const operand = parseInt(rawoperand, 10);
-            operation = (old: number) => (group[2].includes("*") ? old * operand : old + operand);
-        }
-        const testN = parseInt(getLast(group[3]), 10);
-        const target = {
-            true: parseInt(getLast(group[4]), 10),
-            false: parseInt(getLast(group[5]), 10)
-        }
-        result.push(new Monkey(
-            items.map((item, index) => ({value: item, index: prefix * 100 + index})),
-            operation,
-            testN,
-            target,
-            false
-        ));
-        prefix++;
-    }
-    return result;
+
+    const parser = new Parser(lines)
+        .group("")
+        .groupMap(p => 
+            p.startLabeling()
+            .label(id => id.n(), "id")
+            .label(items => items
+                .transform(/: .*/)
+                .tokenize(", ")
+                .numbers()
+                .run(),
+                "items"
+            )
+            .label(rawLine => {
+                const line = rawLine.s();
+                const rawoperand = getLast(line);
+                let operation = (old: number) => old.valueOf();
+                if (rawoperand === "old") {
+                    operation = (old: number) => old.valueOf() * old.valueOf();
+                } else {
+                    const operand = parseInt(rawoperand, 10);
+                    operation = (old: number) => (line.includes("*") ? old * operand : old + operand);
+                }
+                return operation;
+
+            }, "operation")
+            .label(testN => testN.n(), "testN")
+            .label(t => t.n(), "true")
+            .label(t => t.n(), "false")
+            .run()
+        )
+        .map((e, monkeyIndex) => {
+            return new Monkey(
+            e.items.map((item, index) => ({value: item, index: monkeyIndex * 100 + index})),
+            e.operation, 
+            e.testN, {
+                true: e.true, false: e.false
+            }, false);
+        })
+        .run();
+
+    return parser;
 }
 
 export const monkeyInTheMiddle = entryForFile(

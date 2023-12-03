@@ -11,7 +11,7 @@ const cubes = ["red", "green", "blue"] as const;
 
 type Cube = typeof cubes[number];
 
-export const cubeconundrum = entryForFile(
+export const cubeConundrum = entryForFile(
     async ({ lines, outputCallback, resultOutputCallback }) => {
         const parsed = new Parser(lines)
             .tokenize(": ")
@@ -88,8 +88,8 @@ export const cubeconundrum = entryForFile(
         await resultOutputCallback(result);
     },
     {
-        key: "cubeconundrum",
-        title: "CubeConundrum",
+        key: "cube-conundrum",
+        title: "Cube Conundrum",
         supportsQuickRunning: true,
         embeddedData: true,
         date: 2,

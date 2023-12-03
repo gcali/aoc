@@ -1,6 +1,8 @@
 import { trebuchet } from "./trebuchet";
-import { cubeconundrum } from "./cubeconundrum";
+import { cubeConundrum } from "./cube-conundrum";
+import { gearRatios } from "./gear-ratios";
 export const entries = [
     trebuchet,
-    cubeconundrum,
+    cubeConundrum,
+    gearRatios,
 ];

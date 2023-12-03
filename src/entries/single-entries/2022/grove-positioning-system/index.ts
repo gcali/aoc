@@ -1,3 +1,4 @@
+import { Parser } from "../../../../support/parser";
 import { entryForFile } from "../../../entry";
 const exampleInput =
 `1
@@ -15,9 +16,9 @@ type Cell = {
 }
 
 const parseLines = (lines: string[]): Cell[] => {
-    return lines.map(e => parseInt(e, 10)).map((e, i) => {
+    return new Parser(lines).numbers().map((e, i) => {
         return {value: BigInt(e), index: i, offset: e}
-    });
+    }).run();
 }
 
 export const grovePositioningSystem = entryForFile(

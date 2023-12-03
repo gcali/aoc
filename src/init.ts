@@ -35,7 +35,7 @@ const main = async () => {
     if (!match) {
         throw new Error("Invalid title format: " + fullTitle);
     }
-    const title = match[1].split("").filter(e => e.match(/[a-zA-Z]/)).join("");
+    const title = match[1].split("").filter(e => e.match(/[a-zA-Z ]/)).join("");
     const key = title.toLowerCase().split(" ").join("-");
     const entryName = title.toLowerCase().split(" ").map((e, i) => {
         if (i === 0) {

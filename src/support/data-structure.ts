@@ -520,7 +520,7 @@ export class DefaultDict<TKey, TValue> {
     return this.data;
   }
   private readonly data: Map<TKey, TValue> | Map<string, TValue>;
-  constructor(private readonly defaultValue: () => TValue, private readonly serializer: ISerializer<TKey> | null = null) {
+  constructor(private readonly defaultValue: () => TValue, private readonly serializer: ISerializer<TKey> | null = null, private options?: {setOnGet: boolean}) {
     if (this.serializer !== null) {
       this.data = new Map<string, TValue>();
     } else {
@@ -543,7 +543,11 @@ export class DefaultDict<TKey, TValue> {
     if (res !== undefined) {
       return res;
     }
-    return this.defaultValue();
+    const v = this.defaultValue();
+    if (this.options && this.options.setOnGet) {
+      this.set(key, v);
+    }
+    return v;
   }
 
   public ensureAndGet(key: TKey): TValue {

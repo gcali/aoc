@@ -1,3 +1,5 @@
+import { CCoordinate, Coordinate, Coordinate3d } from "./geometry";
+import { FixedSizeMatrix } from "./matrix";
 import { buildGroups, buildGroupsFromSeparator, groupBy } from "./sequences";
 
 type Separator<T> = number | T | ((line: T) => boolean);
@@ -52,8 +54,8 @@ class SimpleParser<T> extends PipelineParser<T[]> {
         return this.data;
     }
 
-    public map<TNext>(mapper: (e: T) => TNext) {
-        return new SimpleParser<TNext>(this.data.map(mapper));
+    public map<TNext>(mapper: (e: T, i: number) => TNext): SimpleParser<TNext> {
+        return new SimpleParser<TNext>(this.data.map((e, i) => mapper(e, i)));
     }
 
     public group(sep: number | ((e: T) => boolean)) {
@@ -74,6 +76,10 @@ class GroupParser<T> extends SimpleParser<T[]> {
 class StringGroupParser extends GroupParser<string> {
     public numbers() {
         return new SimpleParser<number[]>(this.run().map(e => e.map(x => parseInt(x, 10))));
+    }
+
+    public groupMap<U>(callback: (p: LineParser) => U): SimpleParser<U> {
+        return new SimpleParser(this.run().map(group => (callback(new LineParser(group)))));
     }
 }
 
@@ -148,6 +154,31 @@ export class LineParser extends SimpleParser<string> {
         return this.map(e => parseInt(e, 10));
     }
 
+    public stringParse<T>(callback: (s: StringParser) => T): SimpleParser<T> {
+        return this.map(l => {
+            const res = callback(new StringParser(l))
+            return res;
+        });
+    }
+
+    public matrix<T>(mapper: (s: string) => T): FixedSizeMatrix<T> {
+        return FixedSizeMatrix.fromLines(this.run(), mapper);
+    }
+
+    public matrixNumbers(defaultValue: number | undefined): FixedSizeMatrix<Number> {
+        const getDefaultValue = () => {
+            if (defaultValue === undefined) {
+                throw new Error("No default value and found an invalid number in the matrix");
+            }
+            return defaultValue;
+        }
+        return FixedSizeMatrix.fromLines(this.run(), (e => Parser.isNumber(e) ? parseInt(e, 10) : getDefaultValue()));
+    }
+
+    public matrixMixedNumbers(): FixedSizeMatrix<Number | string> {
+        return FixedSizeMatrix.fromLines(this.run(), (e => Parser.isNumber(e) ? parseInt(e, 10) : e));
+    }
+
     public group(sep: string | number | ((e: string) => boolean)) {
         if (typeof sep === "string") {
             return new StringGroupParser(this.run(), e => e.trim() === sep);
@@ -179,8 +210,6 @@ export class LineParser extends SimpleParser<string> {
     }
 }
 
-const x = /hi/;
-
 class StringParser extends PipelineParser<string> {
     constructor(private data: string) {
         super();
@@ -191,6 +220,14 @@ class StringParser extends PipelineParser<string> {
 
     public s(): string {
         return this.run();
+    }
+
+    public transform(regex: RegExp): StringParser {
+        const match = this.run().match(regex);
+        if (!match) {
+            throw new Error("Did not match regex");
+        }
+        return new StringParser(match[0]);
     }
 
     public n(base: number = 10): number {
@@ -205,11 +242,37 @@ class StringParser extends PipelineParser<string> {
         return new Parser(this.data.split(separator));
     }
 
+    public extract3dCoordinates(): Coordinate3d {
+        const regex = /(-?\d+)[^\d]+(-?\d+)[^\d]+(-?\d+)/;
+        const matches = this.data.match(regex);
+        if (matches == null) {
+            throw new Error("No matches on " + this.data);
+        }
+        if (matches.length !== 4) {
+            throw new Error("Invalid coordinate match for " + this.data);
+        }
+        const [x,y,z] = matches.slice(1).map(e => parseInt(e, 10));
+        return {x,y,z};
+    }
 
-    public extractGroupRegex<T extends ((s: string) => any)[]>(regex: RegExp, ...mappers: [...T]): FlatParser<{
+    public extractCoordinates(): CCoordinate {
+        const regex = /(-?\d+)[^\d]+(-?\d+)/
+        const matches = this.data.match(regex);
+        if (matches == null) {
+            throw new Error("No matches on " + this.data);
+        }
+        if (matches.length !== 3) {
+            throw new Error("Invalid coordinate match for " + this.data);
+        }
+        const [x,y] = matches.slice(1).map(e => parseInt(e, 10));
+        return new CCoordinate(x, y);
+    }
+
+
+    public extractGroupRegex<T extends ((s: StringParser) => any)[]>(regex: RegExp, ...mappers: [...T]): FlatParser<{
         [K in keyof T]: T[K] extends (s: string) => any ? ReturnType<T[K]> : never
     }>;
-    public extractGroupRegex(regex: RegExp, ...mappers: Array<(s: string) => any>)
+    public extractGroupRegex(regex: RegExp, ...mappers: Array<(s: StringParser) => any>)
     {
         const matches = this.run().match(regex);
         if (matches == null) {
@@ -218,7 +281,7 @@ class StringParser extends PipelineParser<string> {
         if (matches.length !== mappers.length + 1) {
             throw new Error("Mismatch in group length");
         }
-        return new FlatParser(mappers.map((mapper, index) => mapper(matches[index+1])));
+        return new FlatParser(mappers.map((mapper, index) => mapper(new StringParser(matches[index+1]))));
     }
 
 }
@@ -273,5 +336,7 @@ class TokenParser extends SimpleParser<string[]> {
 }
 
 export class Parser extends LineParser {
-
+    public static isNumber(e: unknown): e is number {
+        return e !== "" && !isNaN(Number(e));
+    }
 }
