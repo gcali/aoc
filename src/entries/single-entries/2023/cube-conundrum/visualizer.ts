@@ -169,7 +169,8 @@ class RealVisualizer implements ICubeConundromVisualizer {
             const lastItem = this.mainBagItems[cube].pop();
             if (lastItem) {
                 const baseY = this.constants.tablePositions.y;
-                const lastY = Math.min(baseY + this.constants.cubeSize.y + this.constants.cubeMargin.y, ...tableItems.map(t => t.c.y));
+                const lastTableItem = tableItems[tableItems.length - 1];
+                const lastY = Math.min(baseY + this.constants.cubeSize.y + this.constants.cubeMargin.y, (lastTableItem && lastTableItem.c.y) || Number.POSITIVE_INFINITY);
                 let nextY = lastY - this.constants.cubeSize.y - this.constants.cubeMargin.y;
                 if (nextY <= this.constants.bagStart.y) {
                     nextY = this.constants.tablePositions.y;

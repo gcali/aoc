@@ -278,7 +278,10 @@ export default class SimpleEntryTemplate extends Vue {
     .options {
         display: flex;
         flex-direction: row;
-        justify-content: space-between;
+        justify-content: flex-start;
+        > :not(:last-child) {
+            margin-right: 1em;
+        }
     }
     .input {
         display: flex;
