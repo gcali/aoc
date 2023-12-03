@@ -1,5 +1,6 @@
 import { entryForFile } from "../../../entry";
 import { Parser } from "../../../../support/parser";
+import { buildVisualizer } from "./visualizer";
 
 type Extraction = {
     cube: Cube;
@@ -9,10 +10,12 @@ type Extraction = {
 
 const cubes = ["red", "green", "blue"] as const;
 
-type Cube = typeof cubes[number];
+export type Cube = typeof cubes[number];
 
 export const cubeConundrum = entryForFile(
-    async ({ lines, outputCallback, resultOutputCallback }) => {
+    async ({ lines, outputCallback, resultOutputCallback, screen, pause }) => {
+        const visualizer = await buildVisualizer(screen, pause);
+        await visualizer.setup();
         const parsed = new Parser(lines)
             .tokenize(": ")
             .startLabeling()
@@ -34,17 +37,20 @@ export const cubeConundrum = entryForFile(
 
         let result = 0;
         for (const game of games) {
+            await visualizer.setBag(limits);
             let hasRunOver = false;
             for (const round of game.rounds) {
                 const currentLimit = {...limits};
                 for (const extraction of round) {
                     currentLimit[extraction.cube] -= extraction.amount;
+                    await visualizer.extractGems(extraction);
                 }
                 if (Object.values(currentLimit).some(e => e < 0)) {
                     hasRunOver = true;
                     break;
                 }
             }
+            await visualizer.setRunOver(hasRunOver);
             if (!hasRunOver) {
                 result += game.id;
             }
@@ -71,6 +77,7 @@ export const cubeConundrum = entryForFile(
             )
             .run();
         let result = 0;
+        let maxCubes = 0;
         for (const game of games) {
             const amount: {[key: string]: number} = {};
             for (const round of game.games) {
@@ -79,12 +86,14 @@ export const cubeConundrum = entryForFile(
                     counter[extraction.cube] = (counter[extraction.cube] || 0) + extraction.amount;
                 }
                 for (const cube of cubes) {
+                    maxCubes = Math.max(maxCubes, (counter[cube] || 0));
                     amount[cube] = Math.max(amount[cube] || 0, counter[cube] || 0);
                 }
             }
             const power = cubes.reduce((acc, next) => acc * (amount[next] || 0), 1);
             result += power;
         }
+        await outputCallback(maxCubes);
         await resultOutputCallback(result);
     },
     {
@@ -94,6 +103,7 @@ export const cubeConundrum = entryForFile(
         embeddedData: true,
         date: 2,
         stars: 2,
+        suggestedDelay: 10,
         exampleInput: `Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green
 Game 2: 1 blue, 2 green; 3 green, 4 blue, 1 red; 1 green, 1 blue
 Game 3: 8 green, 6 blue, 20 red; 5 blue, 4 red, 13 green; 5 green, 1 red
