@@ -146,8 +146,12 @@ export class LineParser extends SimpleParser<string> {
         super(lines);
     }
 
-    public tokenize(separator: string = " "): TokenParser {
+    public tokenize(separator: string | RegExp = " "): TokenParser {
         return new TokenParser(this.run(), separator);
+    }
+
+    public transform(regex: RegExp) {
+        return new LineParser(this.run().map(e => new StringParser(e).transform(regex).run()));
     }
 
     public numbers() {
@@ -227,7 +231,21 @@ class StringParser extends PipelineParser<string> {
         if (!match) {
             throw new Error("Did not match regex");
         }
-        return new StringParser(match[0]);
+        const mainMatch = (() => {
+            if (match.length === 1) return match[0];
+            if (match.length === 2) return match[1];
+            throw new Error("Invalid regex; matches: " + (match.length - 1));
+        })();
+        return new StringParser(mainMatch);
+    }
+
+    public ns(canBeNegative: boolean = false, base: number = 10): number[] {
+        const regex = canBeNegative ? /(-?\d+)/g : /(\d+)/g;
+        const matches = this.data.match(regex);
+        if (!matches) {
+            return [];
+        }
+        return matches.map(e => parseInt(e, base));
     }
 
     public n(base: number = 10): number {
@@ -238,7 +256,7 @@ class StringParser extends PipelineParser<string> {
         return parseInt(match[0], base)
     }
 
-    public tokenize(separator: string) {
+    public tokenize(separator: string | RegExp) {
         return new Parser(this.data.split(separator));
     }
 
@@ -288,7 +306,7 @@ class StringParser extends PipelineParser<string> {
 
 class TokenParser extends SimpleParser<string[]> {
 
-    constructor(data: string[], separator: string = " ") {
+    constructor(data: string[], separator: string | RegExp) {
         const tokenized = data.map(d => d.split(separator));
         super(tokenized);
     }
