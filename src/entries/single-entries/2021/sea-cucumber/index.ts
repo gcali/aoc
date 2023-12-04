@@ -78,9 +78,9 @@ export const seaCucumber = entryForFile(
         title: "Sea Cucumber",
         supportsQuickRunning: true,
         embeddedData: true,
-        suggestedDelay: 10,
-        stars: 2,
-        customComponent: "pause-and-run"
+        suggestedDelay: 1,
+        stars: 2
+        // customComponent: "pause-and-run"
     }
 );
 

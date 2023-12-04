@@ -401,6 +401,9 @@ export default class EntrySimpleOutput extends Vue {
         // max-width: 60em;
     }
     .screen-output {
+        @include small-screen {
+            align-self: center;
+        }
         canvas {
             border-radius: 4px;
             background-color: $dark-transparent-color;
