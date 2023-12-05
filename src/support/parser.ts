@@ -54,6 +54,17 @@ class SimpleParser<T> extends PipelineParser<T[]> {
         return this.data;
     }
 
+    public first(): T {
+        if (this.data.length === 0) {
+            throw new Error("Could not find any data");
+        }
+        return this.data[0];
+    }
+
+    public startSimpleLabeling() {
+        return new Labeler(this.data, {});
+    }
+
     public map<TNext>(mapper: (e: T, i: number) => TNext): SimpleParser<TNext> {
         return new SimpleParser<TNext>(this.data.map((e, i) => mapper(e, i)));
     }
@@ -63,10 +74,25 @@ class SimpleParser<T> extends PipelineParser<T[]> {
     }
 }
 
-class GroupParser<T> extends SimpleParser<T[]> {
+class NestedParser<T> extends SimpleParser<T[]> {
+    public startLabeling() {
+        const lines = this.run().length;
+        const results: Array<{}> = [];
+        for (let i = 0; i < lines; i++) {
+            results.push({});
+        }
+        return new ListLabeler(
+            this.run(),
+            results
+        );
+    }
+}
+
+
+class GroupParser<T> extends NestedParser<T> {
     constructor(data: T[], sep: number | ((e: T) => boolean)) {
         if (typeof sep === "number") {
-            super([...buildGroups(data, sep)]);
+            super([...buildGroups(data, sep, sep)]);
         } else {
             super([...buildGroupsFromSeparator(data, sep)]);
         }
@@ -87,15 +113,15 @@ const isPipelineParser = (e: unknown): e is PipelineParser<any> => {
     return (e as PipelineParser<unknown>).run !== undefined;
 }
 
-class Labeler<T> extends FlatParser<T> {
+class Labeler<T, TData> extends FlatParser<T> {
     /**
      *
      */
-    constructor(private lines: StringParser[], private obj: T) {
+    constructor(private lines: TData[], private obj: T) {
         super(obj);
     }
 
-    public label<TLabel extends readonly string[], U>(callback: (s: StringParser) => U, ...labels: TLabel) {
+    public label<TLabel extends readonly string[], U>(callback: (s: TData) => U, ...labels: TLabel) {
         if (labels.length !== 1) {
             throw new Error("No label given for this callback: " + callback.toString());
         }
@@ -111,15 +137,15 @@ class Labeler<T> extends FlatParser<T> {
     }
 }
 
-class ListLabeler<T> extends SimpleParser<T> {
+class ListLabeler<T, TData> extends SimpleParser<T> {
     /**
      *
      */
-    constructor(private lines: StringParser[][], private objs: T[]) {
+    constructor(private lines: TData[][], private objs: T[]) {
         super(objs);
     }
 
-    public label<TLabel extends readonly string[], U>(callback: (s: StringParser) => U, ...labels: TLabel) {
+    public label<TLabel extends readonly string[], U>(callback: (s: TData) => U, ...labels: TLabel) {
         const results: Array<{
             [K in TLabel[number]]: U
         } & T> = [];
@@ -146,6 +172,16 @@ export class LineParser extends SimpleParser<string> {
         super(lines);
     }
 
+    public header<T>(length: number, callback: (header: Parser, rest: Parser) => T): T {
+        const header = this.run().slice(0, length);
+        const rest = this.run().slice(length);
+        return callback(new Parser(header), new Parser(rest));
+    }
+
+    public slice(start: number, end?: number) {
+        return new LineParser(this.run().slice(start, end));
+    }
+
     public tokenize(separator: string | RegExp = " "): TokenParser {
         return new TokenParser(this.run(), separator);
     }
@@ -154,8 +190,12 @@ export class LineParser extends SimpleParser<string> {
         return new LineParser(this.run().map(e => new StringParser(e).transform(regex).run()));
     }
 
-    public numbers() {
+    public asNumbers() {
         return this.map(e => parseInt(e, 10));
+    }
+
+    public extractAllNumbers(canBeNegative: boolean = false) {
+        return new NestedParser(this.stringParse(s => s.ns(canBeNegative)).run());
     }
 
     public stringParse<T>(callback: (s: StringParser) => T): SimpleParser<T> {
@@ -237,6 +277,10 @@ class StringParser extends PipelineParser<string> {
             throw new Error("Invalid regex; matches: " + (match.length - 1));
         })();
         return new StringParser(mainMatch);
+    }
+
+    public pns(canBeNegative: boolean = false, base: number = 10): SimpleParser<number> {
+        return new SimpleParser(this.ns(canBeNegative, base));
     }
 
     public ns(canBeNegative: boolean = false, base: number = 10): number[] {

@@ -70,7 +70,7 @@ const parseInput = (lines: string[]): Monkey[] => {
             .label(items => items
                 .transform(/: .*/)
                 .tokenize(", ")
-                .numbers()
+                .asNumbers()
                 .run(),
                 "items"
             )

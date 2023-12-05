@@ -16,7 +16,7 @@ type Cell = {
 }
 
 const parseLines = (lines: string[]): Cell[] => {
-    return new Parser(lines).numbers().map((e, i) => {
+    return new Parser(lines).asNumbers().map((e, i) => {
         return {value: BigInt(e), index: i, offset: e}
     }).run();
 }
