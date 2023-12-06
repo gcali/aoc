@@ -53,6 +53,7 @@ import {
 import {mediaQuery} from "../../support/browser";
 import { Coordinate } from "../../support/geometry";
 import { setTimeoutAsync } from "../../support/async";
+import { Choice } from "../../constants/choice";
 @Component({
     components: {
         EntryTemplate,
@@ -85,11 +86,17 @@ export default class SimpleEntryTemplate extends Vue {
         return this.selectedEntry.metadata && this.selectedEntry.metadata.fixedInput;
     }
 
-    private get exampleInput() {
+    private exampleInput(choice: Choice) {
         if (!this.selectedEntry.metadata || !this.selectedEntry.metadata.exampleInput) {
             throw new Error("Cannot find example input");
         }
-        return this.selectedEntry.metadata!.exampleInput!.split("\n");
+        const exampleInput = this.selectedEntry.metadata.exampleInput;
+        if (typeof exampleInput === "string") {
+            return exampleInput.split("\n");
+        } else {
+            const index = choice === "first" ? 0 : 1;
+            return exampleInput[index].split("\n");
+        }
     }
 
     private get selectedEntry(): Entry {
@@ -204,7 +211,7 @@ export default class SimpleEntryTemplate extends Vue {
             await executeEntry({
                 entry: this.selectedEntry,
                 choice: fileHandling.choice,
-                lines: this.example ? this.exampleInput : fileHandling.content,
+                lines: this.example ? this.exampleInput(fileHandling.choice) : fileHandling.content,
                 outputCallback: simpleOutputCallbackFactory(this.output, () => this.destroying),
                 additionalInputReader,
                 screen: this.requireScreen ? { requireScreen: this.requireScreen } : undefined,

@@ -110,8 +110,12 @@ if (isExample) {
         throw new Error("Cannot use example input if not given");
     }
     reader = (callback) => {
-        const lines = entryCallback.metadata!.exampleInput!.split("\n");
-        callback(lines);
+        const exampleInput = entryCallback.metadata!.exampleInput!;
+        if (typeof exampleInput === "string") {
+            callback(exampleInput.split("\n"));
+        } else {
+            callback((args.s ? exampleInput[1] : exampleInput[0]).split("\n"));
+        }
     };
 
 } else if (isReadingFromFile) {

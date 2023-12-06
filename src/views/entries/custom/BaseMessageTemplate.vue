@@ -6,11 +6,16 @@
         :disabled="executing"
         :year="year"
         :entryKey="this.entry.metadata.key"
+        :isExample="this.example"
     )
-        .quick-run(v-if="supportsQuickRunning").unselectable
-            label Quick run
-            input(type="checkbox" v-model="quickRun" :disabled="executing")
-            label(v-if="time") Time: {{time}}
+        .options
+            .quick-run(v-if="supportsQuickRunning").unselectable
+                label Quick run
+                input(type="checkbox" v-model="quickRun" :disabled="executing")
+                label(v-if="time") Time: {{time}}
+            .example(v-if="supportsExample").unselectable
+                label Use example input
+                input(type="checkbox" v-model="example" :disabled="executing")
         .output
             EntrySimpleOutput(:key="$route.path", :lines="output")
         slot
@@ -31,6 +36,7 @@ import EntrySimpleOutput from "@/components/EntrySimpleOutput.vue";
 import { setTimeoutAsync } from "../../../support/async";
 import { Coordinate } from "../../../support/geometry";
 import { mediaQuery } from "../../../support/browser";
+import { Choice } from "../../../constants/choice";
 
 @Component({
     components: {
@@ -49,6 +55,12 @@ export default class BaseMessageTemplate extends Vue {
     @Prop() public year!: number;
     @Prop() public messageHandler: MessageSender | undefined;
     @Prop({required: false}) public additionalReset?: () => void;
+
+    public get supportsExample() {
+        return this.entry.metadata && this.entry.metadata.exampleInput;
+    }
+
+    private example: boolean = false;
 
     private executing: boolean = false;
     private time: string = "";
@@ -76,6 +88,19 @@ export default class BaseMessageTemplate extends Vue {
         this.destroying = true;
     }
 
+    private exampleInput(choice: Choice) {
+        if (!this.entry.metadata || !this.entry.metadata.exampleInput) {
+            throw new Error("Cannot find example input");
+        }
+        const exampleInput = this.entry.metadata.exampleInput;
+        if (typeof exampleInput === "string") {
+            return exampleInput.split("\n");
+        } else {
+            const index = choice === "first" ? 0 : 1;
+            return exampleInput[index].split("\n");
+        }
+    }
+
     public async readFile(fileHandling: EntryFileHandling) {
         this.reset();
         this.executing = true;
@@ -85,7 +110,7 @@ export default class BaseMessageTemplate extends Vue {
             await executeEntry({
                 entry: this.entry,
                 choice: fileHandling.choice,
-                lines: fileHandling.content,
+                lines: this.example ? this.exampleInput(fileHandling.choice) : fileHandling.content,
                 outputCallback: simpleOutputCallbackFactory(this.output, () => this.destroying),
                 isCancelled: () => that.shouldStop,
                 pause: this.createPause(),
@@ -143,10 +168,18 @@ export default class BaseMessageTemplate extends Vue {
 </script>
 
 
-<style lang="scss">
+<style lang="scss" scoped>
 .output {
     display: flex;
     align-items: stretch;
+}
+.options {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    > :not(:last-child) {
+        margin-right: 1em;
+    }
 }
 .input .speed {
     label {

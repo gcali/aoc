@@ -47,18 +47,12 @@ export const waitForIt = entryForFile(
             .run();
 
         const result = races.reduce((acc, next) => acc * findNumberOfSolutions(next), 1);
-        // let result = 1;
-
-        // for (const race of races) {
-
-        //     result *= findNumberOfSolutions(race);
-        // }
 
         await resultOutputCallback(result);
     },
     async ({ lines, outputCallback, resultOutputCallback }) => {
         const race = new Parser(lines)
-            .replace(" ", "")
+            .remove(" ")
             .extractAllNumbers()
             .flat()
             .startSimpleLabeling()

@@ -1,5 +1,6 @@
 import { entryForFile } from "../../../entry";
 import { buildCommunicator } from "./communication";
+import { exampleInput } from "./example";
 
 type Lookup = {[key: string]: number};
 
@@ -67,12 +68,6 @@ export const trebuchet = entryForFile(
         embeddedData: true,
         date: 1,
         stars: 2,
-        exampleInput: `two1nine
-eightwothree
-abcone2threexyz
-xtwone3four
-4nineeightseven2
-zoneight234
-7pqrstsixteen`
+        exampleInput
     }
 );

@@ -271,8 +271,16 @@ export class LineParser extends SimpleParser<string> {
         }));
     }
 
+    public compressSpaces() {
+        return this.replace(/\s+/, " ");
+    }
+
     public replace(token: string | RegExp, replaceWith: string, replaceAll: boolean = true) {
         return new LineParser(this.run().map(r => replaceAll ? r.replaceAll(token, replaceWith) : r.replace(token, replaceWith)));
+    }
+
+    public remove(token: string | RegExp) {
+        return this.replace(token, "");
     }
 }
 

@@ -54,6 +54,7 @@ class RealMessageSender implements ITrebuchetMessageSender {
 
     }
     async setup(lines: string[], digitInfo: DigitInfo[][]): Promise<void> {
+        console.log(lines);
         await this.messageSender(buildMessage({
             type: "setup",
             lines: lines.map((line, index) => {
@@ -77,6 +78,7 @@ class RealMessageSender implements ITrebuchetMessageSender {
                         i = matchingDigit.index + matchingDigit.key.length;
                     }
                 }
+                console.log(tokens);
                 const validTokens = tokens.filter(t => t.isValid);
                 validTokens[0].isSelected = true;
                 validTokens[validTokens.length-1].isSelected = true;

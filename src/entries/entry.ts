@@ -62,7 +62,7 @@ interface EntryMetadata {
     embeddedData?: string | true;
     canvasBackground?: string;
     variants?: Entry[];
-    exampleInput?: string;
+    exampleInput?: string | [string, string];
     fixedInput?: boolean;
 }
 
