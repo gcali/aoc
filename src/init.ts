@@ -50,7 +50,7 @@ import { Parser } from "../../../../support/parser";
 export const ${entryName} = entryForFile(
     async ({ lines, outputCallback, resultOutputCallback }) => {
         const ns = new Parser(lines)
-            .numbers()
+            .asNumbers()
             .run();
         let result: any = 0
         for (let i = 0; i < ns.length; i++) { 
@@ -60,7 +60,7 @@ export const ${entryName} = entryForFile(
     },
     async ({ lines, outputCallback, resultOutputCallback }) => {
         const ns = new Parser(lines)
-            .numbers()
+            .asNumbers()
             .run();
         let result: any = 0
         for (let i = 0; i < ns.length; i++) { 

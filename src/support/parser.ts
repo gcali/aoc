@@ -75,6 +75,24 @@ class SimpleParser<T> extends PipelineParser<T[]> {
 }
 
 class NestedParser<T> extends SimpleParser<T[]> {
+    public flat(): SimpleParser<T> {
+        return new SimpleParser<T>(this.run().flat());
+    }
+    public pivot(): NestedParser<T> {
+        const data = this.run();
+        const length = Math.min(...data.map(e => e.length));
+        const result: T[][] = [];
+        for (let i = 0; i < length; i++) {
+            const r: T[] = [];
+            for (let j = 0; j < data.length; j++) {
+                r.push(data[j][i]);
+            }
+            result.push(r);
+        }
+        console.log(data);
+        console.log(result);
+        return new NestedParser<T>(result);
+    }
     public startLabeling() {
         const lines = this.run().length;
         const results: Array<{}> = [];
@@ -251,6 +269,10 @@ export class LineParser extends SimpleParser<string> {
             }
             return res;
         }));
+    }
+
+    public replace(token: string | RegExp, replaceWith: string, replaceAll: boolean = true) {
+        return new LineParser(this.run().map(r => replaceAll ? r.replaceAll(token, replaceWith) : r.replace(token, replaceWith)));
     }
 }
 

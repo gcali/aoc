@@ -12,7 +12,8 @@ const args = (minimist as any)(process.argv.slice(2), {
         n: "noNumber", 
         f: "file",
         q: "quick",
-        x: "example"
+        x: "example",
+        a: "auto"
     },
     number: ["e", "y"],
     default: {
@@ -21,10 +22,11 @@ const args = (minimist as any)(process.argv.slice(2), {
         "n": false,
         "f": null,
         "q": false,
-        "x": false
+        "x": false,
+        "a": false
     },
     string: ["file"],
-    boolean: ["help", "second", "list", "noNumber", "quick", "example"],
+    boolean: ["help", "second", "list", "noNumber", "quick", "example", "auto"],
 });
 
 
@@ -41,6 +43,7 @@ Options:
     -q, --quick: run with minimal output and prints the time of execution
     -f, --file: file to read from
     -x, --example: use example input
+    -a, --auto: automatically find the input file
 `;
 
 const error = () => { console.log(usage); process.exit(1); };
@@ -78,12 +81,28 @@ const entryCallback = entryList[year][index].entry;
 import { readStdin, Reader, generateFileReader, stdinReadLineByLine } from "./support/stdin-reader";
 import { serializeTime } from "./support/time";
 
-const isReadingFromFile = args.f !== null && args.f.length > 0;
+const isAuto = args.a;
+const isReadingFromFile = (args.f !== null && args.f.length > 0) || isAuto;
 let reader: Reader | null = null;
 let additionalInputReader: undefined | {
     read: () => Promise<string | null>;
     close: () => void;
 };
+
+const getAutoFilePath = () => {
+    if (!entryCallback.metadata) {
+        throw new Error("Cannot automatically generate file without metadata");
+    }
+    const key = entryCallback.metadata.key;
+    const dataFile = `./data/${year}/${key}.txt`;
+    if (fs.existsSync(dataFile)) {
+        return dataFile;
+    }
+    if (fs.existsSync("./input.txt")) {
+        return "./input.txt";
+    }
+    throw new Error("No valid input file found");
+}
 
 const isExample = args.x === true;
 if (isExample) {
@@ -96,7 +115,8 @@ if (isExample) {
     };
 
 } else if (isReadingFromFile) {
-    reader = generateFileReader(args.f);
+    const filePath = isAuto ? getAutoFilePath() : args.f;
+    reader = generateFileReader(filePath);
     const lines: (string | null)[] = [];
     let resolver: ((s: string | null) => void) | null = null;
     const additionalReader = async (): Promise<string | null> => {
