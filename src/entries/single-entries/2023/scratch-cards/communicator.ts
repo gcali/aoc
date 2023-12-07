@@ -87,7 +87,7 @@ class RealMessageSender implements IScratchCardsMessageSender {
                     id: i,
                     value: e
                 })),
-                score: ""
+                score: "0"
             },
             isSlow: this.isSlow()
         }));
