@@ -138,6 +138,7 @@ export const camelCards = entryForFile(
         supportsQuickRunning: true,
         embeddedData: true,
         date: 7,
+        stars: 2,
         exampleInput: `32T3K 765
 T55J5 684
 KK677 28
