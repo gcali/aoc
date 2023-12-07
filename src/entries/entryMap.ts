@@ -28,6 +28,8 @@ import { passagePathing } from "./single-entries/2021/passage-pathing";
 import PassagePathing from "@/views/entries/custom/2021/PassagePathing.vue";
 import { trebuchet } from "./single-entries/2023/trebuchet";
 import TrebuchetView from "../views/entries/custom/2023/Trebuchet.vue";
+import ScratchCardsView from "../views/entries/custom/2023/ScratchCards.vue";
+import { scratchCards } from "./single-entries/2023/scratch-cards";
 
 interface EntryMap { [key: string]: VueConstructor<Vue>; }
 
@@ -62,7 +64,8 @@ const map2021: EntryMap = buildMap([
 ], entries2021);
 
 const map2023: EntryMap = buildMap([
-    [trebuchet, TrebuchetView]
+    [trebuchet, TrebuchetView],
+    [scratchCards, ScratchCardsView]
 ], entries2023);
 
 export const map: { [key: string]: VueConstructor<Vue> } = [

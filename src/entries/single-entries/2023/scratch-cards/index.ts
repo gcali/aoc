@@ -1,9 +1,16 @@
 import { entryForFile } from "../../../entry";
 import { Parser } from "../../../../support/parser";
 import { sum } from "../../../../support/sequences";
+import { buildCommunicator } from "./communicator";
+
+export type ScratchCard = {
+    id: number;
+    win: number[];
+    mine: number[];
+}
 
 export const scratchCards = entryForFile(
-    async ({ lines, outputCallback, resultOutputCallback }) => {
+    async ({ lines, outputCallback, resultOutputCallback, sendMessage, pause }) => {
         const ns = new Parser(lines)
             .tokenize(/[|:]/)
             .startLabeling()
@@ -12,9 +19,15 @@ export const scratchCards = entryForFile(
             .label(e => e.ns(), "mine")
             .run();
 
+        const communicator = buildCommunicator(sendMessage, pause);
+
+        await communicator.setup(ns.length);
+
         let result = 0;
         for (const card of ns) {
+            await communicator.setupCard(card);
             const matches = card.mine.filter(n => card.win.includes(n));
+            await communicator.sendMatches(matches);
             const value = matches.length === 0 ? 0 : 2 ** (matches.length - 1);
             result += value;
         }
