@@ -4,6 +4,7 @@ import { gearRatios } from "./gear-ratios";
 import { scratchCards } from "./scratch-cards";
 import { ifYouGiveASeedAFertilizer } from "./if-you-give-a-seed-a-fertilizer";
 import { waitForIt } from "./wait-for-it";
+import { camelCards } from "./camel-cards";
 export const entries = [
     trebuchet,
     cubeConundrum,
@@ -11,4 +12,5 @@ export const entries = [
     scratchCards,
     ifYouGiveASeedAFertilizer,
     waitForIt,
+    camelCards,
 ];
