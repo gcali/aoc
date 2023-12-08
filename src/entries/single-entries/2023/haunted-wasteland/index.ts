@@ -4,35 +4,7 @@ import { lcm } from "../../../../support/algebra";
 
 export const hauntedWasteland = entryForFile(
     async ({ lines, outputCallback, resultOutputCallback }) => {
-        const ns = new Parser(lines)
-            .group("")
-            .startSimpleLabeling()
-            .label(e => e[0].split(""), "directions")
-            .label(e => new Parser(e)
-                .tokenize(" = ")
-                .startLabeling()
-                .label(left => left.run(), "node")
-                .label(right => right
-                    .extractGroupRegex(
-                        /\((\w+), (\w+)\)/,
-                        e => e.run(),
-                        e => e.run()
-                    )
-                    .startSimpleLabeling()
-                    .label(e => e, "left")
-                    .label(e => e, "right")
-                    .run(),
-                    "options"
-                ).run(),
-                "nodes"
-            )
-            .run();
-
-        const nodeMap = new Map<string, {left: string, right: string}>();
-
-        for (const node of ns.nodes) {
-            nodeMap.set(node.node, node.options);
-        }
+        const { nodeMap, directions } = parseInput(lines);
 
         const start = "AAA";
 
@@ -40,57 +12,18 @@ export const hauntedWasteland = entryForFile(
         const destination = "ZZZ";
         let steps = 0;
         while (currentState !== destination) {
-            const options = nodeMap.get(currentState);
-            if (!options) {
-                throw new Error("Didn't find mapping for " + currentState);
-            }
-            const {left, right} = options;
-            if (ns.directions[(steps % ns.directions.length)] === "L") {
-                currentState = left;
-            } else {
-                currentState = right;
-            }
+            currentState = mapCurrentState(nodeMap, currentState, directions, steps);
             steps++;
         }
 
         await resultOutputCallback(steps);
     },
     async ({ lines, outputCallback, resultOutputCallback }) => {
-        const ns = new Parser(lines)
-            .group("")
-            .startSimpleLabeling()
-            .label(e => e[0].split(""), "directions")
-            .label(e => new Parser(e)
-                .tokenize(" = ")
-                .startLabeling()
-                .label(left => left.run(), "node")
-                .label(right => right
-                    .extractGroupRegex(
-                        /\((\w+), (\w+)\)/,
-                        e => e.run(),
-                        e => e.run()
-                    )
-                    .startSimpleLabeling()
-                    .label(e => e, "left")
-                    .label(e => e, "right")
-                    .run(),
-                    "options"
-                ).run(),
-                "nodes"
-            )
-            .run();
+        const { nodeMap, directions } = parseInput(lines);
 
-        const nodeMap = new Map<string, {left: string, right: string}>();
-
-        for (const node of ns.nodes) {
-            nodeMap.set(node.node, node.options);
-        }
-
-        const start = "AAA";
-
-
-        const startNodes = ns.nodes.map(n => n.node).filter(e => e.endsWith("A"));
-        const endNodes = ns.nodes.map(n => n.node).filter(e => e.endsWith("Z"));
+        const nodes = [...nodeMap.keys()];
+        const startNodes = nodes.filter(e => e.endsWith("A"));
+        const endNodes = nodes.filter(e => e.endsWith("Z"));
         if (startNodes.length !== endNodes.length) {
             throw new Error("Invalid input");
         }
@@ -102,31 +35,19 @@ export const hauntedWasteland = entryForFile(
         const cyclesAt = new Map<string, number>();
         while (cyclesAt.size < startNodes.length) {
             currentStates = currentStates.map((currentState, i) => {
-                if (currentState.endsWith("Z")) {
-                    if (!cyclesAt.has(startNodes[i])) {
+                if (!cyclesAt.has(startNodes[i])) {
+                    if (currentState.endsWith("Z")) {
                         cyclesAt.set(startNodes[i], steps);
                     }
                 }
-                const options = nodeMap.get(currentState);
-                if (!options) {
-                    throw new Error("Didn't find mapping for " + currentState);
-                }
-                const {left, right} = options;
-                if (ns.directions[(steps % ns.directions.length)] === "L") {
-                    currentState = left;
-                } else {
-                    currentState = right;
-                }
+                currentState = mapCurrentState(nodeMap, currentState, directions, steps);
                 return currentState;
             })
             steps++;
         }
 
 
-        let result = 1;
-        for (const value of cyclesAt.values()) {
-            result = lcm(result, value);
-        }
+        const result = lcm(...cyclesAt.values());
 
         await resultOutputCallback(result);
     },
@@ -153,3 +74,50 @@ ZZZ = (ZZZ, ZZZ)`, `LR
 XXX = (XXX, XXX)`]
     }
 );
+
+function mapCurrentState(nodeMap: Map<string, { left: string; right: string; }>, currentState: string, directions: string[], steps: number) {
+    const options = nodeMap.get(currentState);
+    if (!options) {
+        throw new Error("Didn't find mapping for " + currentState);
+    }
+    const { left, right } = options;
+    if (directions[(steps % directions.length)] === "L") {
+        currentState = left;
+    } else {
+        currentState = right;
+    }
+    return currentState;
+}
+
+function parseInput(lines: string[]) {
+    const ns = new Parser(lines)
+        .group("")
+        .startSimpleLabeling()
+        .label(e => e[0].split(""), "directions")
+        .label(e => new Parser(e)
+            .tokenize(" = ")
+            .startLabeling()
+            .label(left => left.run(), "node")
+            .label(right => right
+                .extractGroupRegex(
+                    /\((\w+), (\w+)\)/,
+                    e => e.run(),
+                    e => e.run()
+                )
+                .startSimpleLabeling()
+                .label(e => e, "left")
+                .label(e => e, "right")
+                .run(),
+                "options"
+            ).run(),
+            "nodes"
+        )
+        .run();
+
+    const nodeMap = new Map<string, { left: string; right: string; }>();
+
+    for (const node of ns.nodes) {
+        nodeMap.set(node.node, node.options);
+    }
+    return { nodeMap, directions: ns.directions };
+}

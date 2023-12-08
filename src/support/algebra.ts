@@ -88,6 +88,17 @@ export function gcd(a: number, b: number): number {
   return t ? gcd(b, t) : b;
 }
 
-export function lcm(a: number, b: number) {
-  return a / gcd(a, b) * b;
+export function lcm(...ns: number[]): number {
+    if (ns.length === 0) {
+        throw new Error("Cannot find an lcm of 0 numbers");
+    }
+    if (ns.length === 1) {
+        return ns[0];
+    }
+    const [a, b] = ns;
+    let result = a / gcd(a, b) * b;
+    for (let i = 2; i < ns.length; i++) {
+        result = lcm(result, ns[i]);
+    }
+    return result;
 }
