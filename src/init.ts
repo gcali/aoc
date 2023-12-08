@@ -94,6 +94,8 @@ export const ${entryName} = entryForFile(
 
     await download(day, year);
 
+    fs.copyFileSync("./input.txt", `./data/${year}/${key}.txt`);
+
     const indexPath = `./src/entries/single-entries/${year}/index.ts`;
 
     if (!fs.existsSync(indexPath)) {

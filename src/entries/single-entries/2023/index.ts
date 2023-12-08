@@ -5,6 +5,7 @@ import { scratchCards } from "./scratch-cards";
 import { ifYouGiveASeedAFertilizer } from "./if-you-give-a-seed-a-fertilizer";
 import { waitForIt } from "./wait-for-it";
 import { camelCards } from "./camel-cards";
+import { hauntedWasteland } from "./haunted-wasteland";
 export const entries = [
     trebuchet,
     cubeConundrum,
@@ -13,4 +14,5 @@ export const entries = [
     ifYouGiveASeedAFertilizer,
     waitForIt,
     camelCards,
+    hauntedWasteland,
 ];

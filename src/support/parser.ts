@@ -361,9 +361,9 @@ class StringParser extends PipelineParser<string> {
     }
 
 
-    public extractGroupRegex<T extends ((s: StringParser) => any)[]>(regex: RegExp, ...mappers: [...T]): FlatParser<{
-        [K in keyof T]: T[K] extends (s: string) => any ? ReturnType<T[K]> : never
-    }>;
+    public extractGroupRegex<T extends ((s: StringParser) => any)[]>(regex: RegExp, ...mappers: [...T]): SimpleParser<{
+        [K in keyof T]: T[K] extends (s: StringParser) => any ? ReturnType<T[K]> : never
+    }[number]>;
     public extractGroupRegex(regex: RegExp, ...mappers: Array<(s: StringParser) => any>)
     {
         const matches = this.run().match(regex);
@@ -373,7 +373,7 @@ class StringParser extends PipelineParser<string> {
         if (matches.length !== mappers.length + 1) {
             throw new Error("Mismatch in group length");
         }
-        return new FlatParser(mappers.map((mapper, index) => mapper(new StringParser(matches[index+1]))));
+        return new SimpleParser(mappers.map((mapper, index) => mapper(new StringParser(matches[index+1]))));
     }
 
 }
