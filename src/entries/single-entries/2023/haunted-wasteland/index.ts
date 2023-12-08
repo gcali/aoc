@@ -136,6 +136,7 @@ export const hauntedWasteland = entryForFile(
         supportsQuickRunning: true,
         embeddedData: true,
         date: 8,
+        stars: 2,
         exampleInput: [`LLR
 
 AAA = (BBB, BBB)
