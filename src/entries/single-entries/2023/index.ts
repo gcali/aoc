@@ -6,6 +6,7 @@ import { ifYouGiveASeedAFertilizer } from "./if-you-give-a-seed-a-fertilizer";
 import { waitForIt } from "./wait-for-it";
 import { camelCards } from "./camel-cards";
 import { hauntedWasteland } from "./haunted-wasteland";
+import { mirageMaintenance } from "./mirage-maintenance";
 export const entries = [
     trebuchet,
     cubeConundrum,
@@ -15,4 +16,5 @@ export const entries = [
     waitForIt,
     camelCards,
     hauntedWasteland,
+    mirageMaintenance,
 ];
