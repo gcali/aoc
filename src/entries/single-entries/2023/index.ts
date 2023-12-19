@@ -10,6 +10,7 @@ import { mirageMaintenance } from "./mirage-maintenance";
 import { pipeMaze } from "./pipe-maze";
 import { cosmicExpansion } from "./cosmic-expansion";
 import { hotSprings } from "./hot-springs";
+import { pointOfIncidence } from "./point-of-incidence";
 export const entries = [
     trebuchet,
     cubeConundrum,
@@ -23,4 +24,5 @@ export const entries = [
     pipeMaze,
     cosmicExpansion,
     hotSprings,
+    pointOfIncidence,
 ];

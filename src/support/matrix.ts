@@ -8,6 +8,30 @@ export class FixedSizeMatrix<T> {
         return this._delta;
     }
 
+    public getRow(y: number): T[] {
+        const res: T[] = [];
+        if (y < 0 || y >= this.size.y) {
+            throw new Error("Invalid index " + y);
+        }
+        for (let x = 0; x < this.size.x; x++) {
+            const v = this.get({x,y})!;
+            res.push(v)
+        }
+        return res;
+    }
+
+    public getColumn(x: number): T[] {
+        const res: T[] = [];
+        if (x < 0 || x >= this.size.x) {
+            throw new Error("Invalid index " + x);
+        }
+        for (let y = 0; y < this.size.y; y++) {
+            const v = this.get({x,y})!;
+            res.push(v)
+        }
+        return res;
+    }
+
     public static fromLines<T>(lines: string[], parser: (e: string) => T): FixedSizeMatrix<T> {
         return FixedSizeMatrix.fromPlain(lines.map(l => l.split("").map(parser)));
     }
