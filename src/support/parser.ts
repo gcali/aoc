@@ -296,7 +296,10 @@ class StringParser extends PipelineParser<string> {
         return this.run();
     }
 
-    public transform(regex: RegExp): StringParser {
+    public transform(regex: RegExp | ((s: string) => string)): StringParser {
+        if (typeof regex === "function") {
+            return new StringParser(regex(this.run()));
+        }
         const match = this.run().match(regex);
         if (!match) {
             throw new Error("Did not match regex");

@@ -258,6 +258,18 @@ export function* zip<T, U>(a: T[], b: U[]): Iterable<[T, U]> {
     }
 }
 
+export const areArraysEqual = <T>(a: T[], b: T[], check: (a: T, b: T) => boolean): boolean => {
+    if (a.length !== b.length) {
+        return false;
+    }
+    for (let i = 0; i < a.length; i++) {
+        if (!check(a[i], b[i])) {
+            return false;
+        }
+    }
+    return true;
+}
+
 export function sum(data: Iterable<number>): number {
     let res = 0;
     for (const x of data) {
