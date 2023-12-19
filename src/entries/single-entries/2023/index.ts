@@ -7,6 +7,7 @@ import { waitForIt } from "./wait-for-it";
 import { camelCards } from "./camel-cards";
 import { hauntedWasteland } from "./haunted-wasteland";
 import { mirageMaintenance } from "./mirage-maintenance";
+import { pipeMaze } from "./pipe-maze";
 export const entries = [
     trebuchet,
     cubeConundrum,
@@ -17,4 +18,5 @@ export const entries = [
     camelCards,
     hauntedWasteland,
     mirageMaintenance,
+    pipeMaze,
 ];

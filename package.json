@@ -33,6 +33,7 @@
     "@fortawesome/vue-fontawesome": "^2.0.0",
     "@svgdotjs/svg.js": "^3.0.16",
     "big-integer": "^1.6.48",
+    "binomial": "^0.2.0",
     "clipboardy": "^2.3.0",
     "honeycomb-grid": "^3.1.7",
     "js-combinatorics": "^0.5.5",

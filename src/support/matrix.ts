@@ -200,13 +200,14 @@ export class FixedSizeMatrix<T> {
         }
     }
 
-    public toString(stringifier: (cell: T | undefined, coordinate?: Coordinate) => string): string {
+    public toString(stringifier: (cell: T | undefined, coordinate?: Coordinate) => string | undefined): string {
         let rowIndex = -1;
         const serialized = wu(this.overRows()).map((row) => {
             rowIndex++;
             const res = [];
             for (let i = 0; i < row.length; i++) {
-                res.push(stringifier(row[i], this._delta.sum({x: i, y: rowIndex})));
+                const stringified = stringifier(row[i], this._delta.sum({x: i, y: rowIndex}));
+                res.push(stringified === undefined ? " " : stringified);
             }
             return res.join("");
         }).toArray().join("\n");
