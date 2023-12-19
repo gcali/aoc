@@ -164,7 +164,7 @@ reader(async (lines) => {
             throw new Error("Can execute result output only once");
         }
         resultCalls++;
-        if (typeof line === "string" || typeof line === "number") {
+        if (typeof line === "string" || typeof line === "number" || typeof line === "bigint") {
             clipboard.writeSync(line.toString());
             console.log(line);
         } else {

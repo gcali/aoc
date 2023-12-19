@@ -8,6 +8,8 @@ import { camelCards } from "./camel-cards";
 import { hauntedWasteland } from "./haunted-wasteland";
 import { mirageMaintenance } from "./mirage-maintenance";
 import { pipeMaze } from "./pipe-maze";
+import { cosmicExpansion } from "./cosmic-expansion";
+import { hotSprings } from "./hot-springs";
 export const entries = [
     trebuchet,
     cubeConundrum,
@@ -19,4 +21,6 @@ export const entries = [
     hauntedWasteland,
     mirageMaintenance,
     pipeMaze,
+    cosmicExpansion,
+    hotSprings,
 ];
