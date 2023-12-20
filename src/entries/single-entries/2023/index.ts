@@ -11,6 +11,8 @@ import { pipeMaze } from "./pipe-maze";
 import { cosmicExpansion } from "./cosmic-expansion";
 import { hotSprings } from "./hot-springs";
 import { pointOfIncidence } from "./point-of-incidence";
+import { parabolicReflectorDish } from "./parabolic-reflector-dish";
+import { lensLibrary } from "./lens-library";
 export const entries = [
     trebuchet,
     cubeConundrum,
@@ -25,4 +27,6 @@ export const entries = [
     cosmicExpansion,
     hotSprings,
     pointOfIncidence,
+    parabolicReflectorDish,
+    lensLibrary,
 ];
