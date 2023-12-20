@@ -13,6 +13,7 @@ import { hotSprings } from "./hot-springs";
 import { pointOfIncidence } from "./point-of-incidence";
 import { parabolicReflectorDish } from "./parabolic-reflector-dish";
 import { lensLibrary } from "./lens-library";
+import { theFloorWillBeLava } from "./the-floor-will-be-lava";
 export const entries = [
     trebuchet,
     cubeConundrum,
@@ -29,4 +30,5 @@ export const entries = [
     pointOfIncidence,
     parabolicReflectorDish,
     lensLibrary,
+    theFloorWillBeLava,
 ];

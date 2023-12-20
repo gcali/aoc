@@ -55,6 +55,7 @@ export const parabolicReflectorDish = entryForFile(
         supportsQuickRunning: true,
         embeddedData: true,
         date: 14,
+        stars: 2,
         exampleInput: `O....#....
 O.OO#....#
 .....##...

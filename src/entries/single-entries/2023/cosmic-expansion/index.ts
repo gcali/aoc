@@ -50,6 +50,7 @@ export const cosmicExpansion = entryForFile(
         supportsQuickRunning: true,
         embeddedData: true,
         date: 11,
+        stars: 2,
         exampleInput: `...#......
 .......#..
 #.........

@@ -224,7 +224,7 @@ export class FixedSizeMatrix<T> {
         }
     }
 
-    public toString(stringifier: (cell: T | undefined, coordinate?: Coordinate) => string | undefined): string {
+    public toString(stringifier: (cell: T | undefined, coordinate: Coordinate) => string | undefined): string {
         let rowIndex = -1;
         const serialized = wu(this.overRows()).map((row) => {
             rowIndex++;
