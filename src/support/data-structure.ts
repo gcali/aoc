@@ -2,18 +2,32 @@ import { Dictionary } from "linq-typescript";
 import { coordinateToKey } from "../entries/single-entries/2019/oxygen-system";
 import { serialization } from "./geometry";
 import { ISerializer } from "./serialization";
+import BinaryHeap from "priorityqueue/lib/cjs";
+import { PriorityQueue } from "priorityqueue/lib/cjs/PriorityQueue";
 
 interface QueueNode<T> { element: T; next?: QueueNode<T>; }
 
-export class Lifo<T> {
+export class Lifo<T> implements Queuable<T> {
+  public forEach(callback: (e: T) => boolean | undefined): void {
+    for (let i = this._elements.length-1; i >= 0; i--) {
+      const res = callback(this._elements[i]);
+      if (res) {
+        return;
+      }
+    }
+  }
   private _elements: T[] = [];
 
   public add(element: T) {
     this._elements.push(element);
   }
 
-  public get(): T | undefined {
-    return this._elements.pop();
+  public get(): T | null {
+    const e = this._elements.pop();
+    if (e === undefined) {
+      return null;
+    }
+    return e;
   }
 
   public get isEmpty(): boolean {
@@ -76,7 +90,38 @@ export class LinkedList<T> implements Iterable<{element: T, remove: () => void}>
 
 }
 
-export class Queue<T> {
+export interface Queuable<T> {
+  get isEmpty(): boolean;
+  add(element: T): void;
+  get(): T | null;
+  forEach(callback: (e: T) => void | boolean): void;
+}
+
+export class Heap<T> implements Queuable<T> {
+  private heap: PriorityQueue<T>;
+
+  /**
+   *
+   */
+  constructor(comparator: (a: T, b: T) => number) {
+    this.heap = new BinaryHeap<T>({comparator});
+  }
+  get isEmpty(): boolean {
+    return this.heap.length === 0;
+  }
+  add(element: T): void {
+    this.heap.push(element);
+  }
+  get(): T | null {
+    return this.heap.pop();
+  }
+  forEach(callback: (e: T) => boolean | void): void {
+    this.heap.toArray().forEach(callback);
+  }
+
+}
+
+export class Queue<T> implements Queuable<T> {
   private firstNode?: QueueNode<T>;
   private lastNode?: QueueNode<T>;
   private _size: number = 0;

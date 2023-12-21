@@ -14,6 +14,7 @@ import { pointOfIncidence } from "./point-of-incidence";
 import { parabolicReflectorDish } from "./parabolic-reflector-dish";
 import { lensLibrary } from "./lens-library";
 import { theFloorWillBeLava } from "./the-floor-will-be-lava";
+import { clumsyCrucible } from "./clumsy-crucible";
 export const entries = [
     trebuchet,
     cubeConundrum,
@@ -31,4 +32,5 @@ export const entries = [
     parabolicReflectorDish,
     lensLibrary,
     theFloorWillBeLava,
+    clumsyCrucible,
 ];

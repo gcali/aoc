@@ -227,7 +227,7 @@ export class LineParser extends SimpleParser<string> {
         return FixedSizeMatrix.fromLines(this.run(), mapper);
     }
 
-    public matrixNumbers(defaultValue: number | undefined): FixedSizeMatrix<Number> {
+    public matrixNumbers(defaultValue: number | undefined): FixedSizeMatrix<number> {
         const getDefaultValue = () => {
             if (defaultValue === undefined) {
                 throw new Error("No default value and found an invalid number in the matrix");
