@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["2015-wizard-simulator-20xx-txt"],{"6fe2":function(n,t,i){"use strict";i.r(t),t["default"]="Hit Points: 71\r\nDamage: 10\r\n"}}]);
+//# sourceMappingURL=2015-wizard-simulator-20xx-txt.c3fc89fb.js.map

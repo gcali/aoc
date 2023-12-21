@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["2018-chocolate-charts-txt"],{f156:function(t,c,o){"use strict";o.r(c),c["default"]="360781"}}]);
+//# sourceMappingURL=2018-chocolate-charts-txt.a041a715.js.map

@@ -1,0 +1,1 @@
+{"version":3,"sources":["webpack:///./data/2020/conway-cubes.txt"],"names":[],"mappings":"yHAAA,OAAe","file":"js/2020-conway-cubes-txt.1ff2dd1b.js","sourcesContent":["export default \"####.#..\\r\\n.......#\\r\\n#..#####\\r\\n.....##.\\r\\n##...###\\r\\n#..#.#.#\\r\\n.##...#.\\r\\n#...##..\\r\\n\";"],"sourceRoot":""}

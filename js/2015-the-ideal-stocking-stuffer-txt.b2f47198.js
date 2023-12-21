@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["2015-the-ideal-stocking-stuffer-txt"],{"5d3a":function(t,e,i){"use strict";i.r(e),e["default"]="iwrupvqb"}}]);
+//# sourceMappingURL=2015-the-ideal-stocking-stuffer-txt.b2f47198.js.map

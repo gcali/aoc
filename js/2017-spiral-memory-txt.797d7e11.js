@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["2017-spiral-memory-txt"],{c6e7:function(e,n,o){"use strict";o.r(n),n["default"]="347991"}}]);
+//# sourceMappingURL=2017-spiral-memory-txt.797d7e11.js.map

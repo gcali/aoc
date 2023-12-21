@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["2019-n-body-problem-long-repetition-example-txt"],{8860:function(n,e,o){"use strict";o.r(e),e["default"]="<x=-8, y=-10, z=0>\r\n<x=5, y=5, z=10>\r\n<x=2, y=-7, z=3>\r\n<x=9, y=-8, z=-3>"}}]);
+//# sourceMappingURL=2019-n-body-problem-long-repetition-example-txt.70dcf2e0.js.map

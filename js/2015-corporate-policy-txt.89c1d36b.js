@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["2015-corporate-policy-txt"],{d42e:function(o,p,t){"use strict";t.r(p),p["default"]="hxbxwxba"}}]);
+//# sourceMappingURL=2015-corporate-policy-txt.89c1d36b.js.map

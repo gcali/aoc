@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["2018-marble-mania-txt"],{dac5:function(a,n,s){"use strict";s.r(n),n["default"]="441 players; last marble is worth 71032 points\r\n"}}]);
+//# sourceMappingURL=2018-marble-mania-txt.a6996405.js.map

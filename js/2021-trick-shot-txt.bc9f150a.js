@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["2021-trick-shot-txt"],{9083:function(t,n,a){"use strict";a.r(n),n["default"]="target area: x=201..230, y=-99..-65\r\n"}}]);
+//# sourceMappingURL=2021-trick-shot-txt.bc9f150a.js.map

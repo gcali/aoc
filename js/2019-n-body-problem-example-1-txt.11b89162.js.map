@@ -1,0 +1,1 @@
+{"version":3,"sources":["webpack:///./data/2019/n-body-problem/example-1.txt"],"names":[],"mappings":"mIAAA,OAAe","file":"js/2019-n-body-problem-example-1-txt.11b89162.js","sourcesContent":["export default \"<x=-1, y=0, z=2>\\r\\n<x=2, y=-10, z=-7>\\r\\n<x=4, y=-8, z=8>\\r\\n<x=3, y=5, z=-1>\";"],"sourceRoot":""}

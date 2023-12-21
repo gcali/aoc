@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["2019-n-body-problem-example-1-txt"],{9172:function(n,e,o){"use strict";o.r(e),e["default"]="<x=-1, y=0, z=2>\r\n<x=2, y=-10, z=-7>\r\n<x=4, y=-8, z=8>\r\n<x=3, y=5, z=-1>"}}]);
+//# sourceMappingURL=2019-n-body-problem-example-1-txt.11b89162.js.map

@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["2023-wait-for-it-txt"],{e876:function(n,t,i){"use strict";i.r(t),t["default"]="Time:        35     69     68     87\r\nDistance:   213   1168   1086   1248\r\n"}}]);
+//# sourceMappingURL=2023-wait-for-it-txt.ee12b69e.js.map

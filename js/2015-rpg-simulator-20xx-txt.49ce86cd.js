@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["2015-rpg-simulator-20xx-txt"],{"8c86":function(n,r,t){"use strict";t.r(r),r["default"]="Hit Points: 103\r\nDamage: 9\r\nArmor: 2\r\n"}}]);
+//# sourceMappingURL=2015-rpg-simulator-20xx-txt.49ce86cd.js.map

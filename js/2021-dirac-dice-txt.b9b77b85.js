@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["2021-dirac-dice-txt"],{a272:function(i,n,t){"use strict";t.r(n),n["default"]="Player 1 starting position: 10\r\nPlayer 2 starting position: 9\r\n"}}]);
+//# sourceMappingURL=2021-dirac-dice-txt.b9b77b85.js.map

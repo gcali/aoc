@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["2018-settlers-of-the-north-pole-example-txt"],{"2e56":function(n,r,e){"use strict";e.r(r),r["default"]=".#.#...|#.\r\n.....#|##|\r\n.|..|...#.\r\n..|#.....#\r\n#.#|||#|#|\r\n...#.||...\r\n.|....|...\r\n||...#|.#|\r\n|.||||..|.\r\n...#.|..|."}}]);
+//# sourceMappingURL=2018-settlers-of-the-north-pole-example-txt.3fa39792.js.map

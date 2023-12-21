@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["2018-go-with-the-flow-example-txt"],{"87b7":function(n,t,e){"use strict";e.r(t),t["default"]="#ip 0\r\nseti 5 0 1\r\nseti 6 0 2\r\naddi 0 1 0\r\naddr 1 2 3\r\nsetr 1 0 0\r\nseti 8 0 4\r\nseti 9 0 5"}}]);
+//# sourceMappingURL=2018-go-with-the-flow-example-txt.6d9599d9.js.map

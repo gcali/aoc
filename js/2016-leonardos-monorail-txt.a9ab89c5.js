@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["2016-leonardos-monorail-txt"],{"61ff":function(n,c,r){"use strict";r.r(c),c["default"]="cpy 1 a\r\ncpy 1 b\r\ncpy 26 d\r\njnz c 2\r\njnz 1 5\r\ncpy 7 c\r\ninc d\r\ndec c\r\njnz c -2\r\ncpy a c\r\ninc a\r\ndec b\r\njnz b -2\r\ncpy c b\r\ndec d\r\njnz d -6\r\ncpy 14 c\r\ncpy 14 d\r\ninc a\r\ndec d\r\njnz d -2\r\ndec c\r\njnz c -5\r\n"}}]);
+//# sourceMappingURL=2016-leonardos-monorail-txt.a9ab89c5.js.map

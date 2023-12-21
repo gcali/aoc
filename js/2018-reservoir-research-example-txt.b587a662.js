@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["2018-reservoir-research-example-txt"],{4340:function(r,n,e){"use strict";e.r(n),n["default"]="x=495, y=2..7\r\ny=7, x=495..501\r\nx=501, y=3..7\r\nx=498, y=2..4\r\nx=506, y=1..2\r\nx=498, y=10..13\r\nx=504, y=10..13\r\ny=13, x=498..504"}}]);
+//# sourceMappingURL=2018-reservoir-research-example-txt.b587a662.js.map

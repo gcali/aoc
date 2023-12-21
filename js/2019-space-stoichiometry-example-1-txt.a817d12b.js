@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["2019-space-stoichiometry-example-1-txt"],{f43c:function(n,e,r){"use strict";r.r(e),e["default"]="--necessary: 31\r\n10 ORE => 10 A\r\n1 ORE => 1 B\r\n7 A, 1 B => 1 C\r\n7 A, 1 C => 1 D\r\n7 A, 1 D => 1 E\r\n7 A, 1 E => 1 FUEL"}}]);
+//# sourceMappingURL=2019-space-stoichiometry-example-1-txt.a817d12b.js.map

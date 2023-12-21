@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["2016-an-elephant-named-joseph-txt"],{"8b7f":function(n,e,p){"use strict";p.r(e),e["default"]="3017957"}}]);
+//# sourceMappingURL=2016-an-elephant-named-joseph-txt.321ae9fb.js.map

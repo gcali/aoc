@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["2019-monitoring-station-kill-example-txt"],{"020b":function(n,r,i){"use strict";i.r(r),r["default"]="-- kills:\r\n-- .#....###24...#..\r\n-- ##...##.13#67..9#\r\n-- ##...#...5.8####.\r\n-- ..#.....X...###..\r\n-- ..#.#.....#....##\r\n-- \r\n.#....#####...#..\r\n##...##.#####..##\r\n##...#...#.#####.\r\n..#.....#...###..\r\n..#.#.....#....##"}}]);
+//# sourceMappingURL=2019-monitoring-station-kill-example-txt.db7ebf10.js.map

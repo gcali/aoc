@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["2021-amphipod-txt"],{"52be":function(n,p,r){"use strict";r.r(p),p["default"]="#############\r\n#...........#\r\n###B#B#C#D###\r\n  #D#A#A#C#\r\n  #########\r\n"}}]);
+//# sourceMappingURL=2021-amphipod-txt.7ccb4de6.js.map
