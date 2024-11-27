@@ -15,6 +15,8 @@ import { parabolicReflectorDish } from "./parabolic-reflector-dish";
 import { lensLibrary } from "./lens-library";
 import { theFloorWillBeLava } from "./the-floor-will-be-lava";
 import { clumsyCrucible } from "./clumsy-crucible";
+import { pulsePropagation } from "./pulse-propagation";
+import { stepCounter } from "./step-counter";
 export const entries = [
     trebuchet,
     cubeConundrum,
@@ -33,4 +35,6 @@ export const entries = [
     lensLibrary,
     theFloorWillBeLava,
     clumsyCrucible,
+    pulsePropagation,
+    stepCounter,
 ];

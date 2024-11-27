@@ -4,8 +4,13 @@ import { voidIsPromise, isPromise } from "./async";
 
 export class FixedSizeMatrix<T> {
 
+    private wrapping: boolean = false;
     public get delta() {
         return this._delta;
+    }
+
+    public setWrapping(wrapping: boolean) {
+        this.wrapping = wrapping;
     }
 
     public getRow(y: number): T[] {
@@ -263,10 +268,21 @@ export class FixedSizeMatrix<T> {
     }
 
     private indexCalculator(c: Coordinate): number | null {
-        if (c.y < 0 || c.x < 0 || c.x >= this.size.x || c.y >= this.size.y) {
+        const newC = {...c}
+        if (this.wrapping) {
+            while (newC.x < 0) {
+                newC.x += this.size.x;
+            }
+            while (newC.y < 0) {
+                newC.y += this.size.y;
+            }
+            newC.x = newC.x % this.size.x;
+            newC.y = newC.y % this.size.y;
+        }
+        if (newC.y < 0 || newC.x < 0 || newC.x >= this.size.x || newC.y >= this.size.y) {
             return null;
         }
-        return c.y * this.size.x + c.x;
+        return newC.y * this.size.x + newC.x;
     }
 
     private coordinateCalculator(i: number): Coordinate {

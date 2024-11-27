@@ -13,13 +13,19 @@ export const memoize = <T, U>(serialization: ISerializer<T>, f: (row: T) => U): 
     }
 }
 
+type CycleOptimizationResult<TRes> = {
+    result: TRes;
+    iteration: number;
+    cycles: number;
+    remainder: number;
+}
 
 export const optimizeCycles = <TArg, TRes>(
     baseArg: TArg,
     howMany: number,
     serializer: (arg: TArg) => string,
     f: (arg: TArg) => [TArg, TRes]
-): TRes => {
+): CycleOptimizationResult<TRes> => {
     const found = new Map<string, number>();
     const indexResults = new Map<number, [TArg, TRes]>();
     let arg = baseArg;
@@ -34,7 +40,7 @@ export const optimizeCycles = <TArg, TRes>(
             const expectedPosition = (howMany - cycleBase -1 + cycleLength) % cycleLength + cycleBase;
             // console.log({cycleI, i, cycleLength, cycleBase, expectedPosition, delta: howMany-cycleBase, simpleDelta: (howMany-cycleBase) % cycleLength});
             const [cycleArg, cycleRes] = indexResults.get(expectedPosition)!;
-            return cycleRes;
+            return {result: cycleRes, iteration: i, cycles: Math.floor(howMany/i), remainder: howMany % i}
         }
         const [newArg, res] = f(arg);
         found.set(serializedArg, i);
@@ -45,5 +51,5 @@ export const optimizeCycles = <TArg, TRes>(
     if (lastRes === undefined) {
         throw new Error("Something went wrong");
     }
-    return lastRes;
+    return {result: lastRes, iteration: howMany, cycles: 1, remainder: 0};
 }

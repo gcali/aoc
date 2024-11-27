@@ -47,7 +47,7 @@ export const parabolicReflectorDish = entryForFile(
                     return [ns, calculateLoad(ns)];
                 }
             )
-        await resultOutputCallback(res);
+        await resultOutputCallback(res.result);
     },
     {
         key: "parabolic-reflector-dish",

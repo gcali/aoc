@@ -573,6 +573,11 @@ export class DefaultDict<TKey, TValue> {
     }
   }
 
+  public toString(): string {
+    const inner = [...this.data.entries()].map(e => `${e[0]} -> ${e[1]}`).join("\n\t")
+    return `{\n\t${inner}\n}`;
+  }
+
   public set(key: TKey, v: TValue) {
     if (this.isDataSerializable(this.data)) {
       this.data.set(this.serializer!.serialize(key), v);
