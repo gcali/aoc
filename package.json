@@ -31,7 +31,6 @@
     "@fortawesome/fontawesome-svg-core": "^1.2.30",
     "@fortawesome/free-solid-svg-icons": "^5.14.0",
     "@fortawesome/vue-fontawesome": "^2.0.0",
-    "@svgdotjs/svg.js": "^3.0.16",
     "big-integer": "^1.6.48",
     "binomial": "^0.2.0",
     "clipboardy": "^2.3.0",

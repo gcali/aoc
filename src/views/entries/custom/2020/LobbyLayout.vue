@@ -20,7 +20,6 @@ import BaseMessageTemplate from "../BaseMessageTemplate.vue";
 import { NotImplementedError } from "../../../../support/error";
 
 import {defineGrid, extendHex } from "honeycomb-grid";
-import { SVG } from "@svgdotjs/svg.js";
 
 
 @Component({
@@ -37,27 +36,27 @@ export default class ConwayCubesView extends Vue {
     @Prop() public year!: number;
 
     public mounted() {
-        const grid = this.$refs.grid as HTMLElement;
-        grid.innerHTML = "";
-        const draw = SVG();
-        const Hex = extendHex({ size: 5 });
-        const Grid = defineGrid(Hex);
-        // get the corners of a hex (they're the same for all hexes created with the same Hex factory)
-        const corners = Hex().corners();
-        // an SVG symbol can be reused
-        const hexSymbol = draw.symbol()
-            // map the corners' positions to a string and create a polygon
-            .polygon(corners.map(({ x, y }) => `${x},${y}`).join(" "))
-            .fill("none")
-            .stroke({ width: 1, color: "#999" });
+        // const grid = this.$refs.grid as HTMLElement;
+        // grid.innerHTML = "";
+        // const draw = SVG();
+        // const Hex = extendHex({ size: 5 });
+        // const Grid = defineGrid(Hex);
+        // // get the corners of a hex (they're the same for all hexes created with the same Hex factory)
+        // const corners = Hex().corners();
+        // // an SVG symbol can be reused
+        // const hexSymbol = draw.symbol()
+        //     // map the corners' positions to a string and create a polygon
+        //     .polygon(corners.map(({ x, y }) => `${x},${y}`).join(" "))
+        //     .fill("none")
+        //     .stroke({ width: 1, color: "#999" });
 
-        // render 10,000 hexes
-        Grid.rectangle({ width: 100, height: 100 }).forEach((hex) => {
-            const { x, y } = hex.toPoint();
-            // use hexSymbol and set its position for each hex
-            draw.use(hexSymbol).translate(x, y);
-        });
-        draw.addTo(grid);
+        // // render 10,000 hexes
+        // Grid.rectangle({ width: 100, height: 100 }).forEach((hex) => {
+        //     const { x, y } = hex.toPoint();
+        //     // use hexSymbol and set its position for each hex
+        //     draw.use(hexSymbol).translate(x, y);
+        // });
+        // draw.addTo(grid);
     }
 
     private reset() {
