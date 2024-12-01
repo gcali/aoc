@@ -17,6 +17,7 @@ import { theFloorWillBeLava } from "./the-floor-will-be-lava";
 import { clumsyCrucible } from "./clumsy-crucible";
 import { pulsePropagation } from "./pulse-propagation";
 import { stepCounter } from "./step-counter";
+import { sandSlabs } from "./sand-slabs";
 export const entries = [
     trebuchet,
     cubeConundrum,
@@ -37,4 +38,5 @@ export const entries = [
     clumsyCrucible,
     pulsePropagation,
     stepCounter,
+    sandSlabs,
 ];

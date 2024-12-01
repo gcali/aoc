@@ -1,6 +1,6 @@
 export const baseState = {
     dates: {
-        year: 2023
+        year: 2024
     }
 };
 

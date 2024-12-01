@@ -112,11 +112,17 @@ export const directions = {
     downRight: new CCoordinate(1, 1)
 };
 
-export const drawStraightLine = (from: Coordinate, to: Coordinate, toIncluded: boolean): Coordinate[] => {
+export function drawStraightLine(from: Coordinate3d, to: Coordinate3d, toIncluded: boolean): Coordinate3d[];
+export function drawStraightLine(from: Coordinate, to: Coordinate, toIncluded: boolean): Coordinate[];
+export function drawStraightLine(from: FullCoordinate, to: FullCoordinate, toIncluded: boolean): FullCoordinate[] {
     const result = [];
     while (manhattanDistance(from, to) !== 0) {
         result.push(from);
-        from = {x: from.x + Math.sign(to.x - from.x), y: from.y + Math.sign(to.y - from.y)};
+        if (is2d(from) && is2d(to)) {
+            from = {x: from.x + Math.sign(to.x - from.x), y: from.y + Math.sign(to.y - from.y)};
+        } else if (is3d(from) && is3d(to)) {
+            from = {x: from.x + Math.sign(to.x - from.x), y: from.y + Math.sign(to.y - from.y), z: from.z + Math.sign(to.z - from.z)};
+        }
     }
     if (toIncluded) {
         result.push(to);

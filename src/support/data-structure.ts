@@ -506,6 +506,10 @@ export class SerializableDictionary<TKey, TValue> {
     this.dict[this.serializer.serialize(key)] = value;
   }
 
+  public unset(key: TKey) {
+    delete this.dict[this.serializer.serialize(key)];
+  }
+
   public get(key: TKey): TValue | undefined {
     return this.dict[this.serializer.serialize(key)];
   }
