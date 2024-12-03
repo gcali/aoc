@@ -33,6 +33,8 @@ import ScratchCardsView from "../views/entries/custom/2023/ScratchCards.vue";
 import { scratchCards } from "./single-entries/2023/scratch-cards";
 import HistorianHysteriaView from "../views/entries/custom/2024/HistorianHysteria.vue";
 import { historianHysteria } from "./single-entries/2024/historian-hysteria";
+import MullItOverView from "../views/entries/custom/2024/MullItOver.vue";
+import { mullItOver } from "./single-entries/2024/mull-it-over";
 
 interface EntryMap { [key: string]: VueConstructor<Vue>; }
 
@@ -73,6 +75,7 @@ const map2023: EntryMap = buildMap([
 
 const map2024: EntryMap = buildMap([
     [historianHysteria, HistorianHysteriaView],
+    [mullItOver, MullItOverView]
 ], entries2024);
 
 export const map: { [key: string]: VueConstructor<Vue> } = [
