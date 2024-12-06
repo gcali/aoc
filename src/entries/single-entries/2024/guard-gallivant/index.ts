@@ -18,7 +18,7 @@ export const guardGallivant = entryForFile(
         }
         await resultOutputCallback(visited.length);
     },
-    async ({ lines, outputCallback, resultOutputCallback }) => {
+    async ({ lines, pause, outputCallback, resultOutputCallback }) => {
         const ns = new Parser(lines)
             .matrix(parseCell);
         const getGrid = () => new Grid(ns, directions.up);
@@ -35,6 +35,8 @@ export const guardGallivant = entryForFile(
             const localVisited = localGrid.stepUntilOut();
             if (localVisited === null) {
                 result++;
+                await outputCallback(`Still running, this is a long one... got ${result} loops until now`, true);
+                await pause();
             }
         }
         await resultOutputCallback(result);
