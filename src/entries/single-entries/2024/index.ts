@@ -4,6 +4,7 @@ import { mullItOver } from "./mull-it-over";
 import { ceresSearch } from "./ceres-search";
 import { printQueue } from "./print-queue";
 import { guardGallivant } from "./guard-gallivant";
+import { bridgeRepair } from "./bridge-repair";
 export const entries = [
     historianHysteria,
     rednosedReports,
@@ -11,4 +12,5 @@ export const entries = [
     ceresSearch,
     printQueue,
     guardGallivant,
+    bridgeRepair,
 ];
