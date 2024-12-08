@@ -297,7 +297,9 @@ export function* subsequenceGenerator<T>(array: T[]): Iterable<T[]> {
 
 export function* subsetGenerator<T>(array: T[], start: number, howMany: number | null = null): Iterable<T[]> {
     if (start >= array.length || howMany === 0) {
-        yield [];
+        if (!howMany) {
+            yield [];
+        }
     } else {
         if (howMany !== null) {
             for (const sub of subsetGenerator(array, start + 1, howMany)) {

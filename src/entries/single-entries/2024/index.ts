@@ -5,6 +5,7 @@ import { ceresSearch } from "./ceres-search";
 import { printQueue } from "./print-queue";
 import { guardGallivant } from "./guard-gallivant";
 import { bridgeRepair } from "./bridge-repair";
+import { resonantCollinearity } from "./resonant-collinearity";
 export const entries = [
     historianHysteria,
     rednosedReports,
@@ -13,4 +14,5 @@ export const entries = [
     printQueue,
     guardGallivant,
     bridgeRepair,
+    resonantCollinearity,
 ];
