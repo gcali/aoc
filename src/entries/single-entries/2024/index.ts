@@ -6,6 +6,7 @@ import { printQueue } from "./print-queue";
 import { guardGallivant } from "./guard-gallivant";
 import { bridgeRepair } from "./bridge-repair";
 import { resonantCollinearity } from "./resonant-collinearity";
+import { diskFragmenter } from "./disk-fragmenter";
 export const entries = [
     historianHysteria,
     rednosedReports,
@@ -15,4 +16,5 @@ export const entries = [
     guardGallivant,
     bridgeRepair,
     resonantCollinearity,
+    diskFragmenter,
 ];
