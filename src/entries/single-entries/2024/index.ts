@@ -9,6 +9,7 @@ import { resonantCollinearity } from "./resonant-collinearity";
 import { diskFragmenter } from "./disk-fragmenter";
 import { hoofIt } from "./hoof-it";
 import { plutonianPebbles } from "./plutonian-pebbles";
+import { gardenGroups } from "./garden-groups";
 export const entries = [
     historianHysteria,
     rednosedReports,
@@ -21,4 +22,5 @@ export const entries = [
     diskFragmenter,
     hoofIt,
     plutonianPebbles,
+    gardenGroups,
 ];
