@@ -7,6 +7,8 @@ import { guardGallivant } from "./guard-gallivant";
 import { bridgeRepair } from "./bridge-repair";
 import { resonantCollinearity } from "./resonant-collinearity";
 import { diskFragmenter } from "./disk-fragmenter";
+import { hoofIt } from "./hoof-it";
+import { plutonianPebbles } from "./plutonian-pebbles";
 export const entries = [
     historianHysteria,
     rednosedReports,
@@ -17,4 +19,6 @@ export const entries = [
     bridgeRepair,
     resonantCollinearity,
     diskFragmenter,
+    hoofIt,
+    plutonianPebbles,
 ];
