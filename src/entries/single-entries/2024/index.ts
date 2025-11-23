@@ -10,6 +10,7 @@ import { diskFragmenter } from "./disk-fragmenter";
 import { hoofIt } from "./hoof-it";
 import { plutonianPebbles } from "./plutonian-pebbles";
 import { gardenGroups } from "./garden-groups";
+import { clawContraption } from "./claw-contraption";
 export const entries = [
     historianHysteria,
     rednosedReports,
@@ -23,4 +24,5 @@ export const entries = [
     hoofIt,
     plutonianPebbles,
     gardenGroups,
+    clawContraption,
 ];
