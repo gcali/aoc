@@ -3,7 +3,7 @@ import { Coordinate, getBoundaries, CCoordinate, Bounds } from "./geometry";
 
 export class UnknownSizeField<T> {
 
-    private readonly cells: { [key: string]: T | undefined } = {};
+    private cells: { [key: string]: T | undefined } = {};
 
     public set(coordinate: Coordinate, element: T): void {
         this.cells[this.serializeCoordinate(coordinate)] = element;
@@ -11,6 +11,12 @@ export class UnknownSizeField<T> {
 
     public unset(coordinate: Coordinate): void {
         delete this.cells[this.serializeCoordinate(coordinate)];
+    }
+
+    public clone(): UnknownSizeField<T> {
+        const cloned = new UnknownSizeField<T>();
+        cloned.cells = {...this.cells};
+        return cloned;
     }
 
     public *getPoints(): Iterable<{e: T, c: Coordinate}> {
@@ -54,6 +60,16 @@ export class UnknownSizeField<T> {
             }
         });
         return matrix;
+    }
+
+    public findOne(callback: (e: T, c: Coordinate) => boolean): {e: T, c: Coordinate} | null {
+        for (const [key, cell] of Object.entries(this.cells)) {
+            const coordinate = this.deserializeCoordinate(key);
+            if (cell !== undefined && callback(cell, coordinate)) {
+                return {e: cell, c: coordinate};
+            }
+        }
+        return null;
     }
 
     private serializeCoordinate(c: Coordinate): string {
