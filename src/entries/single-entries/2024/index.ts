@@ -11,6 +11,7 @@ import { hoofIt } from "./hoof-it";
 import { plutonianPebbles } from "./plutonian-pebbles";
 import { gardenGroups } from "./garden-groups";
 import { clawContraption } from "./claw-contraption";
+import { restroomRedoubt } from "./restroom-redoubt";
 export const entries = [
     historianHysteria,
     rednosedReports,
@@ -25,4 +26,5 @@ export const entries = [
     plutonianPebbles,
     gardenGroups,
     clawContraption,
+    restroomRedoubt,
 ];

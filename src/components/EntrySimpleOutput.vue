@@ -128,6 +128,11 @@ export default class EntrySimpleOutput extends Vue {
                             delete this.invalidateMap[id];
                         }
                     },
+                    removeAll: async () => {
+                        this.ids = new Set<string>();
+                        this.toDraw = [];
+                        this.invalidateMap = {};
+                    },
                     stop: async () => {
                         this.renderIteration();
                         this.context = null;

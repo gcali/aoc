@@ -81,6 +81,20 @@ export class CCoordinate implements Coordinate {
         const result = scalarCoordinates(this, t);
         return new CCoordinate(result.x, result.y);
     }
+
+    public wrap = (size: Coordinate) => {
+        let newX = this.x;
+        let newY = this.y;
+        while (newX < 0) {
+            newX += size.x;
+        }
+        while (newY < 0) {
+            newY += size.y;
+        }
+        newX %= size.x;
+        newY %= size.y;
+        return new CCoordinate(newX, newY);
+    }
 }
 
 export type LiteralDirection = "v" | "^" | "<" | ">";

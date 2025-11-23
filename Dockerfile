@@ -7,6 +7,4 @@ RUN npm install
 
 COPY . .
 
-RUN npm run build
-
-CMD ["cp", "-rv", "dist", "/output/dist"]
+CMD ["sh"]

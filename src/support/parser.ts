@@ -351,7 +351,7 @@ class StringParser extends PipelineParser<string> {
     }
 
     public extractCoordinates(): CCoordinate {
-        const regex = /(-?\d+)[^\d]+(-?\d+)/
+        const regex = /(-?\d+)[^\d-]+(-?\d+)/
         const matches = this.data.match(regex);
         if (matches == null) {
             throw new Error("No matches on " + this.data);
