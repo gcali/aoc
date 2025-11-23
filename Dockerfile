@@ -9,4 +9,4 @@ COPY . .
 
 RUN npm run build
 
-ENTRYPOINT ["cp", "-rv", "dist", "/output/dist"]
+CMD ["cp", "-rv", "dist", "/output/dist"]
