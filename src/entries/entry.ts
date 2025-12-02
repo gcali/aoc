@@ -64,6 +64,7 @@ interface EntryMetadata {
     variants?: Entry[];
     exampleInput?: string | [string, string];
     fixedInput?: boolean;
+    description?: string;
 }
 
 export interface Entry {

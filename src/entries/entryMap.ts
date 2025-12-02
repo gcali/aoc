@@ -24,6 +24,7 @@ import { entries as entries2021 } from "./single-entries/2021";
 import { entries as entries2022 } from "./single-entries/2022";
 import { entries as entries2023 } from "./single-entries/2023";
 import { entries as entries2024 } from "./single-entries/2024";
+import { entries as entries2025 } from "./single-entries/2025";
 
 import { passagePathing } from "./single-entries/2021/passage-pathing";
 import PassagePathing from "@/views/entries/custom/2021/PassagePathing.vue";
@@ -35,6 +36,8 @@ import HistorianHysteriaView from "../views/entries/custom/2024/HistorianHysteri
 import { historianHysteria } from "./single-entries/2024/historian-hysteria";
 import MullItOverView from "../views/entries/custom/2024/MullItOver.vue";
 import { mullItOver } from "./single-entries/2024/mull-it-over";
+import { secretEntrance } from "./single-entries/2025/secret-entrance";
+import SecretEntranceView from "../views/entries/custom/2025/SecretEntrance.vue";
 
 interface EntryMap { [key: string]: VueConstructor<Vue>; }
 
@@ -78,6 +81,10 @@ const map2024: EntryMap = buildMap([
     [mullItOver, MullItOverView]
 ], entries2024);
 
+const map2025: EntryMap = buildMap([
+    [secretEntrance, SecretEntranceView]
+], entries2025)
+
 export const map: { [key: string]: VueConstructor<Vue> } = [
     buildMap([], entries2015),
     buildMap([], entries2016),
@@ -88,7 +95,8 @@ export const map: { [key: string]: VueConstructor<Vue> } = [
     map2021,
     buildMap([], entries2022),
     map2023,
-    map2024
+    map2024,
+    map2025,
 ].reduce((acc, next) => {
     for (const key in next) {
         if (key in next) {

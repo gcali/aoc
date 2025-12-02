@@ -17,6 +17,14 @@
             .example(v-if="supportsExample").unselectable
                 label Use example input
                 input(type="checkbox" v-model="example" :disabled="executing")
+        .input(:class="{transparent:!executing || quickRun}").unselectable
+            button(@click="play", :class="{transparent: !executing || running}") Play
+            button(@click="nextState", :class="{transparent: !executing || running}") Next
+            button(@click="stop", :class="{transparent: !executing}") Stop
+            button(@click="run", :class="{transparent: !executing || !running}") Pause
+            .speed
+                label Animation delay
+                input(v-model="timeout" type="number" min="0" step="10")
         .output
             EntrySimpleOutput(:key="$route.path", :lines="output")
         slot
@@ -45,7 +53,7 @@ import { Choice } from "../../../constants/choice";
         EntrySimpleOutput
     }
 })
-export default class BaseMessageTemplate extends Vue {
+export default class MessageTemplateWithPauseAndRun extends Vue {
 
     public get supportsQuickRunning() {
         return this.entry.metadata && this.entry.metadata.supportsQuickRunning;
@@ -73,9 +81,34 @@ export default class BaseMessageTemplate extends Vue {
     private destroying = false;
     private quickRun = false;
 
-    private shouldStop = false;
+    private shouldStop: boolean = false;
+    private shouldRun: boolean = false;
+    private running: boolean = false;
+    private resolver?: () => void;
 
     private clearScreen?: () => void;
+
+    public play() {
+        this.shouldRun = true;
+        this.nextState();
+    }
+
+    public stop() {
+        this.shouldStop = true;
+        this.running = false;
+        this.nextState();
+    }
+
+    public run() {
+        this.shouldRun = !this.shouldRun;
+    }
+    public nextState() {
+        if (this.resolver) {
+            const resolver = this.resolver;
+            this.resolver = undefined;
+            resolver();
+        }
+    }
 
     @Watch("entry")
     public onEntryChanged() {
@@ -129,19 +162,33 @@ export default class BaseMessageTemplate extends Vue {
     }
 
     private createPause(): (() => Promise<void>) {
+        let drawingPause: (() => void) | undefined;
         let lastPause = 0;
         return () => {
             const promise = new Promise<void>((resolve, reject) => {
-                if (this.timeout > 0) {
-                    setTimeout(resolve , this.timeout);
-                } else {
-                    const currentTime = new Date().getTime();
-                    if (currentTime - lastPause > 500) {
-                        lastPause = currentTime;
-                        setTimeout(resolve, 0);
-                    } else {
+                if (this.shouldRun) {
+                    this.running = true;
+                    const resolver = drawingPause ? () => {
+                        if (drawingPause) {
+                            drawingPause();
+                            drawingPause = undefined;
+                        }
                         resolve();
+                    } : resolve;
+                    if (this.timeout > 0) {
+                        setTimeout(resolver , this.timeout);
+                    } else {
+                        const currentTime = new Date().getTime();
+                        if (currentTime - lastPause > 500) {
+                            lastPause = currentTime;
+                            setTimeout(resolver, 0);
+                        } else {
+                            resolver();
+                        }
                     }
+                } else {
+                    this.running = false;
+                    this.resolver = resolve;
                 }
             });
             return promise;
@@ -156,9 +203,14 @@ export default class BaseMessageTemplate extends Vue {
         if (this.clearScreen) {
             this.clearScreen();
         }
+        if (this.running) {
+            this.stop();
+        }
         this.time = "";
         this.destroying = false;
         this.shouldStop = false;
+        this.shouldRun = false;
+        this.running = false;
         this.executing = false;
         this.output = [];
         if (this.entry.metadata && this.entry.metadata.suggestedDelay !== undefined) {

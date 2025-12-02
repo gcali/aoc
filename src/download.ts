@@ -4,6 +4,8 @@ import { getLastYear } from "./support/entry-list-helper";
 
 export const download = async (day: number, year: number) => {
 
+    console.log(`Downloading ${year}-${day}`)
+
     const time = new Date().getTime();
     fs.writeFileSync("time", time.toString(), { encoding: 'utf8'});
 
