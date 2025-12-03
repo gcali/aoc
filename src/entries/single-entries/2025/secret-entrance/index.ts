@@ -76,6 +76,7 @@ export const secretEntrance = entryForFile(
         date: 1,
         exampleInput: exampleInput,
         suggestedDelay: 1,
-        description: "The second part has an animation!"
+        description: "The second part has an animation!",
+        stars: 2
     }
 );

@@ -106,10 +106,16 @@ export default Vue.extend({
     }
     @keyframes rotating-star {
         from {
+            left: 0;
             transform: rotate(0);
         } 
+        // 50% {
+        //     transform: rotate(180);
+        //     left: 10em;
+        // }
         to {
             transform: rotate(360deg);
+            left: 0em;
         }
     }
     .animated-star {
@@ -139,6 +145,7 @@ export default Vue.extend({
         display: flex;
         justify-content: center;
         align-items: center;
+        position: relative;
     }
     .star {
         pointer-events: none;
