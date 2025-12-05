@@ -53,11 +53,13 @@ const mergeRanges = (ranges: Range[]) => {
 }
 
 export const cafeteria = entryForFile(
+    //00:06:50
     async ({ lines, outputCallback, resultOutputCallback }) => {
         const stuff = parseInput(lines);
         const fresh = stuff.ingredients.filter(i => isFresh(i, stuff.ranges));
         await resultOutputCallback(fresh.length);
     },
+    //00:14:19
     async ({ lines, outputCallback, resultOutputCallback }) => {
         const stuff = parseInput(lines);
         const mergedRanges = mergeRanges(stuff.ranges);
@@ -70,6 +72,7 @@ export const cafeteria = entryForFile(
         supportsQuickRunning: true,
         embeddedData: true,
         date: 5,
-        exampleInput: exampleInput
+        exampleInput: exampleInput,
+        stars: 2
     }
 );
