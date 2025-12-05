@@ -45,6 +45,7 @@ export const printingDepartment = entryForFile(
         const accessible = findAccessible(field).length;
         await resultOutputCallback(accessible);
     },
+    //00:11:12
     async ({ lines, outputCallback, resultOutputCallback }) => {
         const field = parseInput(lines);
         let result = 0;
